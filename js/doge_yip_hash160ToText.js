@@ -1,5 +1,4 @@
-function hash160ToText(script, dictionary) {
-  var hex = script.substring(18,57);
+function hash160ToText(hex, dictionary) {
   var str = '';
   for (var i = 0; i < hex.length; i += 2){
     var value = hex.substr(i, 2);

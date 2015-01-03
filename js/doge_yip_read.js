@@ -1,31 +1,35 @@
-function createPost(tx, dictionary){
-  var url = "https://chain.so/api/v2/get_tx_outputs/DOGE/"+tx.txid
-  $.getJSON(url, function( json ) {
-    var post = '<h3>'+timestamp(tx.time)+'</h3><p>';
-    for(var i=0; i<json.data.outputs.length; i++){
-      var output = json.data.outputs[i];
-      if(output.value==.2093){
-        post += hash160ToText(output.script, dictionary);
-      };
-    };
-    post+="</p>"
-    $("#posts").append(post);
-  });
+function base58CheckTohash160(base58Check){
+  var hash160 = Bitcoin.Base58.decode(base58Check);
+  var hexString = "";
+  for(var i=0; i<hash160.length; i++){
+    hexString+=hash160[i].toString(16);
+  }
+  return hexString.substring(2,42);
+}
+
+function createPost(tx, hexMessage, dictionary){
+  var post = '<h3>'+timestamp(tx.time)+'</h3><p>'+hash160ToText(hexMessage, dictionary)+"</p>";
+  $("#posts").append(post);
+}
+
+function isPost(hexLibrary){
+  var start = parseInt("80",16);
+  var end = parseInt("9F",16);
+  return (hexLibrary>=start && hexLibrary<=end);
 }
 
 function constructPosts(json, dictionary){
   for(var i=0; i<json.data.txs.length; i++){
     var tx = json.data.txs[i];
     if(tx.outgoing!=null){
-      var is_post = false;
       for(j=0; j<tx.outgoing.outputs.length; j++){
         var output = tx.outgoing.outputs[j];
-        if(output.value==.2093){
-          is_post=true;
+        var hash160 = base58CheckTohash160(output.address);
+        var hexMessage = hash160.substring(0,38);
+        var hexLibrary = parseInt(hash160.substring(38,40), 16);
+        if(isPost(hexLibrary)){
+          createPost(tx, hexMessage, dictionary)
         }
-      }
-      if(is_post){
-        createPost(tx, dictionary);
       }
     }
   };
