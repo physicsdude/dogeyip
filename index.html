@@ -72,9 +72,8 @@
         <h1>Bow Wow Pack</h1>
         <p>
           A social network built on top of the Dogecoin blockchain.<br/>
-          Send 14.20171006 dogecoins to Bow Wow Pack
-          (<a href="https://dogechain.info/api/v1/address/qrcode/DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q">DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q</a>) 
-          to join.
+          To join send 15 DOGE to Doge Yip: 
+          (<a href="https://dogechain.info/api/v1/address/qrcode/DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q">DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q</a>)
         </p>
       </div>
     </div>
@@ -137,7 +136,7 @@ jQuery(document).ready(function($) {
     for(var i=0; i<json.data.txs.length; i++){
       var tx = json.data.txs[i];
       if(tx.incoming!=null){
-        var is_friend = tx.incoming.value==14.20171006;
+        var is_friend = tx.incoming.value==15;
         if(is_friend){
           for(j=0; j<tx.incoming.inputs.length; j++){
             friendAddress = tx.incoming.inputs[j].address;
