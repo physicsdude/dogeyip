@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="author" content="George Carlson">
+
+  <link rel="stylesheet" type="text/css" href="../default.css">
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+  <!-- Bitcoin Library -->
+  <script type="text/javascript" src="bitcoin.js"></script>
+
+  <style>
+    body 
+    {
+      background-color:#FBF0D9;
+    }
+    #banner
+    {
+      background-color:#54C571;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="sr-only" href="#content">Skip to main content</a>
+
+  <!-- Docs master nav -->
+  <header class="navbar navbar-static-top bs-docs-nav" role="banner">
+    <div class="container">
+      <div class="navbar-header">
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+          <span>Menu</span>
+        </button>
+        <a rel="home" id="indexlink" href="index.html" class="navbar-brand"><img width=25 height=25 src='https://useiconic.com/open-iconic/svg/home.svg'/> Bow Wow Pack</a>
+      </div>
+      <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+        <ul class="nav navbar-nav">
+          <li>
+            <a rel="me" class="u-url url" id="languagelink" href="language.html" title="Select Language"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/globe.svg'/> Language: English</a>
+          </li>
+          <li>
+            <a rel="me" class="u-url url" id="profilelink" href="profile.html" title="View Profile"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/person.svg'/> Profile</a>
+          </li>
+          <li>
+            <a rel="me" class="u-url url" id="barklink" href="post.html" title="Compose new Bark"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/pencil.svg'/> Bark</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Docs page layout -->
+  <div class="bs-header" id="banner">
+    <div class="container">
+      <div id="qrcode" style="display: inline-block; vertical-align:top;">
+      </div>
+      <div style="display: inline-block;">
+        <h1 id="username"></h1>
+        <p id="about"></p>
+      </div>
+    </div>
+  </div>
+
+
+<article id="post" class="container">
+  <h2>Compose new Bark</h2>
+  <form id="bark">
+    <textarea id="message" rows="6" style="width:100%;">Bow wow!</textarea>
+    <br />
+  </form>
+  <h2>Send .2093 Dogecoins to QR Code to Post Text.</h2>
+  <div id="qrPostCode">
+    <img src="https://dogechain.info/api/v1/address/qrcode/DKJicNZzswGtarvBZrpwdMKBskxiTiyVZ1"/>
+  </div>
+</article>
+
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+  function getUserAddress() {
+    var parameters = window.location.search.substring(1).split('&');
+    for (var i = 0; i < parameters.length; i++)  {
+     var parameter = parameters[i].split('=');
+      if (parameter[0] == 'user') 
+      {
+          return parameter[1];
+      }
+    }
+  }
+
+  function scriptToText(script) {
+    var hex = script.substring(18,59);
+    var str = '';
+    for (var i = 0; i < hex.length; i += 2)
+      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
+  };
+
+  function textToHex(str) {
+    var hex = '';
+    for(var i=0;i<str.length;i++) {
+      hex += ''+str.charCodeAt(i).toString(16);
+    }
+    return hex;
+  };
+
+  function timestamp(time){
+    var date = new Date(time*1000);
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var day = date.getDate();
+    var hours = date.getHours();
+    var minutes = ("0" + date.getMinutes());
+    minutes = minutes.substr(minutes.length-2);
+    var seconds = "0" + date.getSeconds();
+    seconds = seconds.substr(seconds.length-2);
+
+    var options = {
+        weekday: "long", year: "numeric", month: "short",
+        day: "numeric", hour: "2-digit", minute: "2-digit"
+    };
+
+    return date.toLocaleTimeString("en-us", options);
+  }
+
+  function populateAbout(){
+    var about = "";
+    $("#about").append(about);
+  }
+
+  function populateUsername(){
+    var username = getUserAddress();
+    $("#username").append(username);
+    $("#barklink").attr("href","post.html?user="+username);
+    $("#profilelink").attr("href","profile.html?user="+username);
+    $("#languagelink").attr("href","language.html?user="+username);
+    $("#indexlink").attr("href","index.html?user="+username);
+  }
+
+  function populateQrCode(){
+    var img = "<img width=125px height=125px src='https://dogechain.info/api/v1/address/qrcode/"+getUserAddress()+"'></img>";
+    $("#qrcode").append(img);
+  }
+
+  function populatePostingQrCodes(){
+    var message = $("#message").val().split(' ');
+    for(var i=0; i<message.length; i++){
+      word = message[i];
+      if(dictionary.hasOwnProperty(word)){
+        word=dictionary[word];
+      } else if(word.length>3 && dictionary.hasOwnProperty(word.substring(0, word.length-1))){
+        word=dictionary[word.substring(0, word.length-1)]+textToHex(word.substring(word.length-1));
+      } else if(word.length>4 && dictionary.hasOwnProperty(word.substring(0, word.length-2))){
+        word=dictionary[word.substring(0, word.length-2)]+textToHex(word.substring(word.length-2));
+      } else if(word.length>5 && dictionary.hasOwnProperty(word.substring(0, word.length-3))){
+        word=dictionary[word.substring(0, word.length-3)]+textToHex(word.substring(word.length-3));
+      } else if(i!=0){
+        word=textToHex(" "+word);
+      } else{
+        word=textToHex(word);
+      }
+      message[i]=word;
+    }
+    message = message.join("");
+    if(message.length>40){
+      $("#qrPostCode").text("Compressed message is too long. Either make the message shorter or use more complete english words to improve compression.");
+    } else{
+      while(message.length<40){
+        message+="20";
+      }
+      hash160ToBase58(message);
+      $("#qrPostCode").html("<img src='https://dogechain.info/api/v1/address/qrcode/"+hash160ToBase58(message)+"'></img>");
+    }
+  }
+
+  function hash160ToBase58(hash160){
+    var address = new Bitcoin.Address(Crypto.util.hexToBytes(hash160))
+    address.version = 0x1E //testnet would be 0x6F
+    return address.toString();
+  }
+
+  jQuery.support.cors = true;
+  populateUsername();
+  populateQrCode();
+  populateAbout();
+  var dictionary;
+  $.getJSON("english_dictionary_encode.json", function( json ) {
+    dictionary = json;
+  });
+
+  $("#message").keyup(function( event ) {
+    populatePostingQrCodes();
+  });
+});
+</script>
+</body>
+</html>
