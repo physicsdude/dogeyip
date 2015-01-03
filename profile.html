@@ -22,6 +22,11 @@
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
 
+  <!-- Dogecoin Librarys -->
+  <script type="text/javascript" src="js/doge_yip_read.js"></script>
+  <script type="text/javascript" src="js/doge_yip_hash160ToText.js"></script>
+  <script type="text/javascript" src="js/doge_yip_timestamp.js"></script>
+
   <style>
     body 
     {
@@ -93,40 +98,6 @@ jQuery(document).ready(function($) {
     }
   }
 
-  function scriptToText(script) {
-    var hex = script.substring(18,59);
-    var str = '';
-    for (var i = 0; i < hex.length; i += 2){
-      var value = hex.substr(i, 2);
-      if(hex.substr(i,1)=="8" || hex.substr(i,1)=="9"){
-        str+=" "+dictionary[hex.substr(i,4)];
-        i+=2;
-      } else{
-        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-      }
-    }
-    return str;
-  };
-
-  function timestamp(time){
-    var date = new Date(time*1000);
-    var year = date.getFullYear();
-    var month = date.getMonth();
-    var day = date.getDate();
-    var hours = date.getHours();
-    var minutes = ("0" + date.getMinutes());
-    minutes = minutes.substr(minutes.length-2);
-    var seconds = "0" + date.getSeconds();
-    seconds = seconds.substr(seconds.length-2);
-
-    var options = {
-        weekday: "long", year: "numeric", month: "short",
-        day: "numeric", hour: "2-digit", minute: "2-digit"
-    };
-
-    return date.toLocaleTimeString("en-us", options);
-  }
-
   function populateAbout(){
     var about = "";
     $("#about").append(about);
@@ -146,48 +117,16 @@ jQuery(document).ready(function($) {
     $("#qrcode").append(img);
   }
 
-  function createPost(tx){
-    var url = "https://chain.so/api/v2/get_tx_outputs/DOGE/"+tx.txid
-    $.getJSON(url, function( json ) {
-      var post = '<h3>'+timestamp(tx.time)+'</h3><p>';
-      for(var i=0; i<json.data.outputs.length; i++){
-        var output = json.data.outputs[i];
-        if(output.value==.2093){
-          post += scriptToText(output.script);
-        };
-      };
-      post+="</p>"
-      $("#posts").append(post);
-    });
-  }
-
   jQuery.support.cors = true;
   populateUsername();
   populateQrCode();
   populateAbout();
-  var dictionary;
-  $.getJSON("english_dictionary_decode.json", function( json ) {
-    dictionary = json;
-  });
 
   var url = "https://chain.so/api/v2/address/DOGE/"+getUserAddress()
-  $.getJSON(url, function( json ) {
-    for(var i=0; i<json.data.txs.length; i++){
-      var tx = json.data.txs[i];
-      if(tx.outgoing!=null){
-        var is_post = false;
-        for(j=0; j<tx.outgoing.outputs.length; j++){
-          var output = tx.outgoing.outputs[j];
-          if(output.value==.2093){
-            is_post=true;
-          }
-        }
-        if(is_post){
-          var post = createPost(tx);
-          $("#posts").append(post);
-        }
-      }
-    };
+  $.getJSON("english_dictionary_decode.json", function(dictionary) {
+    $.getJSON(url, function( json ) {
+      constructPosts(json, dictionary);
+    });
   });
 });
 </script>
