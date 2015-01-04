@@ -39,7 +39,7 @@ function messageToBase58Check(message, dictionary, dictionaryHex){
       message+="20";
     }
     /*Add the library to use to decode message*/
-    message+=dictionaryHex
+    message=message.substring(0,38)+dictionaryHex;
     return hash160ToBase58Check(message);
   }
 }
