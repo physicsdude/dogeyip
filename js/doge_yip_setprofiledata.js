@@ -46,6 +46,11 @@ function setLinks(address, name){
 
 function setUsername(name){
   $("#username").text(name);
+  $(".username").text(name);
+}
+
+function setAddress(address){
+  $(".address").text(address);
 }
 
 function setAbout(about){
@@ -53,8 +58,10 @@ function setAbout(about){
 }
 
 function setQRCode(address){
-  var img = "<img width=125px height=125px src='https://dogechain.info/api/v1/address/qrcode/"+address+"'></img>";
-  $("#qrcode").append(img);
+  var imgAddress = "https://dogechain.info/api/v1/address/qrcode/"+address;
+  var img = "<img width=125px height=125px src='"+imgAddress+"'></img>";
+  $(".qrlink").attr("href",imgAddress);
+  $(".qrimage").html(img);
 }
 
 function setProfileData(){
@@ -62,6 +69,7 @@ function setProfileData(){
   var name = getUserName();
   var about = "";
   setUsername(name);
+  setAddress(address);
   setLinks(address, name);
   setAbout(about);
   setQRCode(address);
