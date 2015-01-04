@@ -42,6 +42,7 @@ function setLinks(address, name){
   $(".languagelink").attr("href","language.html?name="+name+"&user="+address);
   $(".indexlink").attr("href","index.html?name="+name+"&user="+address);
   $(".setnamelink").attr("href","setname.html?name="+name+"&user="+address);
+  $(".searchlink").attr("href","search.html?name="+name+"&user="+address);
 }
 
 function setUsername(name){

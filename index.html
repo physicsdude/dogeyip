@@ -28,6 +28,7 @@
   <script type="text/javascript" src="js/doge_yip_hash160ToText.js"></script>
   <script type="text/javascript" src="js/doge_yip_timestamp.js"></script>
   <script type="text/javascript" src="js/doge_yip_setprofiledata.js"></script>
+  <script type="text/javascript" src="js/doge_yip_listaccount.js"></script>
 
   <style>
     body 
@@ -59,6 +60,9 @@
             <a rel="me" class="u-url url languagelink" href="language.html" title="Select Language"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/globe.svg'/> Language: English</a>
           </li>
           <li>
+            <a rel="me" class="u-url url searchlink" href="search.html" title="Search"><img width=15 height=15 src='https://useiconic.com/iconic/svg/magnifying-glass.svg'/> Search</a>
+          </li>
+          <li>
             <a rel="me" class="u-url url profilelink" href="profile.html" title="View Profile"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/person.svg'/> Profile</a>
           </li>
           <li>
@@ -88,7 +92,7 @@
     </div>
   </div>
 
-<article id="friends" class="container">
+<article id="results" class="container">
   <div class="container">
     <h2>Recent Users</h2>
   </div>
@@ -96,18 +100,6 @@
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-  function listFriend(friendAddress){
-    var qrcode = "https://dogechain.info/api/v1/address/qrcode/"+friendAddress;
-    var profile = "profile.html?user="+friendAddress;
-    var friend = "<div class='container'>"
-                 + "<a class='profilelink' href='"+profile+"'>"
-                 + "<img style='vertical-align:middle;' width=35px height=35px src='"+qrcode+"'></img>"
-                 + "<span><font class="+friendAddress+" style='font-size: 175%; vertical-align:middle;'>&nbsp;"+friendAddress+"</font></span>"
-                 + "</a>"
-                 + "</div>";
-    $("#friends").append(friend);
-    scrapeTransactionData(friendAddress);
-  }
 
   jQuery.support.cors = true;
   setProfileData();
@@ -117,11 +109,11 @@ jQuery(document).ready(function($) {
     for(var i=0; i<json.data.txs.length; i++){
       var tx = json.data.txs[i];
       if(tx.incoming!=null){
-        var is_friend = tx.incoming.value==15;
-        if(is_friend){
+        var is_registered = tx.incoming.value==15;
+        if(is_registered){
           for(j=0; j<tx.incoming.inputs.length; j++){
-            friendAddress = tx.incoming.inputs[j].address;
-            listFriend(friendAddress);
+            accountAddress = tx.incoming.inputs[j].address;
+            listAccount(accountAddress);
           }
         }
       }

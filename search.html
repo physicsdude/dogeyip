@@ -25,7 +25,11 @@
   <!-- Dogecoin Librarys -->
   <script type="text/javascript" src="js/bitcoin.js"></script>
   <script type="text/javascript" src="js/doge_yip_post.js"></script>
+  <script type="text/javascript" src="js/doge_yip_read.js"></script>
+  <script type="text/javascript" src="js/doge_yip_hash160ToText.js"></script>
+  <script type="text/javascript" src="js/doge_yip_timestamp.js"></script>
   <script type="text/javascript" src="js/doge_yip_setprofiledata.js"></script>
+  <script type="text/javascript" src="js/doge_yip_listaccount.js"></script>
 
   <style>
     body 
@@ -76,58 +80,69 @@
   <!-- Docs page layout -->
   <div class="bs-header" id="banner">
     <div class="container">
-      <div class="qrimage" style="display: inline-block; vertical-align:top;">
-      </div>
+      <div style="display: inline-block; vertical-align:top;">
+        <img width=125px height=125px src="https://dogechain.info/api/v1/address/qrcode/DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q"></img>
+      </div>&nbsp;&nbsp;
       <div style="display: inline-block;">
-        <h2 class="username"></h2>
+        <h2>Doge Yip</h2>
         <p>
-          To follow send 15 DOGE to <a class="qrlink" href="javascript: void(0)"><font class="username"></font></a>
+          A social network built on top of the Dogecoin blockchain.<br/>
+          To join send 15 DOGE to <a href="https://dogechain.info/api/v1/address/qrcode/DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q">Doge Yip</a>
         </p>
       </div>
     </div>
   </div>
 
 <article id="post" class="container">
-  <h2>Compose new Bark</h2>
-  <form id="bark">
-    <textarea id="message" rows="6" style="width:100%;">Bow wow!</textarea>
-    <br />
-  </form>
-  <h2>Make a Dogecoin Transaction with the Below Address to Post Text.</h2>
-  <p>
-    <img id="qrPostCode" src="https://dogechain.info/api/v1/address/qrcode/DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
-  </p>
-  <p>
-    <input id="base58Check" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
-  </p>
+  <div>
+    <h2>Search For Account By Name</h2>
+    <form>
+      <input id="search" type="text" style="width:100%;" value="Doge_Yip"/>
+    </form>
+  </div>
+  <br/>
+  <div id="results">
+    <a href="profile.html?name=Doge_Yip&amp;user=DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q" class="profilelink">
+      <img width="35px" height="35px" src="https://dogechain.info/api/v1/address/qrcode/DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q" style="vertical-align:middle;">
+      <span><font style="font-size: 175%; vertical-align:middle;" class="DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q"> Doge_Yip</font></span>
+    </a>
+  </div>
 </article>
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-  function populatePostingQrCodes(){
-    var message = $("#message").val();
-    var base58Check = messageToBase58Check(message, dictionary, dictionaryHex);
-    if(base58Check==null){
-      $("#qrPostCode").attr("src","https://useiconic.com/iconic/svg/hand.svg");
-      $("#base58Check").val("Compressed message is too long");
-    } else{
-      $("#qrPostCode").attr("src", "https://dogechain.info/api/v1/address/qrcode/"+base58Check);
-      $("#base58Check").val(base58Check)
-    }
-  }
 
   jQuery.support.cors = true;
   setProfileData();
+
   var dictionary;
   var dictionaryHex;
   $.getJSON("english_dictionary_encode.json", function( json ) {
     dictionary = json;
-    dictionaryHex="80"
+    dictionaryHex="9F"
   });
 
-  $("#message").keyup(function( event ) {
-    populatePostingQrCodes();
+  $("#search").keyup(function( event ) {
+    $("#results").html("");
+    var searchTerm = $("#search").val();
+    var base58Check = messageToBase58Check(searchTerm, dictionary, dictionaryHex);
+    listResults(base58Check);
   });
+
+  function listResults(address){
+    var url = "https://chain.so/api/v2/address/DOGE/"+address;
+    $.getJSON(url, function(json) {
+      for(var i=0; i<json.data.txs.length; i++){
+        var tx = json.data.txs[i];
+        if(tx.incoming!=null){
+          for(j=0; j<tx.incoming.inputs.length; j++){
+            accountAddress = tx.incoming.inputs[j].address;
+            listAccount(accountAddress);
+          }
+        }
+      };
+    });
+  }
 });
 </script>
 </body>
