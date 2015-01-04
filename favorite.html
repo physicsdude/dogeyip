@@ -88,7 +88,7 @@
   </div>
 
 <article id="post" class="container">
-  <h2>Send <font id="favoriteamount"></font> DOGE to the below address to favorite this bark.</h2>
+  <h2>Send <font id="favammount"></font> DOGE to the below address to favorite this bark.</h2>
   <p>
     <img id="qrPostCode" src="https://dogechain.info/api/v1/address/qrcode/DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
   </p>
@@ -102,11 +102,11 @@ jQuery(document).ready(function($) {
   jQuery.support.cors = true;
   setProfileData();
 
-  var favoriteAmount=getFavoriteAmount();
-  var favoriteUser=getFavoriteAccount();
-  $("#favoriteamount").text(favoriteAmount);
-  $("#qrPostCode").attr("src", "https://dogechain.info/api/v1/address/qrcode/"+favoriteUser);
-  $("#base58Check").val(favoriteUser);
+  var favammount=getFavoriteAmount();
+  var favaccount=getFavoriteAccount();
+  $("#favammount").text(favammount);
+  $("#qrPostCode").attr("src", "https://dogechain.info/api/v1/address/qrcode/"+favaccount);
+  $("#base58Check").val(favaccount);
 });
 </script>
 </body>
