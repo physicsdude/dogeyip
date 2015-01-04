@@ -40,7 +40,6 @@ function messageToBase58Check(message, dictionary, dictionaryHex){
     }
     /*Add the library to use to decode message*/
     message=message.substring(0,38)+dictionaryHex;
-    console.log("message: "+message)
     return hash160ToBase58Check(message);
   }
 }
