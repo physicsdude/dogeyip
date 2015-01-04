@@ -25,7 +25,7 @@ function createPost(address, tx, hexMessage, dictionary){
              +  '<tr>'
              +   '<td></td>'
              +   '<td>&nbsp;'
-             +    '<a href="favoriteurl">'
+             +    '<a href="'+favoriteurl+'">'
              +     '<img width=15 height=15 src="https://useiconic.com/iconic/svg/thumb.svg"/> 0<i>'
              +    '</a><font color="gray"> - '+timestamp(tx.time)+'</font></i>'
              +   '</td>'
