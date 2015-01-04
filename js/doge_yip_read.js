@@ -10,11 +10,11 @@ function base58CheckTohash160(base58Check){
 }
 
 function createPost(address, tx, hexMessage, dictionary){
-  var favammount = tx.time/100000000;
+  var favamount = tx.time/100000000;
   var favaccount = address;
   var user = getUserAddress();
   var name = getUserName();
-  var favoriteurl = 'favorite.html?user='+user+'&name='+name+'&favaccount='+favaccount+'&favammount='+favammount;
+  var favoriteurl = 'favorite.html?user='+user+'&name='+name+'&favaccount='+favaccount+'&favamount='+favamount;
   var post = '<div style="padding: 10px">'
              + '<table>'
              +  '<tr>'
