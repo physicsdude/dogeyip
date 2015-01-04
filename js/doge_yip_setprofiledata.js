@@ -32,7 +32,7 @@ function getUserName() {
   } else if(address!=null){
     return address;
   } else{
-    return "Doge Yip";
+    return "Doge_Yip";
   }
 }
 
