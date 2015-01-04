@@ -12,10 +12,10 @@ function createPost(tx, hexMessage, dictionary){
   $("#posts").append(post);
 }
 
-function updateName(hexMessage, dictionary){
+function updateName(userAddress, hexMessage, dictionary){
   var username = hash160ToText(hexMessage, dictionary);
   $("#username").text(username);
-  $("."+hexMessage).text(username);
+  $("."+userAddress).text(username);
 }
 
 function isPost(hexToken){
@@ -29,7 +29,8 @@ function isName(hexToken){
   return (hexToken==hexNameToken);
 }
 
-function scrapeTransactionData(url){
+function scrapeTransactionData(userAddress){
+  var url = "https://chain.so/api/v2/address/DOGE/"+userAddress;
   /* Going to need to address the hardcoded dictionary issue soon */
   $.getJSON("english_dictionary_decode.json", function(dictionary) {
     $.getJSON(url, function(json) {
@@ -45,7 +46,7 @@ function scrapeTransactionData(url){
               createPost(tx, hexMessage, dictionary)
             }
             if(isName(hexToken)){
-              updateName(hexMessage, dictionary)
+              updateName(userAddress, hexMessage, dictionary)
             }
           }
         }

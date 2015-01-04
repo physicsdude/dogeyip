@@ -98,7 +98,6 @@
 <script type="text/javascript">
 jQuery(document).ready(function($) {
   function listFriend(friendAddress){
-    var url = "https://chain.so/api/v2/address/DOGE/"+friendAddress;
     var qrcode = "https://dogechain.info/api/v1/address/qrcode/"+friendAddress;
     var profile = "profile.html?user="+friendAddress;
     var friend = "<div class='container'>"
@@ -108,7 +107,7 @@ jQuery(document).ready(function($) {
                  + "</a>"
                  + "</div>";
     $("#friends").append(friend);
-    scrapeTransactionData(url);
+    scrapeTransactionData(friendAddress);
   }
 
   jQuery.support.cors = true;

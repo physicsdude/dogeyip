@@ -94,9 +94,7 @@
 jQuery(document).ready(function($) {
   jQuery.support.cors = true;
   setProfileData();
-
-  var url = "https://chain.so/api/v2/address/DOGE/"+getUserAddress()
-  scrapeTransactionData(url);
+  scrapeTransactionData(getUserAddress());
 });
 </script>
 </body>
