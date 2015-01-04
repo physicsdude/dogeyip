@@ -23,6 +23,10 @@
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
 
   <!-- Dogecoin Librarys -->
+  <script type="text/javascript" src="js/bitcoin.js"></script>
+  <script type="text/javascript" src="js/doge_yip_read.js"></script>
+  <script type="text/javascript" src="js/doge_yip_hash160ToText.js"></script>
+  <script type="text/javascript" src="js/doge_yip_timestamp.js"></script>
   <script type="text/javascript" src="js/doge_yip_setprofiledata.js"></script>
 
   <style>
@@ -100,10 +104,11 @@ jQuery(document).ready(function($) {
     var friend = "<div class='container'>"
                  + "<a href='"+profile+"'>"
                  + "<img style='vertical-align:middle;' width=35px height=35px src='"+qrcode+"'></img>"
-                 + "<span><font style='font-size: 175%; vertical-align:middle;'>&nbsp;"+friendAddress+"</font></span>"
+                 + "<span><font class="+friendAddress+" style='font-size: 175%; vertical-align:middle;'>&nbsp;"+friendAddress+"</font></span>"
                  + "</a>"
                  + "</div>";
     $("#friends").append(friend);
+    scrapeTransactionData(url);
   }
 
   jQuery.support.cors = true;

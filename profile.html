@@ -96,11 +96,7 @@ jQuery(document).ready(function($) {
   setProfileData();
 
   var url = "https://chain.so/api/v2/address/DOGE/"+getUserAddress()
-  $.getJSON("english_dictionary_decode.json", function(dictionary) {
-    $.getJSON(url, function( json ) {
-      constructPosts(json, dictionary);
-    });
-  });
+  scrapeTransactionData(url);
 });
 </script>
 </body>

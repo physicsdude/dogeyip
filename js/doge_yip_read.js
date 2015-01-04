@@ -15,6 +15,7 @@ function createPost(tx, hexMessage, dictionary){
 function updateName(hexMessage, dictionary){
   var username = hash160ToText(hexMessage, dictionary);
   $("#username").text(username);
+  $("."+hexMessage).text(username);
 }
 
 function isPost(hexToken){
@@ -28,22 +29,27 @@ function isName(hexToken){
   return (hexToken==hexNameToken);
 }
 
-function constructPosts(json, dictionary){
-  for(var i=0; i<json.data.txs.length; i++){
-    var tx = json.data.txs[i];
-    if(tx.outgoing!=null){
-      for(j=0; j<tx.outgoing.outputs.length; j++){
-        var output = tx.outgoing.outputs[j];
-        var hash160 = base58CheckTohash160(output.address);
-        var hexMessage = hash160.substring(0,38);
-        var hexToken = parseInt(hash160.substring(38,40), 16);
-        if(isPost(hexToken)){
-          createPost(tx, hexMessage, dictionary)
+function scrapeTransactionData(url){
+  /* Going to need to address the hardcoded dictionary issue soon */
+  $.getJSON("english_dictionary_decode.json", function(dictionary) {
+    $.getJSON(url, function(json) {
+      for(var i=0; i<json.data.txs.length; i++){
+        var tx = json.data.txs[i];
+        if(tx.outgoing!=null){
+          for(j=0; j<tx.outgoing.outputs.length; j++){
+            var output = tx.outgoing.outputs[j];
+            var hash160 = base58CheckTohash160(output.address);
+            var hexMessage = hash160.substring(0,38);
+            var hexToken = parseInt(hash160.substring(38,40), 16);
+            if(isPost(hexToken)){
+              createPost(tx, hexMessage, dictionary)
+            }
+            if(isName(hexToken)){
+              updateName(hexMessage, dictionary)
+            }
+          }
         }
-        if(isName(hexToken)){
-          updateName(hexMessage, dictionary)
-        }
-      }
-    }
-  };
+      };
+    });
+  });
 }
