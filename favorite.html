@@ -104,7 +104,7 @@ jQuery(document).ready(function($) {
 
   var favamount=getFavoriteAmount();
   var favaccount=getFavoriteAccount();
-  $("#favamount").text(favammount);
+  $("#favamount").text(favamount);
   $("#qrPostCode").attr("src", "https://dogechain.info/api/v1/address/qrcode/"+favaccount);
   $("#base58Check").val(favaccount);
 });
