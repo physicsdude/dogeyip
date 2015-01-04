@@ -101,7 +101,7 @@ function createFavorite(favamount, favaccount, address, tx, hexMessage, dictiona
 }
 
 function createTip(tipaddress, address, tx){
-  var tipname = tipaccount;
+  var tipname = tipaddress;
   var user = getUserAddress();
   var name = getUserName();
   var url = "https://chain.so/api/v2/address/DOGE/"+tipaccount;
