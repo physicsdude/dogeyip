@@ -100,6 +100,47 @@ function createFavorite(favamount, favaccount, address, tx, hexMessage, dictiona
   });
 }
 
+function createTip(tipaddress, address, tx, hexMessage, dictionary){
+  var tipname = tipaccount;
+  var user = getUserAddress();
+  var name = getUserName();
+  var url = "https://chain.so/api/v2/address/DOGE/"+tipaccount;
+  var user = getUserAddress();
+  var name = getUserName();
+  var post = '<div id="'+tx.time+'" style="padding: 10px">'
+             + '<table>'
+             +  '<tr>'
+             +   '<td><img width=20 height=20 src="https://dogechain.info/api/v1/address/qrcode/"'+tipaddress+'/></td>'
+             +   '<td>&nbsp;<font class="'+tipaddress+'">'+tipaddress+'</font></td>'
+             +  '</tr>'
+             +  '<tr><td></td><td>&nbsp;'+address+" tipped "+tipaddress+'</td></tr>'
+             +  '<tr>'
+             +   '<td></td>'
+             +   '<td>&nbsp;'
+             +    '<img width=15 height=15 src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D"/>'
+             +    '<i><font color="gray"> &bull; '+timestamp(tx.time)+'</font></i>'
+             +   '</td>'
+             +  '</tr>'
+             + "</table></div>";
+  var innerDiv = null;
+  $('#posts').find('div').each(function(){
+    var innerDivId = $(this).attr('id');
+    if(innerDivId>tx.time && (innerDiv==null || innerDiv.attr('id')>innerDivId)){
+      innerDiv=$(this);
+    }
+  });
+  if(innerDiv==null){
+    $("#posts").prepend(post);
+  } else{
+    innerDiv.after(post);
+  }
+  
+}
+
+function isTip(output){
+  return 15==output.value;
+}
+
 function isFavorite(tx, output){
   var amount = output.value
   var time = tx.time/100000000;
@@ -140,6 +181,9 @@ function scrapeTransactionData(userAddress){
             }
             if(isFavorite(tx, output)){
               createFavorite(output.value, output.address, userName, tx, hexMessage, dictionary);
+            }
+            if(isTip(output)){
+              createTip(tipaddress, address, tx, hexMessage, dictionary);
             }
           }
         }
