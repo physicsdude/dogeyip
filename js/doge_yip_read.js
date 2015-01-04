@@ -13,9 +13,10 @@ function createPost(tx, hexMessage, dictionary){
 }
 
 function updateName(address, hexMessage, dictionary){
-  var username = hash160ToText(hexMessage, dictionary);
+  var username = hash160ToText(hexMessage, dictionary).trim();
   setUsername(username);
   setLinks(address, " "+username);
+  $("."+address).text(username);
 }
 
 function isPost(hexToken){
