@@ -100,7 +100,7 @@ function createFavorite(favamount, favaccount, address, tx, hexMessage, dictiona
   });
 }
 
-function createTip(tipaddress, address, tx, hexMessage, dictionary){
+function createTip(tipaddress, address, tx){
   var tipname = tipaccount;
   var user = getUserAddress();
   var name = getUserName();
@@ -180,10 +180,10 @@ function scrapeTransactionData(userAddress){
               userName = hash160ToText(hexMessage, dictionary).trim();
             }
             if(isFavorite(tx, output)){
-              createFavorite(output.value, output.address, userName, tx, hexMessage, dictionary);
+              createFavorite(output.value, output.address, userAddress, tx, hexMessage, dictionary);
             }
             if(isTip(output)){
-              createTip(output.address, address, tx, hexMessage, dictionary);
+              createTip(output.address, userAddress, tx);
             }
           }
         }
