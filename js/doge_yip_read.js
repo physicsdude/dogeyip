@@ -43,6 +43,11 @@ function scrapeTransactionData(userAddress){
             var hash160 = base58CheckTohash160(output.address);
             var hexMessage = hash160.substring(0,38);
             var hexToken = parseInt(hash160.substring(38,40), 16);
+            if(output.address=="DJiCoYsdreqCR9oG1FVDavWMyA1b6QbPRU"){
+              console.log("hash160: "+hash160);
+              console.log("hexMessage: "+hexMessage);
+              console.log("hexToken: "+hexToken);
+            }
             if(isPost(hexToken)){
               createPost(tx, hexMessage, dictionary)
             }
