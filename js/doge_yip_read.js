@@ -110,7 +110,7 @@ function createTip(tipaddress, address, tx){
   var post = '<div id="'+tx.time+'" style="padding: 10px">'
              + '<table>'
              +  '<tr>'
-             +   '<td><img width=20 height=20 src="https://dogechain.info/api/v1/address/qrcode/"'+tipaddress+'/></td>'
+             +   '<td><img width=20 height=20 src="https://dogechain.info/api/v1/address/qrcode/'+tipaddress+'/></td>'
              +   '<td>&nbsp;<font class="'+tipaddress+'">'+tipaddress+'</font></td>'
              +  '</tr>'
              +  '<tr><td></td><td>&nbsp;'+address+" tipped "+tipaddress+'</td></tr>'
