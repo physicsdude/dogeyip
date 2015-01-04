@@ -36,19 +36,33 @@ function getUserName() {
   }
 }
 
-function setProfileData(){
-  var address = getUserAddress();
-  var name = getUserName();
-  $("#username").text(name);
+function setLinks(address, name){
   $(".barklink").attr("href","post.html?name="+name+"&user="+address);
   $(".profilelink").attr("href","profile.html?name="+name+"&user="+address);
   $(".languagelink").attr("href","language.html?name="+name+"&user="+address);
   $(".indexlink").attr("href","index.html?name="+name+"&user="+address);
   $(".setnamelink").attr("href","setname.html?name="+name+"&user="+address);
+}
 
-  var about = "";
+function setUsername(name){
+  $("#username").text(name);
+}
+
+function setAbout(about){
   $("#about").append(about);
+}
 
+function setQRCode(address){
   var img = "<img width=125px height=125px src='https://dogechain.info/api/v1/address/qrcode/"+address+"'></img>";
   $("#qrcode").append(img);
+}
+
+function setProfileData(){
+  var address = getUserAddress();
+  var name = getUserName();
+  var about = "";
+  setUsername(name);
+  setLinks(address, name);
+  setAbout(about);
+  setQRCode(address);
 }
