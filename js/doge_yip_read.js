@@ -2,7 +2,9 @@ function base58CheckTohash160(base58Check){
   var hash160 = Bitcoin.Base58.decode(base58Check);
   var hexString = "";
   for(var i=0; i<hash160.length; i++){
-    hexString+=hash160[i].toString(16);
+    var hex = "0"+hash160[i].toString(16);
+    hex = hex.substring(hex.length-2,hex.length);
+    hexString+=hex;
   }
   return hexString.substring(2,42);
 }
