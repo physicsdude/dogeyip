@@ -12,10 +12,20 @@ function createPost(tx, hexMessage, dictionary){
   $("#posts").append(post);
 }
 
-function isPost(hexLibrary){
-  var start = parseInt("80",16);
-  var end = parseInt("9F",16);
-  return (hexLibrary>=start && hexLibrary<=end);
+function updateName(hexMessage, dictionary){
+  var username = hash160ToText(hexMessage, dictionary);
+  $("#username").text(username);
+}
+
+function isPost(hexToken){
+  var startHexLibraryTokenRange = parseInt("80",16);
+  var endHexLibraryTokenRange = parseInt("9E",16);
+  return (hexToken>=startHexLibraryTokenRange && hexToken<=endHexLibraryTokenRange);
+}
+
+function isName(hexToken){
+  var hexNameToken = parseInt("9F",16);
+  return (hexToken==hexNameToken);
 }
 
 function constructPosts(json, dictionary){
@@ -26,9 +36,12 @@ function constructPosts(json, dictionary){
         var output = tx.outgoing.outputs[j];
         var hash160 = base58CheckTohash160(output.address);
         var hexMessage = hash160.substring(0,38);
-        var hexLibrary = parseInt(hash160.substring(38,40), 16);
-        if(isPost(hexLibrary)){
+        var hexToken = parseInt(hash160.substring(38,40), 16);
+        if(isPost(hexToken)){
           createPost(tx, hexMessage, dictionary)
+        }
+        if(isName(hexToken)){
+          updateName(hexMessage, dictionary)
         }
       }
     }

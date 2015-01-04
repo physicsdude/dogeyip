@@ -22,6 +22,9 @@
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
 
+  <!-- Dogecoin Librarys -->
+  <script type="text/javascript" src="js/doge_yip_setprofiledata.js"></script>
+
   <style>
     body 
     {
@@ -55,7 +58,10 @@
             <a rel="me" class="u-url url" id="profilelink" href="profile.html" title="View Profile"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/person.svg'/> Profile</a>
           </li>
           <li>
-            <a rel="me" class="u-url url" id="barklink" href="post.html" title="Compose new Bark"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/pencil.svg'/> Bark</a>
+            <a rel="me" class="u-url url" id="setnamelink" href="setname.html" title="Set Name"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/pencil.svg'/> Set Name</a>
+          </li>
+          <li>
+            <a rel="me" class="u-url url" id="barklink" href="post.html" title="Compose new Bark"><img width=15 height=15 src='https://useiconic.com/iconic/svg/comment-square.svg'/> Bark</a>
           </li>
         </ul>
       </nav>
@@ -65,7 +71,7 @@
   <!-- Docs page layout -->
   <div class="bs-header" id="banner">
     <div class="container">
-      <div id="qrcode" style="display: inline-block; vertical-align:top;">
+      <div style="display: inline-block; vertical-align:top;">
         <img width=125px height=125px src="https://dogechain.info/api/v1/address/qrcode/DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q"></img>
       </div>&nbsp;&nbsp;
       <div style="display: inline-block;">
@@ -86,43 +92,8 @@
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-  function getUserAddress() {
-    var parameters = window.location.search.substring(1).split('&');
-    for (var i = 0; i < parameters.length; i++)  {
-     var parameter = parameters[i].split('=');
-      if (parameter[0] == 'user') 
-      {
-          return parameter[1];
-      }
-    }
-  }
-
-  function scriptToText(script) {
-    var hex = script.substring(18,59);
-    var str = '';
-    for (var i = 0; i < hex.length; i += 2){
-      var value = hex.substr(i, 2);
-      if(hex.substr(i,1)=="8" || hex.substr(i,1)=="9"){
-        str+=" "+dictionary[hex.substr(i,4)];
-        i+=2;
-      } else{
-        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-      }
-    }
-    return str;
-  };
-
-  function populateUsername(){
-    var username = getUserAddress();
-    $("#username").append(username);
-    $("#barklink").attr("href","post.html?user="+username);
-    $("#profilelink").attr("href","profile.html?user="+username);
-    $("#languagelink").attr("href","language.html?user="+username);
-    $("#indexlink").attr("href","index.html?user="+username);
-  }
-
   jQuery.support.cors = true;
-  populateUsername();
+  setProfileData();
 });
 </script>
 

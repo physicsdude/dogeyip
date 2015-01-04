@@ -84,12 +84,12 @@
 
 
 <article id="post" class="container">
-  <h2>Compose new Bark</h2>
+  <h2>Set Name</h2>
   <form id="bark">
-    <textarea id="message" rows="6" style="width:100%;">Bow wow!</textarea>
-    <br />
+    <input id="message" type="text" style="width:100%;" value="Doge_Yip"/>
   </form>
-  <h2>Make a Dogecoin Transaction with the Below Address to Post Text.</h2>
+  <br/>
+  <h2>Make a Dogecoin Transaction with the Below Address to Set Your Name.</h2>
   <p>
     <img id="qrPostCode" src="https://dogechain.info/api/v1/address/qrcode/DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
   </p>
@@ -118,7 +118,7 @@ jQuery(document).ready(function($) {
   var dictionaryHex;
   $.getJSON("english_dictionary_encode.json", function( json ) {
     dictionary = json;
-    dictionaryHex="80"
+    dictionaryHex="9F"
   });
 
   $("#message").keyup(function( event ) {
