@@ -12,7 +12,7 @@ function createPost(tx, hexMessage, dictionary){
   $("#posts").append(post);
 }
 
-function updateName(userAddress, hexMessage, dictionary){
+function updateName(address, hexMessage, dictionary){
   var username = hash160ToText(hexMessage, dictionary);
   setUsername(username);
   setLinks(address, " "+username);
