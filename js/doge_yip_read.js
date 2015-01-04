@@ -104,7 +104,7 @@ function createTip(tipaddress, address, tx){
   var tipname = tipaddress;
   var user = getUserAddress();
   var name = getUserName();
-  var url = "https://chain.so/api/v2/address/DOGE/"+tipaccount;
+  var url = "https://chain.so/api/v2/address/DOGE/"+tipaddress;
   var user = getUserAddress();
   var name = getUserName();
   var post = '<div id="'+tx.time+'" style="padding: 10px">'
