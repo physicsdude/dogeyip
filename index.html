@@ -106,6 +106,7 @@ jQuery(document).ready(function($) {
 
   var url = "https://chain.so/api/v2/address/DOGE/DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q"
   $.getJSON(url, function( json ) {
+    listAccount("DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q");
     for(var i=0; i<json.data.txs.length; i++){
       var tx = json.data.txs[i];
       if(tx.incoming!=null){
