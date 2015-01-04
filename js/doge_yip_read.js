@@ -183,7 +183,7 @@ function scrapeTransactionData(userAddress){
               createFavorite(output.value, output.address, userName, tx, hexMessage, dictionary);
             }
             if(isTip(output)){
-              createTip(tipaddress, address, tx, hexMessage, dictionary);
+              createTip(output.address, address, tx, hexMessage, dictionary);
             }
           }
         }
