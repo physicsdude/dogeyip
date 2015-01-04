@@ -15,7 +15,7 @@ function createPost(tx, hexMessage, dictionary){
 function updateName(userAddress, hexMessage, dictionary){
   var username = hash160ToText(hexMessage, dictionary);
   $("#username").text(username);
-  $("."+userAddress).text(username);
+  $("."+userAddress).text("&nbsp;"+username);
 }
 
 function isPost(hexToken){
