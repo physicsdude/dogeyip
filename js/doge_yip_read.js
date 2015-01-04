@@ -9,16 +9,25 @@ function base58CheckTohash160(base58Check){
   return hexString.substring(2,42);
 }
 
-function createPost(tx, hexMessage, dictionary){
-  var post = '<h3>'+timestamp(tx.time)+'</h3><p>'+hash160ToText(hexMessage, dictionary)+"</p>";
+function createPost(address, tx, hexMessage, dictionary){
+  var favorite = 'Send '+tx.time/100000000+' DOGE to '+address+' to favorite post.';
+  var post = '<div style="padding: 10px">'
+             + '<table>'
+             +  '<tr>'
+             +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/comment-square.svg"/></td>'
+             +   '<td>&nbsp;<font class="'+address+'">'+address+'</font></td>'
+             +  '</tr>'
+             +  '<tr><td></td><td>&nbsp;'+hash160ToText(hexMessage, dictionary)+'</td></tr>'
+             +  '<tr>'
+             +   '<td></td>'
+             +   '<td>&nbsp;'
+             +    '<a class="favoritelink" href="javascript: void(0)" onclick="alert(\''+favorite+'\')">'
+             +     '<img width=15 height=15 src="https://useiconic.com/iconic/svg/thumb.svg"/> 0<i>'
+             +    '</a><font color="gray"> - '+timestamp(tx.time)+'</font></i>'
+             +   '</td>'
+             +  '</tr>'
+             + "</table></div>";
   $("#posts").append(post);
-}
-
-function updateName(address, hexMessage, dictionary){
-  var username = hash160ToText(hexMessage, dictionary).trim();
-  setUsername(username);
-  setLinks(address,username);
-  $("."+address).text(" "+username);
 }
 
 function isPost(hexToken){
@@ -37,6 +46,8 @@ function scrapeTransactionData(userAddress){
   /* Going to need to address the hardcoded dictionary issue soon */
   $.getJSON("english_dictionary_decode.json", function(dictionary) {
     $.getJSON(url, function(json) {
+      var userName = userAddress;
+
       for(var i=0; i<json.data.txs.length; i++){
         var tx = json.data.txs[i];
         if(tx.outgoing!=null){
@@ -46,14 +57,18 @@ function scrapeTransactionData(userAddress){
             var hexMessage = hash160.substring(0,38);
             var hexToken = parseInt(hash160.substring(38,40), 16);
             if(isPost(hexToken)){
-              createPost(tx, hexMessage, dictionary)
+              createPost(userName, tx, hexMessage, dictionary)
             }
             if(isName(hexToken)){
-              updateName(userAddress, hexMessage, dictionary)
+              userName = hash160ToText(hexMessage, dictionary).trim();
             }
           }
         }
       };
+
+      setUsername(userName);
+      setLinks(userAddress,userName);
+      $("."+userAddress).text(" "+userName);
     });
   });
 }
