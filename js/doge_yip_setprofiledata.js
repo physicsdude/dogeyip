@@ -36,6 +36,26 @@ function getUserName() {
   }
 }
 
+function getFavoriteAmount() {
+  var parameters = window.location.search.substring(1).split('&');
+  for (var i = 0; i < parameters.length; i++)  {
+   var parameter = parameters[i].split('=');
+    if (parameter[0] == 'favamount') {
+        return parameter[1];
+    }
+  }
+}
+
+function getFavoriteAccount() {
+  var parameters = window.location.search.substring(1).split('&');
+  for (var i = 0; i < parameters.length; i++)  {
+   var parameter = parameters[i].split('=');
+    if (parameter[0] == 'favaccount') {
+        return parameter[1];
+    }
+  }
+}
+
 function setLinks(address, name){
   $(".barklink").attr("href","post.html?name="+name+"&user="+address);
   $(".profilelink").attr("href","profile.html?name="+name+"&user="+address);

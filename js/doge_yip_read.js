@@ -10,7 +10,11 @@ function base58CheckTohash160(base58Check){
 }
 
 function createPost(address, tx, hexMessage, dictionary){
-  var favorite = 'Send '+tx.time/100000000+' DOGE to '+address+' to favorite post.';
+  var favammount = tx.time/100000000;
+  var favaccount = address;
+  var user = getUserAddress();
+  var name = getUserName();
+  var favoriteurl = 'favorite.html?user='+user+'&name='+name+'&favaccount='+favaccount+'&favammount='+favammount;
   var post = '<div style="padding: 10px">'
              + '<table>'
              +  '<tr>'
@@ -21,7 +25,7 @@ function createPost(address, tx, hexMessage, dictionary){
              +  '<tr>'
              +   '<td></td>'
              +   '<td>&nbsp;'
-             +    '<a class="favoritelink" href="javascript: void(0)" onclick="alert(\''+favorite+'\')">'
+             +    '<a href="favoriteurl">'
              +     '<img width=15 height=15 src="https://useiconic.com/iconic/svg/thumb.svg"/> 0<i>'
              +    '</a><font color="gray"> - '+timestamp(tx.time)+'</font></i>'
              +   '</td>'
