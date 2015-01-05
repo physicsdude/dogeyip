@@ -9,6 +9,63 @@ function base58CheckTohash160(base58Check){
   return hexString.substring(2,42);
 }
 
+function createNotification(toAddress, fromAddress, txs, notificationAmount, dictionary){
+  for(var i=0; i<txs.length; i++){
+    var tx = txs[i];
+    if(tx.outgoing!=null){
+      for(j=0; j<tx.outgoing.outputs.length; j++){
+        var output = tx.outgoing.outputs[j];
+        if(tx.time/100000000==notificationAmount){
+          var hash160 = base58CheckTohash160(output.address);
+          var hexMessage = hash160.substring(0,38);
+          var hexToken = parseInt(hash160.substring(38,40), 16);
+          if(isPost(hexToken)){
+            var user = getUserAddress();
+            var favoriteurl = 'favorite.html?user='+user+'&favaccount='+toAddress+'&favamount='+notificationAmount;
+            var notification = '<div style="padding: 10px">'
+                       + '<table>'
+                       +  '<tr>'
+                       +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/star.svg"/></td>'
+                       +   '<td>&nbsp;<a href="profile.html?user='+fromAddress+'"><font class="'+fromAddress+'">'+fromAddress+'</font></a> favorited <font class="'+toAddress+'">'+toAddress+"</font>'s Bark.</td>"
+                       +  '</tr>'
+                       +  '<tr><td></td><td>&nbsp;'+hash160ToText(hexMessage, dictionary)+'</td></tr>'
+                       +  '<tr>'
+                       +   '<td></td>'
+                       +   '<td>&nbsp;'
+                       +    '<a href="'+favoriteurl+'">'
+                       +     '<img width=15 height=15 src="https://useiconic.com/iconic/svg/thumb.svg"/>'
+                       +    '</a><i><font color="gray"> &bull; '+timestamp(tx.time)+'</font></i>'
+                       +   '</td>'
+                       +  '</tr>'
+                       + "</table></div>";
+            $("#notifications").append(notification);
+
+            var url = "https://chain.so/api/v2/address/DOGE/"+fromAddress;
+            $.getJSON(url, function(json) {
+              var favname = fromAddress;
+              for(var i=0; i<json.data.txs.length; i++){
+                var tx = json.data.txs[i];
+                if(tx.outgoing!=null){
+                  for(j=0; j<tx.outgoing.outputs.length; j++){
+                    var output = tx.outgoing.outputs[j];
+                    var hash160 = base58CheckTohash160(output.address);
+                    var hexMessage = hash160.substring(0,38);
+                    var hexToken = parseInt(hash160.substring(38,40), 16);
+                    if(isName(hexToken)){
+                      favname = hash160ToText(hexMessage, dictionary).trim();
+                    }
+                  }
+                }
+              };
+              $("."+fromAddress).text(" "+favname);
+            });
+          }
+        }
+      }
+    }
+  }
+}
+
 function createPost(address, tx, hexMessage, dictionary){
   var favamount = tx.time/100000000;
   var favaccount = address;
@@ -133,11 +190,16 @@ function createTip(tipaddress, address, tx){
   } else{
     innerDiv.after(post);
   }
-  
 }
 
 function isTip(output){
   return 15==output.value;
+}
+
+function isNotification(tx){
+  var amount = tx.incoming.value
+  var time = tx.time/100000000;
+  return (tx.incoming.inputs!=null && amount>time-1 && amount<time+1);
 }
 
 function isFavorite(tx, output){
@@ -186,8 +248,15 @@ function scrapeTransactionData(userAddress){
             }
           }
         }
-      };
+        if(tx.incoming!=null && isNotification(tx)){
+          var amount = tx.incoming.value;
+          var input = tx.incoming.inputs[0];
+          createNotification(userAddress, input.address, json.data.txs, amount, dictionary);
 
+
+
+        }
+      };
       setUsername(userName);
       setLinks(userAddress,userName);
       $("."+userAddress).text(" "+userName);
