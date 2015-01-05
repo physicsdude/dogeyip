@@ -9,6 +9,44 @@ function base58CheckTohash160(base58Check){
   return hexString.substring(2,42);
 }
 
+function createTipNotification(toAddress, fromAddress, tx, dictionary){
+  var notification = '<div id="'+tx.time+'" style="padding: 10px">'
+             + '<table>'
+             +  '<tr>'
+             +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/bitcoin-address.svg"/></td>'
+             +   '<td>&nbsp;<a href="profile.html?user='+fromAddress+'"><font class="'+fromAddress+'">'+fromAddress+'</font></a> tipped <font class="'+toAddress+'">'+toAddress+"</font></td>"
+             +  '</tr>'
+             +  '<tr>'
+             +   '<td></td>'
+             +   '<td>&nbsp;'
+             +    '<img width=15 height=15 src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D"/>'
+             +    '<i><font color="gray"> &bull; '+timestamp(tx.time)+'</font></i>'
+             +   '</td>'
+             +  '</tr>'
+             + "</table></div>";
+  $("#notifications").append(notification);
+
+  var url = "https://chain.so/api/v2/address/DOGE/"+fromAddress;
+  $.getJSON(url, function(json) {
+    var favname = fromAddress;
+    for(var i=0; i<json.data.txs.length; i++){
+      var tx = json.data.txs[i];
+      if(tx.outgoing!=null){
+        for(j=0; j<tx.outgoing.outputs.length; j++){
+          var output = tx.outgoing.outputs[j];
+          var hash160 = base58CheckTohash160(output.address);
+          var hexMessage = hash160.substring(0,38);
+          var hexToken = parseInt(hash160.substring(38,40), 16);
+          if(isName(hexToken)){
+            favname = hash160ToText(hexMessage, dictionary).trim();
+          }
+        }
+      }
+    };
+    $("."+fromAddress).text(" "+favname);
+  });
+}
+
 function createNotification(toAddress, fromAddress, txs, notificationAmount, dictionary){
   for(var i=0; i<txs.length; i++){
     var tx = txs[i];
@@ -202,6 +240,12 @@ function isNotification(tx){
   return (tx.incoming.inputs!=null && amount>time-1 && amount<time+1);
 }
 
+function isTipNotification(tx){
+  var amount = tx.incoming.value
+  var time = tx.time/100000000;
+  return (tx.incoming.inputs!=null && amount==15);
+}
+
 function isFavorite(tx, output){
   var amount = output.value
   var time = tx.time/100000000;
@@ -252,9 +296,9 @@ function scrapeTransactionData(userAddress){
           var amount = tx.incoming.value;
           var input = tx.incoming.inputs[0];
           createNotification(userAddress, input.address, json.data.txs, amount, dictionary);
-
-
-
+        }
+        if(tx.incoming!=null && isTipNotification(tx)){
+          createTipNotification(userAddress, input.address, tx, dictionary);
         }
       };
       setUsername(userName);
