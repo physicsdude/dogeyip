@@ -24,6 +24,9 @@
 
   <!-- Dogecoin Librarys -->
   <script type="text/javascript" src="js/bitcoin.js"></script>
+  <script type="text/javascript" src="js/doge_yip_read.js"></script>
+  <script type="text/javascript" src="js/doge_yip_hash160ToText.js"></script>
+  <script type="text/javascript" src="js/doge_yip_timestamp.js"></script>
   <script type="text/javascript" src="js/doge_yip_post.js"></script>
   <script type="text/javascript" src="js/doge_yip_setprofiledata.js"></script>
 
@@ -54,19 +57,16 @@
       <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
         <ul class="nav navbar-nav">
           <li>
-            <a rel="me" class="u-url url languagelink" href="language.html" title="Select Language"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/globe.svg'/> Language: English</a>
+            <a rel="me" class="u-url url" href="language.html" title="Select Language"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/globe.svg'/> Language: English</a>
           </li>
           <li>
-            <a rel="me" class="u-url url searchlink" href="search.html" title="Search"><img width=15 height=15 src='https://useiconic.com/iconic/svg/magnifying-glass.svg'/> Search</a>
+            <a rel="me" class="u-url url" href="search.html" title="Search"><img width=15 height=15 src='https://useiconic.com/iconic/svg/magnifying-glass.svg'/> Search</a>
           </li>
           <li>
-            <a rel="me" class="u-url url profilelink" href="profile.html" title="View Profile"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/person.svg'/> Profile</a>
+            <a rel="me" class="u-url url" href="setname.html" title="Set Name"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/pencil.svg'/> Set Name</a>
           </li>
           <li>
-            <a rel="me" class="u-url url setnamelink" href="setname.html" title="Set Name"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/pencil.svg'/> Set Name</a>
-          </li>
-          <li>
-            <a rel="me" class="u-url url barklink" href="post.html" title="Compose new Bark"><img width=15 height=15 src='https://useiconic.com/iconic/svg/comment-square.svg'/> Bark</a>
+            <a rel="me" class="u-url url" href="post.html" title="Compose new Bark"><img width=15 height=15 src='https://useiconic.com/iconic/svg/comment-square.svg'/> Bark</a>
           </li>
         </ul>
       </nav>
@@ -101,6 +101,7 @@
 jQuery(document).ready(function($) {
   jQuery.support.cors = true;
   setProfileData();
+  scrapeTransactionData(getUserAddress());
 
   var favamount=getFavoriteAmount();
   var favaccount=getFavoriteAccount();

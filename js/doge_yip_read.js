@@ -13,8 +13,7 @@ function createPost(address, tx, hexMessage, dictionary){
   var favamount = tx.time/100000000;
   var favaccount = address;
   var user = getUserAddress();
-  var name = getUserName();
-  var favoriteurl = 'favorite.html?user='+user+'&name='+name+'&favaccount='+favaccount+'&favamount='+favamount;
+  var favoriteurl = 'favorite.html?user='+user+'&favaccount='+favaccount+'&favamount='+favamount;
   var post = '<div id="'+tx.time+'" style="padding: 10px">'
              + '<table>'
              +  '<tr>'
@@ -50,7 +49,7 @@ function createFavorite(favamount, favaccount, address, tx, hexMessage, dictiona
   var user = getUserAddress();
   var name = getUserName();
   var url = "https://chain.so/api/v2/address/DOGE/"+favaccount;
-  var favoriteurl = 'favorite.html?user='+favaccount+'&name='+favaccount+'&favaccount='+favaccount+'&favamount='+favamount;
+  var favoriteurl = 'favorite.html?user='+favaccount+'&favaccount='+favaccount+'&favamount='+favamount;
   $.getJSON(url, function(json) {
     for(var i=0; i<json.data.txs.length; i++){
       var tx = json.data.txs[i];
@@ -174,7 +173,7 @@ function scrapeTransactionData(userAddress){
             var hexMessage = hash160.substring(0,38);
             var hexToken = parseInt(hash160.substring(38,40), 16);
             if(isPost(hexToken)){
-              createPost(userName, tx, hexMessage, dictionary);
+              createPost(userAddress, tx, hexMessage, dictionary);
             }
             if(isName(hexToken)){
               userName = hash160ToText(hexMessage, dictionary).trim();

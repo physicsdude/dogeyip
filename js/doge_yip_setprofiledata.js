@@ -1,16 +1,10 @@
 function getUserAddress() {
-  var address = null;
   var parameters = window.location.search.substring(1).split('&');
   for (var i = 0; i < parameters.length; i++)  {
    var parameter = parameters[i].split('=');
     if (parameter[0] == 'user') {
-        address = parameter[1];
+        return parameter[1];
     }
-  }
-  if(address!=null){
-    return address;
-  } else{
-    return "DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q";
   }
 }
 
@@ -23,16 +17,14 @@ function getUserName() {
     if (parameter[0] == 'name') {
         name = parameter[1];
     }
-    if (parameter[0] == 'name') {
+    if (parameter[0] == 'user') {
         address = parameter[1];
     }
   }
   if(name!=null){
     return name;
-  } else if(address!=null){
-    return address;
   } else{
-    return "Doge_Yip";
+    return address;
   }
 }
 
