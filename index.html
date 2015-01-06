@@ -29,6 +29,7 @@
   <script type="text/javascript" src="js/doge_yip_timestamp.js"></script>
   <script type="text/javascript" src="js/doge_yip_setprofiledata.js"></script>
   <script type="text/javascript" src="js/doge_yip_listaccount.js"></script>
+  <script type="text/javascript" src="js/doge_yip_inarray.js"></script>
 
   <style>
     body 
@@ -106,9 +107,12 @@ jQuery(document).ready(function($) {
   jQuery.support.cors = true;
   setProfileData();
 
-  var url = "https://chain.so/api/v2/address/DOGE/DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q"
+  var doge_yip_address = "DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q";
+  var url = "https://chain.so/api/v2/address/DOGE/"+doge_yip_address
   $.getJSON(url, function( json ) {
-    listAccount("DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q");
+    listAccount(doge_yip_address);
+    listedAddresses = [doge_yip_address]
+
     for(var i=0; i<json.data.txs.length; i++){
       var tx = json.data.txs[i];
       if(tx.incoming!=null){
@@ -116,7 +120,10 @@ jQuery(document).ready(function($) {
         if(is_registered){
           for(j=0; j<tx.incoming.inputs.length; j++){
             accountAddress = tx.incoming.inputs[j].address;
-            listAccount(accountAddress);
+            if(!inArray(listedAddresses, accountAddress)){
+              listAccount(accountAddress);
+              listedAddresses.push(accountAddress);
+            }
           }
         }
       }
