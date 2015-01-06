@@ -246,7 +246,7 @@ function createTip(tipaddress, address, tx){
              +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/bitcoin-address.svg"/></td>'
              +   '<td>&nbsp;<font class="'+address+'">'+address+'</font></td>'
              +  '</tr>'
-             +  '<tr><td></td><td>&nbsp;<font class="'+address+'">'+address+'</font> tipped <a href="profile.html?user='+tipaddress+'"><font class="'+tipaddress+'">'+tipaddress+'</font></a></td></tr>'
+             +  '<tr><td></td><td>&nbsp;tipped <a href="profile.html?user='+tipaddress+'"><font class="'+tipaddress+'">'+tipaddress+'</font></a></td></tr>'
              +  '<tr>'
              +   '<td></td>'
              +   '<td>&nbsp;'
