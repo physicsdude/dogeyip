@@ -27,14 +27,14 @@ function createTipNotification(toAddress, fromAddress, tx, dictionary){
   $("#notifications").append(notification);
 
   innerDiv = null;
-  $('#recentposts').find('div').each(function(){
+  $('#recentactivity').find('div').each(function(){
     var innerDivId = $(this).attr('id');
     if(innerDivId>tx.time && (innerDiv==null || innerDiv.attr('id')>innerDivId)){
       innerDiv=$(this);
     }
   });
   if(innerDiv==null){
-    $("#recentposts").prepend(notification);
+    $("#recentactivity").prepend(notification);
   } else{
     innerDiv.after(notification);
   }
@@ -92,14 +92,14 @@ function createNotification(toAddress, fromAddress, txs, notificationAmount, dic
             $("#notifications").append(notification);
 
             innerDiv = null;
-            $('#recentposts').find('div').each(function(){
+            $('#recentactivity').find('div').each(function(){
               var innerDivId = $(this).attr('id');
               if(innerDivId>tx.time && (innerDiv==null || innerDiv.attr('id')>innerDivId)){
                 innerDiv=$(this);
               }
             });
             if(innerDiv==null){
-              $("#recentposts").prepend(notification);
+              $("#recentactivity").prepend(notification);
             } else{
               innerDiv.after(notification);
             }
@@ -165,14 +165,14 @@ function createPost(address, tx, hexMessage, dictionary){
   }
 
   innerDiv = null;
-  $('#recentposts').find('div').each(function(){
+  $('#recentactivity').find('div').each(function(){
     var innerDivId = $(this).attr('id');
     if(innerDivId>tx.time && (innerDiv==null || innerDiv.attr('id')>innerDivId)){
       innerDiv=$(this);
     }
   });
   if(innerDiv==null){
-    $("#recentposts").prepend(post);
+    $("#recentactivity").prepend(post);
   } else{
     innerDiv.after(post);
   }
