@@ -26,6 +26,19 @@ function createTipNotification(toAddress, fromAddress, tx, dictionary){
              + "</table></div>";
   $("#notifications").append(notification);
 
+  innerDiv = null;
+  $('#recentposts').find('div').each(function(){
+    var innerDivId = $(this).attr('id');
+    if(innerDivId>tx.time && (innerDiv==null || innerDiv.attr('id')>innerDivId)){
+      innerDiv=$(this);
+    }
+  });
+  if(innerDiv==null){
+    $("#recentposts").prepend(notification);
+  } else{
+    innerDiv.after(notification);
+  }
+
   var url = "https://chain.so/api/v2/address/DOGE/"+fromAddress;
   $.getJSON(url, function(json) {
     var favname = fromAddress;
@@ -77,6 +90,19 @@ function createNotification(toAddress, fromAddress, txs, notificationAmount, dic
                        +  '</tr>'
                        + "</table></div>";
             $("#notifications").append(notification);
+
+            innerDiv = null;
+            $('#recentposts').find('div').each(function(){
+              var innerDivId = $(this).attr('id');
+              if(innerDivId>tx.time && (innerDiv==null || innerDiv.attr('id')>innerDivId)){
+                innerDiv=$(this);
+              }
+            });
+            if(innerDiv==null){
+              $("#recentposts").prepend(notification);
+            } else{
+              innerDiv.after(notification);
+            }
 
             var url = "https://chain.so/api/v2/address/DOGE/"+fromAddress;
             $.getJSON(url, function(json) {
@@ -134,6 +160,19 @@ function createPost(address, tx, hexMessage, dictionary){
   });
   if(innerDiv==null){
     $("#posts").prepend(post);
+  } else{
+    innerDiv.after(post);
+  }
+
+  innerDiv = null;
+  $('#recentposts').find('div').each(function(){
+    var innerDivId = $(this).attr('id');
+    if(innerDivId>tx.time && (innerDiv==null || innerDiv.attr('id')>innerDivId)){
+      innerDiv=$(this);
+    }
+  });
+  if(innerDiv==null){
+    $("#recentposts").prepend(post);
   } else{
     innerDiv.after(post);
   }

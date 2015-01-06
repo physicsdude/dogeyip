@@ -7,5 +7,6 @@ function listAccount(accountAddress){
                + "</a>"
                + "</div><br/>";
   $("#results").append(result);
+  $("#recentusers").append(result);
   scrapeTransactionData(accountAddress);
 }
