@@ -28,6 +28,7 @@
   <script type="text/javascript" src="js/doge_yip_hash160ToText.js"></script>
   <script type="text/javascript" src="js/doge_yip_timestamp.js"></script>
   <script type="text/javascript" src="js/doge_yip_setprofiledata.js"></script>
+  <script type="text/javascript" src="js/qrcode.js"></script>
 
   <style>
     body 
@@ -75,8 +76,7 @@
   <!-- Docs page layout -->
   <div class="bs-header" id="banner">
     <div class="container">
-      <div class="qrimage" style="display: inline-block; vertical-align:top;">
-      </div>
+      <div id="profileQR" style="display: inline-block; vertical-align:top;"></div>
       <div style="display: inline-block;">
         <h2 class="username"></h2>
         <p>
@@ -101,7 +101,9 @@
 jQuery(document).ready(function($) {
   jQuery.support.cors = true;
   setProfileData();
-  scrapeTransactionData(getUserAddress());
+  var address = getUserAddress();
+  setQRCode(address);
+  scrapeTransactionData(address);
 });
 </script>
 </body>

@@ -71,10 +71,16 @@ function setAbout(about){
 }
 
 function setQRCode(address){
-  var imgAddress = "https://dogechain.info/api/v1/address/qrcode/"+address;
-  var img = "<img width=125px height=125px src='"+imgAddress+"'></img>";
-  $(".qrlink").attr("href",imgAddress);
-  $(".qrimage").html(img);
+  var qrcode = new QRCode("profileQR", {
+    text: address,
+    width: 100,
+    height: 100,
+    colorDark : "#000000",
+    colorLight : "#54C571",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  var img = "https://dogechain.info/api/v1/address/qrcode/"+address;
+  $(".qrlink").attr("href",img);
 }
 
 function setProfileData(){
@@ -85,5 +91,4 @@ function setProfileData(){
   setAddress(address);
   setLinks(address, name);
   setAbout(about);
-  setQRCode(address);
 }

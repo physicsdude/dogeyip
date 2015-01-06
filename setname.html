@@ -26,6 +26,7 @@
   <script type="text/javascript" src="js/bitcoin.js"></script>
   <script type="text/javascript" src="js/doge_yip_post.js"></script>
   <script type="text/javascript" src="js/doge_yip_setprofiledata.js"></script>
+  <script type="text/javascript" src="js/qrcode.js"></script>
 
   <style>
     body 
@@ -92,25 +93,39 @@
   </form>
   <br/>
   <h2>Make a Dogecoin Transaction with the Below Address to Set Your Name.</h2>
+  <div id="qrPostCode"></div>
+  <div id="qrUnavailable" style="display:none;"><img src="https://useiconic.com/iconic/svg/hand.svg"></div>
+  <br/>
   <p>
-    <img id="qrPostCode" src="https://dogechain.info/api/v1/address/qrcode/DBNwwnFHQxdAjNT3agJxmCDmLR1QkJJ6GR"/>
-  </p>
-  <p>
-    <input id="base58Check" type="text" style="width:100%;" value="DBNwwnFHQxdAjNT3agJxmCDmLR1QkJJ6GR"/>
+    <input id="base58Check" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
   </p>
 </article>
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
+  var qrcode = new QRCode("qrPostCode", {
+    text: "DBNwwnFHQxdAjNT3agJxmCDmLR1QkJJ6GR",
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+
   function populatePostingQrCodes(){
     var message = $("#message").val();
     var base58Check = messageToBase58Check(message, dictionary, dictionaryHex);
     if(base58Check==null){
-      $("#qrPostCode").attr("src","https://useiconic.com/iconic/svg/hand.svg");
+      $("#qrUnavailable").show();
+      $("#qrPostCode").hide();
+      qrcode.clear();
       $("#base58Check").val("Compressed message is too long");
     } else{
-      $("#qrPostCode").attr("src", "https://dogechain.info/api/v1/address/qrcode/"+base58Check);
-      $("#base58Check").val(base58Check)
+      $("#qrUnavailable").hide();
+      $("#qrPostCode").show();
+      qrcode.clear();
+      qrcode.makeCode(base58Check);
+      $("#base58Check").val(base58Check);
     }
   }
 

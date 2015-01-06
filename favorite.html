@@ -29,6 +29,7 @@
   <script type="text/javascript" src="js/doge_yip_timestamp.js"></script>
   <script type="text/javascript" src="js/doge_yip_post.js"></script>
   <script type="text/javascript" src="js/doge_yip_setprofiledata.js"></script>
+  <script type="text/javascript" src="js/qrcode.js"></script>
 
   <style>
     body 
@@ -76,24 +77,24 @@
   <!-- Docs page layout -->
   <div class="bs-header" id="banner">
     <div class="container">
-      <div class="qrimage" style="display: inline-block; vertical-align:top;">
-      </div>
+      <div style="display: inline-block; vertical-align:top;">
+        <img width=125px height=125px src="img/dogecoin.png"></img>
+      </div>&nbsp;&nbsp;
       <div style="display: inline-block;">
-        <h2 class="username"></h2>
+        <h2>Favorite</h2>
         <p>
-          To tip send 15 DOGE to <a class="qrlink" href="javascript: void(0)"><font class="username"></font></a>
+          Send <b><font id="favamount"></font> DOGE</b> to the below address to favorite this bark.<br/>
         </p>
       </div>
     </div>
   </div>
 
 <article id="post" class="container">
-  <h2>Send <font id="favamount"></font> DOGE to the below address to favorite this bark.</h2>
+  <br/>
+  <div id="qrPostCode"></div>
+  <br/>
   <p>
-    <img id="qrPostCode" src="https://dogechain.info/api/v1/address/qrcode/DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
-  </p>
-  <p>
-    <input id="base58Check" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
+    <input id="base58Check" type="text" style="width:100%;" value=""/>
   </p>
 </article>
 
@@ -105,8 +106,16 @@ jQuery(document).ready(function($) {
 
   var favamount=getFavoriteAmount();
   var favaccount=getFavoriteAccount();
+  var qrcode = new QRCode("qrPostCode", {
+    text: favaccount,
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  
   $("#favamount").text(favamount);
-  $("#qrPostCode").attr("src", "https://dogechain.info/api/v1/address/qrcode/"+favaccount);
   $("#base58Check").val(favaccount);
 });
 </script>
