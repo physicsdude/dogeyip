@@ -127,7 +127,6 @@ function constructTipNotificationHtml(toName, toAddress, fromName, fromAddress, 
 
 function createTipNotification(toName, toAddress, fromAddress, tx, dictionary){
   var url = "https://chain.so/api/v2/address/DOGE/"+fromAddress;
-  console.log(url)
   $.getJSON(url, function(json) {
     var fromName =  scrapeUsername(fromAddress, json.data.txs, dictionary);
     var time = tx.time;
