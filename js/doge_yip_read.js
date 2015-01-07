@@ -24,12 +24,14 @@ function insertHtml(divId, html, time){
   }
 }
 
-function constructPostHtml(address, favoriteurl, time, message){
+function constructPostHtml(username, useraddress, favoriteurl, time, message){
   return '<div id="'+time+'" style="padding: 10px">'
              + '<table>'
              +  '<tr>'
              +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/comment-square.svg"/></td>'
-             +   '<td>&nbsp;<font class="'+address+'">'+address+'</font></td>'
+             +   '<td>&nbsp;'
+             +    '<a href="profile.html?user='+useraddress+'">'+username+'</a> posted: '
+             +   '</td>'
              +  '</tr>'
              +  '<tr><td></td><td>&nbsp;'+message+'</td></tr>'
              +  '<tr>'
@@ -43,12 +45,17 @@ function constructPostHtml(address, favoriteurl, time, message){
              + "</table></div>";
 }
 
-function constructFavoriteHtml(address, favoriteurl, favaccount, favname, time, message){
+function constructFavoriteHtml(username, useraddress, favoriteurl, favaccount, favname, time, message){
   return '<div id="'+time+'" style="padding: 10px">'
               + '<table>'
               +  '<tr>'
               +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/star.svg"/></td>'
-              +   '<td>&nbsp;<a href="profile.html?user='+favaccount+'"><font class="'+favaccount+'">'+favname+'</font></a></td>'
+              +   '<td>&nbsp;'
+              +    '<a href="profile.html?user='+useraddress+'">'+username+'</a> favorited '
+              +    '<a href="profile.html?user='+favaccount+'">'
+              +     '<font class="'+favaccount+'">'+favname+"</font>'s"
+              +    '</a> post'
+              +   '</td>'
               +  '</tr>'
               +  '<tr><td></td><td>&nbsp;'+message+'</td></tr>'
               +  '<tr>'
@@ -60,24 +67,6 @@ function constructFavoriteHtml(address, favoriteurl, favaccount, favname, time, 
               +   '</td>'
               +  '</tr>'
               + "</table></div>";
-}
-
-function constructTipHtml(address, tipaddress, time){
-  return '<div id="'+time+'" style="padding: 10px">'
-             + '<table>'
-             +  '<tr>'
-             +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/bitcoin-address.svg"/></td>'
-             +   '<td>&nbsp;<font class="'+address+'">'+address+'</font></td>'
-             +  '</tr>'
-             +  '<tr><td></td><td>&nbsp;tipped <a href="profile.html?user='+tipaddress+'"><font class="'+tipaddress+'">'+tipaddress+'</font></a></td></tr>'
-             +  '<tr>'
-             +   '<td></td>'
-             +   '<td>&nbsp;'
-             +    '<img width=15 height=15 src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D"/>'
-             +    '<i><font color="gray"> &bull; '+timestamp(time)+'</font></i>'
-             +   '</td>'
-             +  '</tr>'
-             + "</table></div>";
 }
 
 function constructFavoriteNotificationHtml(toAddress, fromAddress, favoriteurl, time, message){
@@ -99,12 +88,15 @@ function constructFavoriteNotificationHtml(toAddress, fromAddress, favoriteurl, 
              + "</table></div>";
 }
 
-function constructTipNotificationHtml(toAddress, fromAddress, time){
+function constructTipHtml(username, useraddress, tipname, tipaddress, time){
   return '<div id="'+time+'" style="padding: 10px">'
              + '<table>'
              +  '<tr>'
              +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/bitcoin-address.svg"/></td>'
-             +   '<td>&nbsp;<a href="profile.html?user='+fromAddress+'"><font class="'+fromAddress+'">'+fromAddress+'</font></a> tipped <font class="'+toAddress+'">'+toAddress+"</font></td>"
+             +   '<td>&nbsp;'
+             +    '<a href="profile.html?user='+useraddress+'">'+username+'</a> tipped '
+             +    '<a href="profile.html?user='+tipaddress+'">'+tipname+'</a>'
+             +   '</td>'
              +  '</tr>'
              +  '<tr>'
              +   '<td></td>'
@@ -116,30 +108,32 @@ function constructTipNotificationHtml(toAddress, fromAddress, time){
              + "</table></div>";
 }
 
-function createTipNotification(toAddress, fromAddress, tx, dictionary){
-  var time = tx.time;
-  var notification = constructTipNotificationHtml(toAddress, fromAddress, time);
-  insertHtml("notifications", notification, time);
-  insertHtml("recentactivity", notification, time);
+function constructTipNotificationHtml(toName, toAddress, fromName, fromAddress, time){
+  return '<div id="'+time+'" style="padding: 10px">'
+             + '<table>'
+             +  '<tr>'
+             +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/bitcoin-address.svg"/></td>'
+             +   '<td>&nbsp;<a href="profile.html?user='+fromAddress+'">'+fromName+'</a> tipped <a href="profile.html?user='+toAddress+'">'+toName+'</a></td>'
+             +  '</tr>'
+             +  '<tr>'
+             +   '<td></td>'
+             +   '<td>&nbsp;'
+             +    '<img width=15 height=15 src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D"/>'
+             +    '<i><font color="gray"> &bull; '+timestamp(time)+'</font></i>'
+             +   '</td>'
+             +  '</tr>'
+             + "</table></div>";
+}
 
+function createTipNotification(toName, toAddress, fromAddress, tx, dictionary){
   var url = "https://chain.so/api/v2/address/DOGE/"+fromAddress;
+  console.log(url)
   $.getJSON(url, function(json) {
-    var favname = fromAddress;
-    for(var i=0; i<json.data.txs.length; i++){
-      var tx = json.data.txs[i];
-      if(tx.outgoing!=null){
-        for(j=0; j<tx.outgoing.outputs.length; j++){
-          var output = tx.outgoing.outputs[j];
-          var hash160 = base58CheckTohash160(output.address);
-          var hexMessage = hash160.substring(0,38);
-          var hexToken = parseInt(hash160.substring(38,40), 16);
-          if(isName(hexToken)){
-            favname = hash160ToText(hexMessage, dictionary).trim();
-          }
-        }
-      }
-    };
-    $("."+fromAddress).text(" "+favname);
+    var fromName =  scrapeUsername(fromAddress, json.data.txs, dictionary);
+    var time = tx.time;
+    var notification = constructTipNotificationHtml(toName, toAddress, fromName, fromAddress, time);
+    insertHtml("notifications", notification, time);
+    insertHtml("recentactivity", notification, time);
   });
 }
 
@@ -190,22 +184,18 @@ function createFavoriteNotification(toAddress, fromAddress, txs, notificationAmo
   }
 }
 
-function createPost(address, tx, hexMessage, dictionary){
+function createPost(username, useraddress, tx, hexMessage, dictionary){
   var favamount = tx.time/100000000;
-  var favaccount = address;
-  var user = getUserAddress();
-  var favoriteurl = 'favorite.html?user='+user+'&favaccount='+favaccount+'&favamount='+favamount;
+  var favoriteurl = 'favorite.html?favaccount='+useraddress+'&favamount='+favamount;
   var time = tx.time;
   var message = hash160ToText(hexMessage, dictionary);
-  var post = constructPostHtml(address, favoriteurl, time, message); 
+  var post = constructPostHtml(username, useraddress, favoriteurl, time, message); 
   insertHtml("posts", post, time);
   insertHtml("recentactivity", post, time);
 }
 
-function createFavorite(divId, favamount, favaccount, address, tx, hexMessage, dictionary){
+function createFavorite(divId, favamount, favaccount, username, useraddress, tx, hexMessage, dictionary){
   var favname = favaccount;
-  var user = getUserAddress();
-  var name = getUserName();
   var url = "https://chain.so/api/v2/address/DOGE/"+favaccount;
   var favoriteurl = 'favorite.html?user='+favaccount+'&favaccount='+favaccount+'&favamount='+favamount;
   $.getJSON(url, function(json) {
@@ -220,7 +210,7 @@ function createFavorite(divId, favamount, favaccount, address, tx, hexMessage, d
           if(isPost(hexToken) && favamount==(tx.time/100000000)){
             var time = tx.time;
             var message = hash160ToText(hexMessage, dictionary);
-            var post = constructFavoriteHtml(address, favoriteurl, favaccount, favname, time, message);
+            var post = constructFavoriteHtml(username, useraddress, favoriteurl, favaccount, favname, time, message);
             insertHtml(divId, post, time);
           };
           if(isName(hexToken)){
@@ -233,16 +223,20 @@ function createFavorite(divId, favamount, favaccount, address, tx, hexMessage, d
   });
 }
 
-function createTip(tipaddress, address, tx){
-  var time = tx.time;
-  var post = constructTipHtml(address, tipaddress, time);
-  insertHtml("posts", post, time);
+function createTip(username, useraddress, tipaddress, tx, dictionary){
+  var url = "https://chain.so/api/v2/address/DOGE/"+tipaddress;
+  $.getJSON(url, function(json) {
+    var tipname =  scrapeUsername(tipaddress, json.data.txs, dictionary);
+    var time = tx.time;
+    var post = constructTipHtml(username, useraddress, tipname, tipaddress, time);
+    insertHtml("posts", post, time);
+  });
 }
 
 function createNews(userAddress, tipaddress, dictionary){
   var url = "https://chain.so/api/v2/address/DOGE/"+tipaddress;
   $.getJSON(url, function(json) {
-    var tipname = tipaddress;
+    var tipname = scrapeUsername(tipaddress, json.data.txs, dictionary);
     var sentFavoriteAmounts = [];
     var sentTipAddresses = [];
 
@@ -260,26 +254,26 @@ function createNews(userAddress, tipaddress, dictionary){
             var favaccount = tipaddress;
             var favoriteurl = 'favorite.html?user='+favaccount+'&favaccount='+favaccount+'&favamount='+favamount;
             var message = hash160ToText(hexMessage, dictionary);
-            var post = constructPostHtml(tipaddress, favoriteurl, time, message); 
+            var post = constructPostHtml(tipname, tipaddress, favoriteurl, time, message); 
             insertHtml("news", post, time);
           }
           if(isTip(output) && userAddress!=output.address && !inArray(sentTipAddresses, output.address)){
-            var time = tx.time;
-            var post = constructTipHtml(tipaddress, output.address, time);
-            insertHtml("news", post, time);
-            sentTipAddresses.push(output.address)
+            $.getJSON(url, function(json) {
+              var useraddress = output.address;
+              var username = scrapeUsername(useraddress, json.data.txs, dictionary);
+              var time = tx.time;
+              var post = constructTipHtml(username, useraddress, tipname, tipaddress, time);
+              insertHtml("news", post, time);
+              sentTipAddresses.push(output.address)
+            });
           }
           if(isFavorite(tx, output) && userAddress!=output.address && !inArray(sentFavoriteAmounts, output.address+"_"+output.value)){
-            createFavorite("news", output.value, output.address, tipaddress, tx, hexMessage, dictionary);
+            createFavorite("news", output.value, output.address, tipname, tipaddress, tx, hexMessage, dictionary);
             sentFavoriteAmounts.push(output.address+"_"+output.value)
-          }
-          if(isName(hexToken)){
-            tipname = hash160ToText(hexMessage, dictionary).trim();
           }
         }
       }
     };
-    $("."+tipaddress).text(" "+tipname);
   });
 }
 
@@ -316,12 +310,30 @@ function isName(hexToken){
   return (hexToken==hexNameToken);
 }
 
+function scrapeUsername(userAddress, txs, dictionary){
+  for(var i=0; i<txs.length; i++){
+    var tx = txs[i];
+    if(tx.outgoing!=null){
+      for(j=0; j<tx.outgoing.outputs.length; j++){
+        var output = tx.outgoing.outputs[j];
+        var hash160 = base58CheckTohash160(output.address);
+        var hexMessage = hash160.substring(0,38);
+        var hexToken = parseInt(hash160.substring(38,40), 16);
+        if(isName(hexToken)){
+          return hash160ToText(hexMessage, dictionary).trim();
+        }
+      }
+    }
+  }
+  return userAddress;
+}
+
 function scrapeTransactionData(userAddress){
   var url = "https://chain.so/api/v2/address/DOGE/"+userAddress;
   /* Going to need to address the hardcoded dictionary issue soon */
   $.getJSON("english_dictionary_decode.json", function(dictionary) {
     $.getJSON(url, function(json) {
-      var userName = userAddress;
+      var userName = scrapeUsername(userAddress, json.data.txs, dictionary);
       var followedAddresses = [userAddress];
       var sentFavoriteAmounts = [];
       var sentTipAddresses = [];
@@ -337,13 +349,10 @@ function scrapeTransactionData(userAddress){
             var hexMessage = hash160.substring(0,38);
             var hexToken = parseInt(hash160.substring(38,40), 16);
             if(isPost(hexToken)){
-              createPost(userAddress, tx, hexMessage, dictionary);
-            }
-            if(isName(hexToken)){
-              userName = hash160ToText(hexMessage, dictionary).trim();
+              createPost(userName, userAddress, tx, hexMessage, dictionary);
             }
             if(isFavorite(tx, output) && !inArray(sentFavoriteAmounts, output.value)){
-              createFavorite("posts", output.value, output.address, userAddress, tx, hexMessage, dictionary);
+              createFavorite("posts", output.value, output.address, userName, userAddress, tx, hexMessage, dictionary);
               sentFavoriteAmounts.push(output.value);
               if(!inArray(followedAddresses, output.address)){
                 createNews(userAddress, output.address, dictionary);
@@ -352,7 +361,8 @@ function scrapeTransactionData(userAddress){
             }
             if(isTip(output)){
               if(!inArray(sentTipAddresses, output.address)){
-                createTip(output.address, userAddress, tx);
+                var tipAddress = output.address;
+                createTip(userName, userAddress, tipAddress, tx, dictionary);
                 sentTipAddresses.push(output.address);
               }
               if(!inArray(followedAddresses, output.address)){
@@ -373,14 +383,13 @@ function scrapeTransactionData(userAddress){
         if(tx.incoming!=null && isTipNotification(tx)){
           var input = tx.incoming.inputs[0];
           if(!inArray(receivedTipAddresses, input.address)){
-            createTipNotification(userAddress, input.address, tx, dictionary);
+            createTipNotification(userName, userAddress, input.address, tx, dictionary);
             receivedTipAddresses.push(input.address);
           }
         }
       };
       setUsername(userName);
       setLinks(userAddress,userName);
-      $("."+userAddress).text(" "+userName);
     });
   });
 }
