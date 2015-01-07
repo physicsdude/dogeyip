@@ -115,7 +115,7 @@ jQuery(document).ready(function($) {
   function populatePostingQrCodes(){
     var message = $("#message").val();
     var base58Check = messageToBase58Check(message, dictionary, dictionaryHex);
-    if(base58Check==null){
+    if(base58Check==null || base58Check.length>1){
       $("#qrUnavailable").show();
       $("#qrPostCode").hide();
       qrcode.clear();
@@ -124,8 +124,8 @@ jQuery(document).ready(function($) {
       $("#qrUnavailable").hide();
       $("#qrPostCode").show();
       qrcode.clear();
-      qrcode.makeCode(base58Check);
-      $("#base58Check").val(base58Check);
+      qrcode.makeCode(base58Check[0]);
+      $("#base58Check").val(base58Check[0]);
     }
   }
 

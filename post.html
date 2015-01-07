@@ -92,18 +92,47 @@
     <textarea id="message" rows="6" style="width:100%;">Bow wow!</textarea>
     <br />
   </form>
-  <h2>Make a Dogecoin Transaction with the Below Address to Post Text.</h2>
-  <div id="qrPostCode"></div>
+  <h2>To Post Text Make a Dogecoin Transaction with all QR Codes Below.</h2>
   <div id="qrUnavailable" style="display:none;"><img src="https://useiconic.com/iconic/svg/hand.svg"></div>
+  <table>
+   <tr>
+    <td><div id="qrPostCode0"></div></td>
+    <td>&nbsp;<textarea id="postCode0" style="width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+   </tr>
+  </table>
   <br/>
-  <p>
-    <input id="base58Check" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
-  </p>
+  <table>
+   <tr>
+    <td><div id="qrPostCode1" style="display:none;"></div></td>
+    <td>&nbsp;<textarea id="postCode1" style="display:none;width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+   </tr>
+  </table>
+  <br/>
+  <table>
+   <tr>
+    <td><div id="qrPostCode2" style="display:none;"></div></td>
+    <td>&nbsp;<textarea id="postCode2" style="display:none;width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+   </tr>
+  </table>
+  <br/>
+  <table>
+   <tr>
+    <td><div id="qrPostCode3" style="display:none;"></div></td>
+    <td>&nbsp;<textarea id="postCode3" style="display:none;width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+   </tr>
+  </table>
+  <br/>
+  <table>
+   <tr>
+    <td><div id="qrPostCode4" style="display:none;"></div></td>
+    <td>&nbsp;<textarea id="postCode4" style="display:none;width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+   </tr>
+  </table>
 </article>
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-  var qrcode = new QRCode("qrPostCode", {
+  var qrcode0 = new QRCode("qrPostCode0", {
     text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
     width: 150,
     height: 150,
@@ -111,21 +140,63 @@ jQuery(document).ready(function($) {
     colorLight : "#FBF0D9",
     correctLevel : QRCode.CorrectLevel.H
   });
+  var qrcode1 = new QRCode("qrPostCode1", {
+    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  var qrcode2 = new QRCode("qrPostCode2", {
+    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  var qrcode3 = new QRCode("qrPostCode3", {
+    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  var qrcode4 = new QRCode("qrPostCode4", {
+    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  var qrCodes = [qrcode0,qrcode1,qrcode2,qrcode3,qrcode4];
 
   function populatePostingQrCodes(){
     var message = $("#message").val();
     var base58Check = messageToBase58Check(message, dictionary, dictionaryHex);
-    if(base58Check==null){
+    if(base58Check==null || base58Check.length>5){
       $("#qrUnavailable").show();
-      $("#qrPostCode").hide();
-      qrcode.clear();
-      $("#base58Check").val("Compressed message is too long");
+      for(var i=0; i<5; i++){
+        $("#qrPostCode"+i).hide();
+        $("#postCode"+i).hide();
+      }
     } else{
       $("#qrUnavailable").hide();
-      $("#qrPostCode").show();
-      qrcode.clear();
-      qrcode.makeCode(base58Check);
-      $("#base58Check").val(base58Check);
+      for(var i=0; i<5; i++){
+        if(i<base58Check.length){
+          $("#qrPostCode"+i).show();
+          $("#postCode"+i).show();
+          qrCodes[i].clear();
+          qrCodes[i].makeCode(base58Check[i]);
+          $("#postCode"+i).text(base58Check[i]);
+        } else{
+          $("#qrPostCode"+i).hide();
+          $("#postCode"+i).hide();
+        }
+      }
     }
   }
 

@@ -136,7 +136,7 @@ function createTipNotification(toName, toAddress, fromAddress, tx, dictionary){
   });
 }
 
-function createFavoriteNotification(toAddress, fromAddress, txs, notificationAmount, dictionary){
+function createFavoriteNotification(toAddress, fromAddress, txs, notificationAmount, dictionary, createFavorite){
   createdFavoriteNotification = false;
   for(var i=0; i<txs.length; i++){
     var tx = txs[i];
@@ -151,7 +151,7 @@ function createFavoriteNotification(toAddress, fromAddress, txs, notificationAmo
             var user = getUserAddress();
             var favoriteurl = 'favorite.html?favaccount='+toAddress+'&favamount='+notificationAmount;
             var time = tx.time;
-            var message = hash160ToText(hexMessage, dictionary);
+            var message = hash160ToText(hexMessage, dictionary, createFavorite);
             var notification = constructFavoriteNotificationHtml(toAddress, fromAddress, favoriteurl, time, message)
             insertHtml("notifications", notification, time);
             insertHtml("recentactivity", notification, time);
@@ -183,11 +183,11 @@ function createFavoriteNotification(toAddress, fromAddress, txs, notificationAmo
   }
 }
 
-function createPost(username, useraddress, tx, hexMessage, dictionary){
+function createPost(username, useraddress, tx, hexMessage, dictionary, connectingPosts){
   var favamount = tx.time/100000000;
   var favoriteurl = 'favorite.html?favaccount='+useraddress+'&favamount='+favamount;
   var time = tx.time;
-  var message = hash160ToText(hexMessage, dictionary);
+  var message = hash160ToText(hexMessage, dictionary, connectingPosts);
   var post = constructPostHtml(username, useraddress, favoriteurl, time, message); 
   insertHtml("posts", post, time);
   insertHtml("recentactivity", post, time);
@@ -198,6 +198,7 @@ function createFavorite(divId, favamount, favaccount, username, useraddress, tx,
   var url = "https://chain.so/api/v2/address/DOGE/"+favaccount;
   var favoriteurl = 'favorite.html?favaccount='+favaccount+'&favamount='+favamount;
   $.getJSON(url, function(json) {
+    var connectingPosts = scrapeConnectingPosts(json.data.txs);
     for(var i=0; i<json.data.txs.length; i++){
       var tx = json.data.txs[i];
       if(tx.outgoing!=null){
@@ -208,7 +209,7 @@ function createFavorite(divId, favamount, favaccount, username, useraddress, tx,
           var hexToken = parseInt(hash160.substring(38,40), 16);
           if(isPost(hexToken) && favamount==(tx.time/100000000)){
             var time = tx.time;
-            var message = hash160ToText(hexMessage, dictionary);
+            var message = hash160ToText(hexMessage, dictionary, connectingPosts);
             var post = constructFavoriteHtml(username, useraddress, favoriteurl, favaccount, favname, time, message);
             insertHtml(divId, post, time);
           };
@@ -236,6 +237,7 @@ function createNews(userAddress, tipaddress, dictionary){
   var url = "https://chain.so/api/v2/address/DOGE/"+tipaddress;
   $.getJSON(url, function(json) {
     var tipname = scrapeUsername(tipaddress, json.data.txs, dictionary);
+    var connectingPosts = scrapeConnectingPosts(json.data.txs);
     var sentFavoriteAmounts = [];
     var sentTipAddresses = [];
 
@@ -252,7 +254,7 @@ function createNews(userAddress, tipaddress, dictionary){
             var favamount = time/100000000;
             var favaccount = tipaddress;
             var favoriteurl = 'favorite.html?favaccount='+favaccount+'&favamount='+favamount;
-            var message = hash160ToText(hexMessage, dictionary);
+            var message = hash160ToText(hexMessage, dictionary, connectingPosts);
             var post = constructPostHtml(tipname, tipaddress, favoriteurl, time, message); 
             insertHtml("news", post, time);
           }
@@ -298,6 +300,12 @@ function isFavorite(tx, output){
   return (amount>time-1 && amount<time+1);
 }
 
+function isConnectingPost(hexToken){
+  var startHexLibraryTokenRange = parseInt("00",16);
+  var endHexLibraryTokenRange = parseInt("1F",16);
+  return (hexToken>=startHexLibraryTokenRange && hexToken<=endHexLibraryTokenRange);
+}
+
 function isPost(hexToken){
   var startHexLibraryTokenRange = parseInt("80",16);
   var endHexLibraryTokenRange = parseInt("9E",16);
@@ -317,8 +325,8 @@ function scrapeUsername(userAddress, txs, dictionary){
         var output = tx.outgoing.outputs[j];
         var hash160 = base58CheckTohash160(output.address);
         var hexMessage = hash160.substring(0,38);
-        var hexToken = parseInt(hash160.substring(38,40), 16);
-        if(isName(hexToken)){
+        var hexTokenB = parseInt(hash160.substring(38,40), 16);
+        if(isName(hexTokenB)){
           return hash160ToText(hexMessage, dictionary).trim();
         }
       }
@@ -327,12 +335,33 @@ function scrapeUsername(userAddress, txs, dictionary){
   return userAddress;
 }
 
+function scrapeConnectingPosts(txs){
+  var connectingPosts = {};
+  for(var i=0; i<txs.length; i++){
+    var tx = txs[i];
+    if(tx.outgoing!=null){
+      for(j=0; j<tx.outgoing.outputs.length; j++){
+        var output = tx.outgoing.outputs[j];
+        var hash160 = base58CheckTohash160(output.address);
+        var hexMessage = hash160.substring(0,36);
+        var hexTokenA = hash160.substring(36,38);
+        var hexTokenB = hash160.substring(38,40);
+        if(isConnectingPost(parseInt(hexTokenA),16)){
+          connectingPosts[hexTokenA+hexTokenB]=hexMessage;
+        }
+      }
+    }
+  }
+  return connectingPosts;
+}
+
 function scrapeTransactionData(userAddress){
   var url = "https://chain.so/api/v2/address/DOGE/"+userAddress;
   /* Going to need to address the hardcoded dictionary issue soon */
   $.getJSON("english_dictionary_decode.json", function(dictionary) {
     $.getJSON(url, function(json) {
       var userName = scrapeUsername(userAddress, json.data.txs, dictionary);
+      var connectingPosts = scrapeConnectingPosts(json.data.txs);
       var followedAddresses = [userAddress];
       var sentFavoriteAmounts = [];
       var sentTipAddresses = [];
@@ -346,9 +375,10 @@ function scrapeTransactionData(userAddress){
             var output = tx.outgoing.outputs[j];
             var hash160 = base58CheckTohash160(output.address);
             var hexMessage = hash160.substring(0,38);
-            var hexToken = parseInt(hash160.substring(38,40), 16);
-            if(isPost(hexToken)){
-              createPost(userName, userAddress, tx, hexMessage, dictionary);
+            var hexTokenA = parseInt(hash160.substring(36,38), 16);
+            var hexTokenB = parseInt(hash160.substring(38,40), 16);
+            if(isPost(hexTokenB)){
+              createPost(userName, userAddress, tx, hexMessage, dictionary, connectingPosts);
             }
             if(isFavorite(tx, output) && !inArray(sentFavoriteAmounts, output.value)){
               createFavorite("posts", output.value, output.address, userName, userAddress, tx, hexMessage, dictionary);
@@ -375,7 +405,7 @@ function scrapeTransactionData(userAddress){
           var amount = tx.incoming.value;
           var input = tx.incoming.inputs[0];
           if(!inArray(receivedFavoriteAmounts, input.address+"_"+amount)){
-            createFavoriteNotification(userAddress, input.address, json.data.txs, amount, dictionary);
+            createFavoriteNotification(userAddress, input.address, json.data.txs, amount, dictionary, connectingPosts);
             receivedFavoriteAmounts.push(input.address+"_"+amount);
           }
         }

@@ -10,7 +10,11 @@ function hash160ToBase58Check(hash160){
   var address = new Bitcoin.Address(Crypto.util.hexToBytes(hash160))
   address.version = 0x1E //testnet would be 0x6F
   return address.toString();
-}
+};
+
+function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 function messageToBase58Check(message, dictionary, dictionaryHex){
   var words = message.split(' ');
@@ -32,14 +36,19 @@ function messageToBase58Check(message, dictionary, dictionaryHex){
     words[i]=word;
   }
   message = words.join("");
-  if(message.length>38){
-    return null;
-  } else{
-    while(message.length<38){
-      message+="20";
-    }
-    /*Add the library to use to decode message*/
-    message=message.substring(0,38)+dictionaryHex;
-    return hash160ToBase58Check(message);
+
+  addresses = [];
+  while(message.length>38){
+    randHexA=("0"+getRandomInt(0,31).toString(16)).slice(-2);
+    randHexB=("0"+getRandomInt(0,255).toString(16)).slice(-2);
+    var address = hash160ToBase58Check(message.substring(0,36)+randHexA+randHexB);
+    addresses.push(address);
+    message=randHexA+randHexB+message.substring(36);
   }
+  while(message.length<38){
+    message+="20";
+  }
+  var address = hash160ToBase58Check(message+dictionaryHex);
+  addresses.push(address);
+  return addresses;
 }

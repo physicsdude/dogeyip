@@ -1,4 +1,20 @@
-function hash160ToText(hex, dictionary) {
+function isPartialMessage(hex){
+  var hexToken = parseInt(hex.substring(0,2),16);
+  var startHexLibraryTokenRange = parseInt("00",16);
+  var endHexLibraryTokenRange = parseInt("1F",16);
+  return (hexToken>=startHexLibraryTokenRange && hexToken<=endHexLibraryTokenRange);
+}
+
+function hash160ToText(hex, dictionary, connectingPosts) {
+  while(isPartialMessage(hex)){
+    connectingPost = connectingPosts[hex.substring(0,4)];
+    if(connectingPost!=null){
+      hex = connectingPost+hex.substring(4);
+    } else{
+      hex = hex.substring(4);
+    }
+  }
+
   var str = '';
   for (var i = 0; i < hex.length; i += 2){
     var value = hex.substr(i, 2);
