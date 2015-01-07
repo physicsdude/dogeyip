@@ -150,7 +150,7 @@ function createFavoriteNotification(toAddress, fromAddress, txs, notificationAmo
           var hexToken = parseInt(hash160.substring(38,40), 16);
           if(isPost(hexToken) && !createdFavoriteNotification){
             var user = getUserAddress();
-            var favoriteurl = 'favorite.html?user='+user+'&favaccount='+toAddress+'&favamount='+notificationAmount;
+            var favoriteurl = 'favorite.html?favaccount='+toAddress+'&favamount='+notificationAmount;
             var time = tx.time;
             var message = hash160ToText(hexMessage, dictionary);
             var notification = constructFavoriteNotificationHtml(toAddress, fromAddress, favoriteurl, time, message)
@@ -197,7 +197,7 @@ function createPost(username, useraddress, tx, hexMessage, dictionary){
 function createFavorite(divId, favamount, favaccount, username, useraddress, tx, hexMessage, dictionary){
   var favname = favaccount;
   var url = "https://chain.so/api/v2/address/DOGE/"+favaccount;
-  var favoriteurl = 'favorite.html?user='+favaccount+'&favaccount='+favaccount+'&favamount='+favamount;
+  var favoriteurl = 'favorite.html?favaccount='+favaccount+'&favamount='+favamount;
   $.getJSON(url, function(json) {
     for(var i=0; i<json.data.txs.length; i++){
       var tx = json.data.txs[i];
@@ -252,7 +252,7 @@ function createNews(userAddress, tipaddress, dictionary){
             var time = tx.time;
             var favamount = time/100000000;
             var favaccount = tipaddress;
-            var favoriteurl = 'favorite.html?user='+favaccount+'&favaccount='+favaccount+'&favamount='+favamount;
+            var favoriteurl = 'favorite.html?favaccount='+favaccount+'&favamount='+favamount;
             var message = hash160ToText(hexMessage, dictionary);
             var post = constructPostHtml(tipname, tipaddress, favoriteurl, time, message); 
             insertHtml("news", post, time);
