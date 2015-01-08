@@ -26,7 +26,7 @@ function listAccount(accountAddress, divId){
     var profile = "profile.html?user="+accountAddress;
     var result = "<div class='container'>"
                + '<a onclick="showProfile(\''+accountAddress+'\')" href="javascript: void(0)">'
-               +   "<img style='vertical-align:middle;' width=35px height=35px src='https://useiconic.com/iconic/svg/bitcoin-address.svg'></img>"
+               +   "<img style='vertical-align:middle;' width=35px height=35px src='img/open-iconic/person.svg'></img>"
                +   "<span><font style='font-size: 175%; vertical-align:middle;'>&nbsp;"+accountName+"</font></span>"
                + "</a>"
                + "</div><br/>";
