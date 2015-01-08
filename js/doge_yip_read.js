@@ -52,9 +52,7 @@ function constructFavoriteHtml(username, useraddress, favoriteurl, favaccount, f
               +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/star.svg"/></td>'
               +   '<td>&nbsp;'
               +    '<a href="profile.html?user='+useraddress+'">'+username+'</a> favorited '
-              +    '<a href="profile.html?user='+favaccount+'">'
-              +     '<font class="'+favaccount+'">'+favname+"</font>'s"
-              +    '</a> post'
+              +    '<a href="profile.html?user='+favaccount+'">'+favname+'</a> post'
               +   '</td>'
               +  '</tr>'
               +  '<tr><td></td><td>&nbsp;'+message+'</td></tr>'
@@ -69,12 +67,12 @@ function constructFavoriteHtml(username, useraddress, favoriteurl, favaccount, f
               + "</table></div>";
 }
 
-function constructFavoriteNotificationHtml(toAddress, fromAddress, favoriteurl, time, message){
+function constructFavoriteNotificationHtml(toName, toAddress, fromName, fromAddress, favoriteurl, time, message){
   return '<div id="'+time+'" style="padding: 10px">'
              + '<table>'
              +  '<tr>'
              +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/star.svg"/></td>'
-             +   '<td>&nbsp;<a href="profile.html?user='+fromAddress+'"><font class="'+fromAddress+'">'+fromAddress+'</font></a> favorited <font class="'+toAddress+'">'+toAddress+"</font>'s Bark.</td>"
+             +   '<td>&nbsp;<a href="profile.html?user='+fromAddress+'">'+fromName+'</a> favorited <a href="profile.html?user='+toAddress+'">'+toName+"'s Bark.</td>"
              +  '</tr>'
              +  '<tr><td></td><td>&nbsp;'+message+'</td></tr>'
              +  '<tr>'
@@ -126,81 +124,64 @@ function constructTipNotificationHtml(toName, toAddress, fromName, fromAddress, 
 }
 
 function createTipNotification(toName, toAddress, fromAddress, tx, dictionary){
-  var url = "https://chain.so/api/v2/address/DOGE/"+fromAddress;
-  $.getJSON(url, function(json) {
-    var fromName =  scrapeUsername(fromAddress, json.data.txs, dictionary);
+  var when = $.when(getAddressJson(fromAddress), getUsername(fromAddress));
+  when.done(function(json,fromName){
     var time = tx.time;
     var notification = constructTipNotificationHtml(toName, toAddress, fromName, fromAddress, time);
     insertHtml("notifications", notification, time);
-    insertHtml("recentactivity", notification, time);
+    insertHtml("recentactivity", notification, time);    
   });
 }
 
-function createFavoriteNotification(toAddress, fromAddress, txs, notificationAmount, dictionary, createFavorite){
-  createdFavoriteNotification = false;
-  for(var i=0; i<txs.length; i++){
-    var tx = txs[i];
-    if(tx.outgoing!=null){
-      for(j=0; j<tx.outgoing.outputs.length; j++){
-        var output = tx.outgoing.outputs[j];
-        if(tx.time/100000000==notificationAmount){
-          var hash160 = base58CheckTohash160(output.address);
-          var hexMessage = hash160.substring(0,38);
-          var hexToken = parseInt(hash160.substring(38,40), 16);
-          if(isPost(hexToken) && !createdFavoriteNotification){
-            var user = getUserAddress();
-            var favoriteurl = 'favorite.html?favaccount='+toAddress+'&favamount='+notificationAmount;
-            var time = tx.time;
-            var message = hash160ToText(hexMessage, dictionary, createFavorite);
-            var notification = constructFavoriteNotificationHtml(toAddress, fromAddress, favoriteurl, time, message)
-            insertHtml("notifications", notification, time);
-            insertHtml("recentactivity", notification, time);
-            createdFavoriteNotification=true;
-
-            var url = "https://chain.so/api/v2/address/DOGE/"+fromAddress;
-            $.getJSON(url, function(json) {
-              var favname = fromAddress;
-              for(var i=0; i<json.data.txs.length; i++){
-                var tx = json.data.txs[i];
-                if(tx.outgoing!=null){
-                  for(j=0; j<tx.outgoing.outputs.length; j++){
-                    var output = tx.outgoing.outputs[j];
-                    var hash160 = base58CheckTohash160(output.address);
-                    var hexMessage = hash160.substring(0,38);
-                    var hexToken = parseInt(hash160.substring(38,40), 16);
-                    if(isName(hexToken)){
-                      favname = hash160ToText(hexMessage, dictionary).trim();
-                    }
-                  }
-                }
-              };
-              $("."+fromAddress).text(" "+favname);
-            });
+function createFavoriteNotification(toAddress, fromAddress, txs, notificationAmount, createFavorite){
+  var when = $.when(getUsername(toAddress),getUsername(fromAddress));
+  when.done(function(toName, fromName){
+    createdFavoriteNotification = false;
+    for(var i=0; i<txs.length; i++){
+      var tx = txs[i];
+      if(tx.outgoing!=null){
+        for(j=0; j<tx.outgoing.outputs.length; j++){
+          var output = tx.outgoing.outputs[j];
+          if(tx.time/100000000==notificationAmount){
+            var hash160 = base58CheckTohash160(output.address);
+            var hexMessage = hash160.substring(0,38);
+            var hexToken = parseInt(hash160.substring(38,40), 16);
+            if(isPost(hexToken) && !createdFavoriteNotification){
+              var user = getUserAddress();
+              var favoriteurl = 'favorite.html?favaccount='+toAddress+'&favamount='+notificationAmount;
+              var time = tx.time;
+              $.when(hash160ToText(hexMessage, hexToken, createFavorite)).done(function(message){
+                var notification = constructFavoriteNotificationHtml(toName, toAddress, fromName, fromAddress, favoriteurl, time, message)
+                insertHtml("notifications", notification, time);
+                insertHtml("recentactivity", notification, time);
+                createdFavoriteNotification=true;
+              });
+            }
           }
         }
       }
     }
-  }
+  });
 }
 
-function createPost(username, useraddress, tx, hexMessage, dictionary, connectingPosts){
+function createPost(username, useraddress, tx, hexMessage, hexToken, connectingPosts){
   var favamount = tx.time/100000000;
   var favoriteurl = 'favorite.html?favaccount='+useraddress+'&favamount='+favamount;
   var time = tx.time;
-  var message = hash160ToText(hexMessage, dictionary, connectingPosts);
-  var post = constructPostHtml(username, useraddress, favoriteurl, time, message); 
-  insertHtml("posts", post, time);
-  insertHtml("recentactivity", post, time);
+  $.when(hash160ToText(hexMessage, hexToken, connectingPosts)).done(function(message){
+    var post = constructPostHtml(username, useraddress, favoriteurl, time, message); 
+    insertHtml("posts", post, time);
+    insertHtml("recentactivity", post, time);
+  });
 }
 
 function createFavorite(divId, favamount, favaccount, username, useraddress, tx, hexMessage, dictionary){
-  var favname = favaccount;
-  var url = "https://chain.so/api/v2/address/DOGE/"+favaccount;
   var favoriteurl = 'favorite.html?favaccount='+favaccount+'&favamount='+favamount;
-  $.getJSON(url, function(json) {
-    var connectingPosts = scrapeConnectingPosts(json.data.txs);
-    for(var i=0; i<json.data.txs.length; i++){
-      var tx = json.data.txs[i];
+  var when = $.when(getAddressJson(favaccount), getUsername(favaccount));
+  when.done(function(json,favname){
+    var connectingPosts = scrapeConnectingPosts(json[0].data.txs);
+    for(var i=0; i<json[0].data.txs.length; i++){
+      var tx = json[0].data.txs[i];
       if(tx.outgoing!=null){
         for(j=0; j<tx.outgoing.outputs.length; j++){
           var output = tx.outgoing.outputs[j];
@@ -209,13 +190,11 @@ function createFavorite(divId, favamount, favaccount, username, useraddress, tx,
           var hexToken = parseInt(hash160.substring(38,40), 16);
           if(isPost(hexToken) && favamount==(tx.time/100000000)){
             var time = tx.time;
-            var message = hash160ToText(hexMessage, dictionary, connectingPosts);
-            var post = constructFavoriteHtml(username, useraddress, favoriteurl, favaccount, favname, time, message);
-            insertHtml(divId, post, time);
+            $.when(hash160ToText(hexMessage, hexToken, connectingPosts)).done(function(message){
+              var post = constructFavoriteHtml(username, useraddress, favoriteurl, favaccount, favname, time, message);
+              insertHtml(divId, post, time);
+            });
           };
-          if(isName(hexToken)){
-            favname = hash160ToText(hexMessage, dictionary).trim();
-          }
         }
       }
     };
@@ -224,9 +203,8 @@ function createFavorite(divId, favamount, favaccount, username, useraddress, tx,
 }
 
 function createTip(username, useraddress, tipaddress, tx, dictionary){
-  var url = "https://chain.so/api/v2/address/DOGE/"+tipaddress;
-  $.getJSON(url, function(json) {
-    var tipname =  scrapeUsername(tipaddress, json.data.txs, dictionary);
+  var when = $.when(getAddressJson(tipaddress), getUsername(tipaddress));
+  when.done(function(json, tipname){
     var time = tx.time;
     var post = constructTipHtml(username, useraddress, tipname, tipaddress, time);
     insertHtml("posts", post, time);
@@ -234,15 +212,15 @@ function createTip(username, useraddress, tipaddress, tx, dictionary){
 }
 
 function createNews(userAddress, tipaddress, dictionary){
-  var url = "https://chain.so/api/v2/address/DOGE/"+tipaddress;
-  $.getJSON(url, function(json) {
-    var tipname = scrapeUsername(tipaddress, json.data.txs, dictionary);
-    var connectingPosts = scrapeConnectingPosts(json.data.txs);
+  var when = $.when(getAddressJson(tipaddress),
+                 getUsername(tipaddress),
+                 getConnectingPosts(tipaddress));
+  when.done(function(json,tipname,connectingPosts){
     var sentFavoriteAmounts = [];
     var sentTipAddresses = [];
-
-    for(var i=0; i<json.data.txs.length; i++){
-      var tx = json.data.txs[i];
+    var txs = json[0].data.txs;
+    for(var i=0; i<txs.length; i++){
+      var tx = txs[i];
       if(tx.outgoing!=null){
         for(j=0; j<tx.outgoing.outputs.length; j++){
           var output = tx.outgoing.outputs[j];
@@ -254,18 +232,19 @@ function createNews(userAddress, tipaddress, dictionary){
             var favamount = time/100000000;
             var favaccount = tipaddress;
             var favoriteurl = 'favorite.html?favaccount='+favaccount+'&favamount='+favamount;
-            var message = hash160ToText(hexMessage, dictionary, connectingPosts);
-            var post = constructPostHtml(tipname, tipaddress, favoriteurl, time, message); 
-            insertHtml("news", post, time);
+            $.when(hash160ToText(hexMessage, hexToken, connectingPosts)).done(function(message){
+              var post = constructPostHtml(tipname, tipaddress, favoriteurl, time, message); 
+              insertHtml("news", post, time);
+            });
           }
           if(isTip(output) && userAddress!=output.address && !inArray(sentTipAddresses, output.address)){
-            $.getJSON(url, function(json) {
-              var useraddress = output.address;
-              var username = scrapeUsername(useraddress, json.data.txs, dictionary);
-              var time = tx.time;
-              var post = constructTipHtml(username, useraddress, tipname, tipaddress, time);
+            var outputAddress = output.address;
+            var time = tx.time;
+            var when = $.when(getUsername(outputAddress));
+            when.done(function(outputName){
+              var post = constructTipHtml(tipname, tipaddress, outputName, outputAddress, time);
               insertHtml("news", post, time);
-              sentTipAddresses.push(output.address)
+              sentTipAddresses.push(output.address);
             });
           }
           if(isFavorite(tx, output) && userAddress!=output.address && !inArray(sentFavoriteAmounts, output.address+"_"+output.value)){
@@ -317,24 +296,6 @@ function isName(hexToken){
   return (hexToken==hexNameToken);
 }
 
-function scrapeUsername(userAddress, txs, dictionary){
-  for(var i=0; i<txs.length; i++){
-    var tx = txs[i];
-    if(tx.outgoing!=null){
-      for(j=0; j<tx.outgoing.outputs.length; j++){
-        var output = tx.outgoing.outputs[j];
-        var hash160 = base58CheckTohash160(output.address);
-        var hexMessage = hash160.substring(0,38);
-        var hexTokenB = parseInt(hash160.substring(38,40), 16);
-        if(isName(hexTokenB)){
-          return hash160ToText(hexMessage, dictionary).trim();
-        }
-      }
-    }
-  }
-  return userAddress;
-}
-
 function scrapeConnectingPosts(txs){
   var connectingPosts = {};
   for(var i=0; i<txs.length; i++){
@@ -356,69 +317,68 @@ function scrapeConnectingPosts(txs){
 }
 
 function scrapeTransactionData(userAddress){
-  var url = "https://chain.so/api/v2/address/DOGE/"+userAddress;
   /* Going to need to address the hardcoded dictionary issue soon */
-  $.getJSON("english_dictionary_decode.json", function(dictionary) {
-    $.getJSON(url, function(json) {
-      var userName = scrapeUsername(userAddress, json.data.txs, dictionary);
-      var connectingPosts = scrapeConnectingPosts(json.data.txs);
-      var followedAddresses = [userAddress];
-      var sentFavoriteAmounts = [];
-      var sentTipAddresses = [];
-      var receivedFavoriteAmounts = [];
-      var receivedTipAddresses = [];
-
-      for(var i=0; i<json.data.txs.length; i++){
-        var tx = json.data.txs[i];
-        if(tx.outgoing!=null){
-          for(j=0; j<tx.outgoing.outputs.length; j++){
-            var output = tx.outgoing.outputs[j];
-            var hash160 = base58CheckTohash160(output.address);
-            var hexMessage = hash160.substring(0,38);
-            var hexTokenA = parseInt(hash160.substring(36,38), 16);
-            var hexTokenB = parseInt(hash160.substring(38,40), 16);
-            if(isPost(hexTokenB)){
-              createPost(userName, userAddress, tx, hexMessage, dictionary, connectingPosts);
+  var when = $.when($.getJSON("english_dictionary_decode.json"),
+                 getAddressJson(userAddress),
+                 getUsername(userAddress),
+                 getConnectingPosts(userAddress));
+  when.done(function(dictionary,json,userName,connectingPosts){
+    var followedAddresses = [userAddress];
+    var sentFavoriteAmounts = [];
+    var sentTipAddresses = [];
+    var receivedFavoriteAmounts = [];
+    var receivedTipAddresses = [];
+    var txs = json[0].data.txs;
+    for(var i=0; i<txs.length; i++){
+      var tx = txs[i];
+      if(tx.outgoing!=null){
+        for(j=0; j<tx.outgoing.outputs.length; j++){
+          var output = tx.outgoing.outputs[j];
+          var hash160 = base58CheckTohash160(output.address);
+          var hexMessage = hash160.substring(0,38);
+          var hexTokenA = parseInt(hash160.substring(36,38), 16);
+          var hexTokenB = parseInt(hash160.substring(38,40), 16);
+          if(isPost(hexTokenB)){
+            createPost(userName, userAddress, tx, hexMessage, hexTokenB, connectingPosts);
+          }
+          if(isFavorite(tx, output) && !inArray(sentFavoriteAmounts, output.value)){
+            createFavorite("posts", output.value, output.address, userName, userAddress, tx, hexMessage, dictionary);
+            sentFavoriteAmounts.push(output.value);
+            if(!inArray(followedAddresses, output.address)){
+              createNews(userAddress, output.address, dictionary);
+              followedAddresses.push(output.address);
             }
-            if(isFavorite(tx, output) && !inArray(sentFavoriteAmounts, output.value)){
-              createFavorite("posts", output.value, output.address, userName, userAddress, tx, hexMessage, dictionary);
-              sentFavoriteAmounts.push(output.value);
-              if(!inArray(followedAddresses, output.address)){
-                createNews(userAddress, output.address, dictionary);
-                followedAddresses.push(output.address);
-              }
+          }
+          if(isTip(output)){
+            if(!inArray(sentTipAddresses, output.address)){
+              var tipAddress = output.address;
+              createTip(userName, userAddress, tipAddress, tx, dictionary);
+              sentTipAddresses.push(output.address);
             }
-            if(isTip(output)){
-              if(!inArray(sentTipAddresses, output.address)){
-                var tipAddress = output.address;
-                createTip(userName, userAddress, tipAddress, tx, dictionary);
-                sentTipAddresses.push(output.address);
-              }
-              if(!inArray(followedAddresses, output.address)){
-                createNews(userAddress, output.address, dictionary);
-                followedAddresses.push(output.address);
-              }
+            if(!inArray(followedAddresses, output.address)){
+              createNews(userAddress, output.address, dictionary);
+              followedAddresses.push(output.address);
             }
           }
         }
-        if(tx.incoming!=null && isFavoriteNotification(tx)){
-          var amount = tx.incoming.value;
-          var input = tx.incoming.inputs[0];
-          if(!inArray(receivedFavoriteAmounts, input.address+"_"+amount)){
-            createFavoriteNotification(userAddress, input.address, json.data.txs, amount, dictionary, connectingPosts);
-            receivedFavoriteAmounts.push(input.address+"_"+amount);
-          }
+      }
+      if(tx.incoming!=null && isFavoriteNotification(tx)){
+        var amount = tx.incoming.value;
+        var input = tx.incoming.inputs[0];
+        if(!inArray(receivedFavoriteAmounts, input.address+"_"+amount)){
+          createFavoriteNotification(userAddress, input.address, txs, amount, connectingPosts);
+          receivedFavoriteAmounts.push(input.address+"_"+amount);
         }
-        if(tx.incoming!=null && isTipNotification(tx)){
-          var input = tx.incoming.inputs[0];
-          if(!inArray(receivedTipAddresses, input.address)){
-            createTipNotification(userName, userAddress, input.address, tx, dictionary);
-            receivedTipAddresses.push(input.address);
-          }
+      }
+      if(tx.incoming!=null && isTipNotification(tx)){
+        var input = tx.incoming.inputs[0];
+        if(!inArray(receivedTipAddresses, input.address)){
+          createTipNotification(userName, userAddress, input.address, tx, dictionary);
+          receivedTipAddresses.push(input.address);
         }
-      };
-      setUsername(userName);
-      setLinks(userAddress,userName);
-    });
+      }
+    };
+    setUsername(userName);
+    setLinks(userAddress,userName);
   });
 }

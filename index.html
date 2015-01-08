@@ -30,6 +30,10 @@
   <script type="text/javascript" src="js/doge_yip_setprofiledata.js"></script>
   <script type="text/javascript" src="js/doge_yip_listaccount.js"></script>
   <script type="text/javascript" src="js/doge_yip_inarray.js"></script>
+  <script type="text/javascript" src="js/doge_yip_address_ajax.js"></script>
+  <script type="text/javascript" src="js/doge_yip_scrapeusername.js"></script>
+  <script type="text/javascript" src="js/doge_yip_scrape_connecting_posts.js"></script>
+  <script type="text/javascript" src="js/doge_yip_lookup_dictionary.js"></script>
 
   <style>
     body 
@@ -108,8 +112,7 @@ jQuery(document).ready(function($) {
   setProfileData();
 
   var doge_yip_address = "DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q";
-  var url = "https://chain.so/api/v2/address/DOGE/"+doge_yip_address
-  $.getJSON(url, function( json ) {
+  getAddressJson(doge_yip_address).done(function(json){
     listAccount(doge_yip_address);
     listedAddresses = [doge_yip_address]
 

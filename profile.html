@@ -30,6 +30,10 @@
   <script type="text/javascript" src="js/doge_yip_setprofiledata.js"></script>
   <script type="text/javascript" src="js/qrcode.js"></script>
   <script type="text/javascript" src="js/doge_yip_inarray.js"></script>
+  <script type="text/javascript" src="js/doge_yip_address_ajax.js"></script>
+  <script type="text/javascript" src="js/doge_yip_scrapeusername.js"></script>
+  <script type="text/javascript" src="js/doge_yip_scrape_connecting_posts.js"></script>
+  <script type="text/javascript" src="js/doge_yip_lookup_dictionary.js"></script>
 
   <style>
     body 
@@ -87,23 +91,23 @@
     </div>
   </div>
 
-<article id="news" class="container">
+<article id="posts" class="container" style="display:none;">
   <div id="9999999999" style="padding: 10px">
     <b>
-      <u>News</u>
+      <a href="javascript: void(0)" onclick="$('#news').show();$('#posts').hide();$('#notifications').hide();">News</a>
         &bull; 
-      <a href="javascript: void(0)" onclick="$('#news').hide();$('#posts').show();$('#notifications').hide();">Activities</a>
+      <u>Activities</u>
         &bull; 
       <a href="javascript: void(0)" onclick="$('#news').hide();$('#posts').hide();$('#notifications').show();">Notifications</a>
     </b>
   </div>
 </article>
-<article id="posts" class="container" style="display:none;">
+<article id="news" class="container">
   <div id="9999999998" style="padding: 10px">
     <b>
-      <a href="javascript: void(0)" onclick="$('#news').show();$('#posts').hide();$('#notifications').hide();">News</a>
+      <u>News</u>
         &bull; 
-      <u>Activities</u>
+      <a href="javascript: void(0)" onclick="$('#news').hide();$('#posts').show();$('#notifications').hide();">Activities</a>
         &bull; 
       <a href="javascript: void(0)" onclick="$('#news').hide();$('#posts').hide();$('#notifications').show();">Notifications</a>
     </b>

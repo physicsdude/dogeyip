@@ -32,6 +32,10 @@
   <script type="text/javascript" src="js/doge_yip_listaccount.js"></script>
   <script type="text/javascript" src="js/qrcode.js"></script>
   <script type="text/javascript" src="js/doge_yip_inarray.js"></script>
+  <script type="text/javascript" src="js/doge_yip_address_ajax.js"></script>
+  <script type="text/javascript" src="js/doge_yip_scrapeusername.js"></script>
+  <script type="text/javascript" src="js/doge_yip_scrape_connecting_posts.js"></script>
+  <script type="text/javascript" src="js/doge_yip_lookup_dictionary.js"></script>
 
   <style>
     body 
@@ -128,8 +132,7 @@ jQuery(document).ready(function($) {
   });
 
   function listResults(address){
-    var url = "https://chain.so/api/v2/address/DOGE/"+address;
-    $.getJSON(url, function(json) {
+    getAddressJson(address).done(function(json){
       for(var i=0; i<json.data.txs.length; i++){
         var tx = json.data.txs[i];
         if(tx.incoming!=null){
