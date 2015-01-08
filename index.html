@@ -204,7 +204,7 @@
         <br />
       </form>
       <h2>To Post Text Make a Dogecoin Transaction with all QR Codes Below.</h2>
-      <div class="qrUnavailable" style="display:none;"><img src="img/open-iconic/hand.svg"></div>
+      <div class="qrUnavailable" style="display:none;"><img width=150px height=150px src="img/open-iconic/ban.svg"></div>
       <table id="postCodeTable0">
        <tr>
         <td><b>A</b>&nbsp;</td>
@@ -315,7 +315,7 @@
       <br/>
       <h2>Make a Dogecoin Transaction with the Below Address to Set Your Name.</h2>
       <div id="setnameQRPostCode"></div>
-      <div class="qrUnavailable" style="display:none;"><img src="img/open-iconic/ban.svg"></div>
+      <div class="qrUnavailable" style="display:none;"><img width=150px; height=150px src="img/open-iconic/ban.svg"></div>
       <br/>
       <p>
         <input id="setnamebase58Check" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
@@ -465,13 +465,12 @@ jQuery(document).ready(function($) {
       var message = $("#message").val();
       var base58Check = messageToBase58Check(message, dictionary, "80");
       if(base58Check==null || base58Check.length>5){
-        $("#qrUnavailable").show();
+        $(".qrUnavailable").show();
         for(var i=0; i<5; i++){
-          $("#qrPostCode"+i).hide();
-          $("#postCode"+i).hide();
+          $("#postCodeTable"+i).hide();
         }
       } else{
-        $("#qrUnavailable").hide();
+        $(".qrUnavailable").hide();
         for(var i=0; i<5; i++){
           if(i<base58Check.length){
             $("#postCodeTable"+i).show();
