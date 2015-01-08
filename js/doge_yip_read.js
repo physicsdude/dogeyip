@@ -24,20 +24,96 @@ function insertHtml(divId, html, time){
   }
 }
 
-function constructPostHtml(username, useraddress, favoriteurl, time, message){
+
+var profileqrcode;
+function setQRCode(address){
+  if(profileqrcode==null){
+    profileqrcode = new QRCode("profileQR", {
+      text: address,
+      width: 125,
+      height: 125,
+      colorDark : "#000000",
+      colorLight : "#54C571",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+  } else{
+    profileqrcode.clear();
+    profileqrcode.makeCode(address);
+  }
+}
+
+var bigqrcode;
+function showQrCode(address){
+  if(bigqrcode==null){
+      bigqrcode = new QRCode("bigqrcodeimg", {
+      text: address,
+      width: 150,
+      height: 150,
+      colorDark : "#000000",
+      colorLight : "#FBF0D9",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+  } else{
+    bigqrcode.clear();
+    bigqrcode.makeCode(address);
+  }
+  showLink("bigqrcode");
+}
+
+function showProfile(address){
+  $.when(getUsername(address)).done(function(username){
+    $("#notifications").html("");
+    $("#posts").html("");
+    $("#news").html("");
+    var profileBanner = "<h2>"+username+"</h2>"
+                      + '<p>To tip send 15 DOGE to <a onclick="showQrCode(\''+address+'\')" href="javascript: void(0)">'+username+'</a></p>';
+    $(".profilebanner").html(profileBanner);
+    setQRCode(address);
+    showLink("profile");
+    scrapeTransactionData(address);
+  });
+}
+
+var favoriteqrcode;
+function showFavorite(address, amount){
+  if(favoriteqrcode==null){
+      favoriteqrcode = new QRCode("favoriteQRPostCode", {
+      text: address,
+      width: 150,
+      height: 150,
+      colorDark : "#000000",
+      colorLight : "#FBF0D9",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+  } else{
+    favoriteqrcode.clear();
+    favoriteqrcode.makeCode(address);
+  }
+  $.when(getUsername(address)).done(function(username){
+    var favoritebanner = '<h2>Favorite</h2>'
+                       + '<p>'
+                       +   'To favorite this bark send <b>'+amount+' DOGE</b> to <a onclick="showProfile(\''+address+'\')" href="javascript: void(0)">'+username+'</a>\'s address.'
+                       + '</p>';
+    $("#favoriteBase58Check").val(address);
+    $(".favoritebanner").html(favoritebanner);
+    showLink("favorite");
+  });
+}
+
+function constructPostHtml(username, useraddress, favaccount, favamount, time, message){
   return '<div id="'+time+'" style="padding: 10px">'
              + '<table>'
              +  '<tr>'
              +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/comment-square.svg"/></td>'
              +   '<td>&nbsp;'
-             +    '<a href="profile.html?user='+useraddress+'">'+username+'</a> posted: '
+             +    '<a onclick="showProfile(\''+useraddress+'\')" href="javascript: void(0)">'+username+'</a> posted: '
              +   '</td>'
              +  '</tr>'
              +  '<tr><td></td><td>&nbsp;'+message+'</td></tr>'
              +  '<tr>'
              +   '<td></td>'
              +   '<td>&nbsp;'
-             +    '<a href="'+favoriteurl+'">'
+             +    '<a onclick="showFavorite(\''+favaccount+'\',\''+favamount+'\')" href="javascript: void(0)">'
              +     '<img width=15 height=15 src="https://useiconic.com/iconic/svg/thumb.svg"/>'
              +    '</a><i><font color="gray"> &bull; '+timestamp(time)+'</font></i>'
              +   '</td>'
@@ -45,21 +121,21 @@ function constructPostHtml(username, useraddress, favoriteurl, time, message){
              + "</table></div>";
 }
 
-function constructFavoriteHtml(username, useraddress, favoriteurl, favaccount, favname, time, message){
+function constructFavoriteHtml(username, useraddress, favaccount, favamount, favname, time, message){
   return '<div id="'+time+'" style="padding: 10px">'
               + '<table>'
               +  '<tr>'
               +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/star.svg"/></td>'
               +   '<td>&nbsp;'
-              +    '<a href="profile.html?user='+useraddress+'">'+username+'</a> favorited '
-              +    '<a href="profile.html?user='+favaccount+'">'+favname+'</a> post'
+              +    '<a onclick="showProfile(\''+useraddress+'\')" href="javascript: void(0)">'+username+'</a> favorited '
+              +    '<a onclick="showProfile(\''+favaccount+'\')" href="javascript: void(0)">'+favname+'</a> post'
               +   '</td>'
               +  '</tr>'
               +  '<tr><td></td><td>&nbsp;'+message+'</td></tr>'
               +  '<tr>'
               +   '<td></td>'
               +   '<td>&nbsp;'
-              +    '<a href="'+favoriteurl+'">'
+              +    '<a onclick="showFavorite(\''+favaccount+'\',\''+favamount+'\')" href="javascript: void(0)">'
               +     '<img width=15 height=15 src="https://useiconic.com/iconic/svg/thumb.svg"/>'
               +    '</a><i><font color="gray"> &bull; '+timestamp(time)+'</font></i>'
               +   '</td>'
@@ -67,18 +143,21 @@ function constructFavoriteHtml(username, useraddress, favoriteurl, favaccount, f
               + "</table></div>";
 }
 
-function constructFavoriteNotificationHtml(toName, toAddress, fromName, fromAddress, favoriteurl, time, message){
+function constructFavoriteNotificationHtml(toName, toAddress, fromName, fromAddress, favaccount, favamount, time, message){
   return '<div id="'+time+'" style="padding: 10px">'
              + '<table>'
              +  '<tr>'
              +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/star.svg"/></td>'
-             +   '<td>&nbsp;<a href="profile.html?user='+fromAddress+'">'+fromName+'</a> favorited <a href="profile.html?user='+toAddress+'">'+toName+"'s Bark.</td>"
+             +   '<td>&nbsp;'
+             +    '<a onclick="showProfile(\''+fromAddress+'\')" href="javascript: void(0)">'+fromName+'</a> favorited '
+             +    '<a onclick="showProfile(\''+toAddress+'\')" href="javascript: void(0)">'+toName+"'s Bark."
+             +   '</td>'
              +  '</tr>'
              +  '<tr><td></td><td>&nbsp;'+message+'</td></tr>'
              +  '<tr>'
              +   '<td></td>'
              +   '<td>&nbsp;'
-             +    '<a href="'+favoriteurl+'">'
+             +    '<a onclick="showFavorite(\''+favaccount+'\',\''+favamount+'\')" href="javascript: void(0)">'
              +     '<img width=15 height=15 src="https://useiconic.com/iconic/svg/thumb.svg"/>'
              +    '</a><i><font color="gray"> &bull; '+timestamp(time)+'</font></i>'
              +   '</td>'
@@ -92,8 +171,8 @@ function constructTipHtml(username, useraddress, tipname, tipaddress, time){
              +  '<tr>'
              +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/bitcoin-address.svg"/></td>'
              +   '<td>&nbsp;'
-             +    '<a href="profile.html?user='+useraddress+'">'+username+'</a> tipped '
-             +    '<a href="profile.html?user='+tipaddress+'">'+tipname+'</a>'
+             +    '<a onclick="showProfile(\''+useraddress+'\')" href="javascript: void(0)">'+username+'</a> tipped '
+             +    '<a onclick="showProfile(\''+tipaddress+'\')" href="javascript: void(0)">'+tipname+'</a>'
              +   '</td>'
              +  '</tr>'
              +  '<tr>'
@@ -111,7 +190,10 @@ function constructTipNotificationHtml(toName, toAddress, fromName, fromAddress, 
              + '<table>'
              +  '<tr>'
              +   '<td><img width=20 height=20 src="https://useiconic.com/iconic/svg/bitcoin-address.svg"/></td>'
-             +   '<td>&nbsp;<a href="profile.html?user='+fromAddress+'">'+fromName+'</a> tipped <a href="profile.html?user='+toAddress+'">'+toName+'</a></td>'
+             +   '<td>&nbsp;'
+             +    '<a onclick="showProfile(\''+fromAddress+'\')" href="javascript: void(0)">'+fromName+'</a> tipped '
+             +    '<a onclick="showProfile(\''+toAddress+'\')" href="javascript: void(0)">'+toName+'</a>'
+             +   '</td>'
              +  '</tr>'
              +  '<tr>'
              +   '<td></td>'
@@ -147,11 +229,11 @@ function createFavoriteNotification(toAddress, fromAddress, txs, notificationAmo
             var hexMessage = hash160.substring(0,38);
             var hexToken = parseInt(hash160.substring(38,40), 16);
             if(isPost(hexToken) && !createdFavoriteNotification){
-              var user = getUserAddress();
-              var favoriteurl = 'favorite.html?favaccount='+toAddress+'&favamount='+notificationAmount;
+              var favaccount = toAddress;
+              var favamount = notificationAmount;
               var time = tx.time;
               $.when(hash160ToText(hexMessage, hexToken, createFavorite)).done(function(message){
-                var notification = constructFavoriteNotificationHtml(toName, toAddress, fromName, fromAddress, favoriteurl, time, message)
+                var notification = constructFavoriteNotificationHtml(toName, toAddress, fromName, fromAddress, favaccount, favamount, time, message)
                 insertHtml("notifications", notification, time);
                 insertHtml("recentactivity", notification, time);
                 createdFavoriteNotification=true;
@@ -164,22 +246,19 @@ function createFavoriteNotification(toAddress, fromAddress, txs, notificationAmo
   });
 }
 
-function createPost(username, useraddress, tx, hexMessage, hexToken, connectingPosts){
+function createPost(divId, username, useraddress, tx, hexMessage, hexToken, connectingPosts){
+  var favaccount = useraddress;
   var favamount = tx.time/100000000;
-  var favoriteurl = 'favorite.html?favaccount='+useraddress+'&favamount='+favamount;
   var time = tx.time;
   $.when(hash160ToText(hexMessage, hexToken, connectingPosts)).done(function(message){
-    var post = constructPostHtml(username, useraddress, favoriteurl, time, message); 
-    insertHtml("posts", post, time);
-    insertHtml("recentactivity", post, time);
+    var post = constructPostHtml(username, useraddress, favaccount, favamount, time, message); 
+    insertHtml(divId, post, time);
   });
 }
 
 function createFavorite(divId, favamount, favaccount, username, useraddress, tx, hexMessage, dictionary){
-  var favoriteurl = 'favorite.html?favaccount='+favaccount+'&favamount='+favamount;
-  var when = $.when(getAddressJson(favaccount), getUsername(favaccount));
-  when.done(function(json,favname){
-    var connectingPosts = scrapeConnectingPosts(json[0].data.txs);
+  var when = $.when(getAddressJson(favaccount), getUsername(favaccount), getConnectingPosts(favaccount));
+  when.done(function(json,favname,connectingPosts){
     for(var i=0; i<json[0].data.txs.length; i++){
       var tx = json[0].data.txs[i];
       if(tx.outgoing!=null){
@@ -191,7 +270,7 @@ function createFavorite(divId, favamount, favaccount, username, useraddress, tx,
           if(isPost(hexToken) && favamount==(tx.time/100000000)){
             var time = tx.time;
             $.when(hash160ToText(hexMessage, hexToken, connectingPosts)).done(function(message){
-              var post = constructFavoriteHtml(username, useraddress, favoriteurl, favaccount, favname, time, message);
+              var post = constructFavoriteHtml(username, useraddress, favaccount, favamount, favname, time, message);
               insertHtml(divId, post, time);
             });
           };
@@ -231,9 +310,8 @@ function createNews(userAddress, tipaddress, dictionary){
             var time = tx.time;
             var favamount = time/100000000;
             var favaccount = tipaddress;
-            var favoriteurl = 'favorite.html?favaccount='+favaccount+'&favamount='+favamount;
             $.when(hash160ToText(hexMessage, hexToken, connectingPosts)).done(function(message){
-              var post = constructPostHtml(tipname, tipaddress, favoriteurl, time, message); 
+              var post = constructPostHtml(tipname, tipaddress, favaccount, favamount, time, message); 
               insertHtml("news", post, time);
             });
           }
@@ -296,28 +374,31 @@ function isName(hexToken){
   return (hexToken==hexNameToken);
 }
 
-function scrapeConnectingPosts(txs){
-  var connectingPosts = {};
-  for(var i=0; i<txs.length; i++){
-    var tx = txs[i];
-    if(tx.outgoing!=null){
-      for(j=0; j<tx.outgoing.outputs.length; j++){
-        var output = tx.outgoing.outputs[j];
-        var hash160 = base58CheckTohash160(output.address);
-        var hexMessage = hash160.substring(0,36);
-        var hexTokenA = hash160.substring(36,38);
-        var hexTokenB = hash160.substring(38,40);
-        if(isConnectingPost(parseInt(hexTokenA),16)){
-          connectingPosts[hexTokenA+hexTokenB]=hexMessage;
+function scrapeRecentActivity(userAddress){
+  var when = $.when(getAddressJson(userAddress),
+                 getUsername(userAddress),
+                 getConnectingPosts(userAddress));
+  when.done(function(json,userName,connectingPosts){
+    var txs = json[0].data.txs;
+    for(var i=0; i<txs.length; i++){
+      var tx = txs[i];
+      if(tx.outgoing!=null){
+        for(j=0; j<tx.outgoing.outputs.length; j++){
+          var output = tx.outgoing.outputs[j];
+          var hash160 = base58CheckTohash160(output.address);
+          var hexMessage = hash160.substring(0,38);
+          var hexTokenA = parseInt(hash160.substring(36,38), 16);
+          var hexTokenB = parseInt(hash160.substring(38,40), 16);
+          if(isPost(hexTokenB)){
+            createPost("recentactivity", userName, userAddress, tx, hexMessage, hexTokenB, connectingPosts);
+          }
         }
       }
     }
-  }
-  return connectingPosts;
+  });
 }
 
 function scrapeTransactionData(userAddress){
-  /* Going to need to address the hardcoded dictionary issue soon */
   var when = $.when($.getJSON("english_dictionary_decode.json"),
                  getAddressJson(userAddress),
                  getUsername(userAddress),
@@ -339,7 +420,7 @@ function scrapeTransactionData(userAddress){
           var hexTokenA = parseInt(hash160.substring(36,38), 16);
           var hexTokenB = parseInt(hash160.substring(38,40), 16);
           if(isPost(hexTokenB)){
-            createPost(userName, userAddress, tx, hexMessage, hexTokenB, connectingPosts);
+            createPost("posts", userName, userAddress, tx, hexMessage, hexTokenB, connectingPosts);
           }
           if(isFavorite(tx, output) && !inArray(sentFavoriteAmounts, output.value)){
             createFavorite("posts", output.value, output.address, userName, userAddress, tx, hexMessage, dictionary);
@@ -378,7 +459,5 @@ function scrapeTransactionData(userAddress){
         }
       }
     };
-    setUsername(userName);
-    setLinks(userAddress,userName);
   });
 }

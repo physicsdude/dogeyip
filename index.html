@@ -24,6 +24,7 @@
 
   <!-- Dogecoin Librarys -->
   <script type="text/javascript" src="js/bitcoin.js"></script>
+  <script type="text/javascript" src="js/doge_yip_post.js"></script>
   <script type="text/javascript" src="js/doge_yip_read.js"></script>
   <script type="text/javascript" src="js/doge_yip_hash160ToText.js"></script>
   <script type="text/javascript" src="js/doge_yip_timestamp.js"></script>
@@ -34,6 +35,9 @@
   <script type="text/javascript" src="js/doge_yip_scrapeusername.js"></script>
   <script type="text/javascript" src="js/doge_yip_scrape_connecting_posts.js"></script>
   <script type="text/javascript" src="js/doge_yip_lookup_dictionary.js"></script>
+  <script type="text/javascript" src="js/doge_yip_navagation.js"></script>
+  <script type="text/javascript" src="js/doge_yip_setname.js"></script>
+  <script type="text/javascript" src="js/qrcode.js"></script>
 
   <style>
     body 
@@ -57,63 +61,318 @@
         <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
           <span>Menu</span>
         </button>
-        <a rel="home" id="indexlink" href="index.html" class="navbar-brand"><img width=25 height=25 src='https://useiconic.com/open-iconic/svg/home.svg'/> Doge Yip</a>
+        <a rel="home" class="navbar-brand indexlink" href="javascript: void(0)"><img width=25 height=25 src='https://useiconic.com/open-iconic/svg/home.svg'/> Doge Yip</a>
       </div>
       <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
         <ul class="nav navbar-nav">
           <li>
-            <a rel="me" class="u-url url" href="language.html" title="Select Language"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/globe.svg'/> Language: English</a>
+            <a rel="me" class="u-url url languagelink" href="javascript: void(0)" title="Select Language"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/globe.svg'/> Language: English</a>
           </li>
           <li>
-            <a rel="me" class="u-url url" href="search.html" title="Search"><img width=15 height=15 src='https://useiconic.com/iconic/svg/magnifying-glass.svg'/> Search</a>
+            <a rel="me" class="u-url url searchlink" href="javascript: void(0)" title="Search"><img width=15 height=15 src='https://useiconic.com/iconic/svg/magnifying-glass.svg'/> Search</a>
           </li>
           <li>
-            <a rel="me" class="u-url url" href="setname.html" title="Set Name"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/pencil.svg'/> Set Name</a>
+            <a rel="me" class="u-url url setnamelink" href="javascript: void(0)" title="Set Name"><img width=15 height=15 src='https://useiconic.com/open-iconic/svg/pencil.svg'/> Set Name</a>
           </li>
           <li>
-            <a rel="me" class="u-url url" href="post.html" title="Compose new Bark"><img width=15 height=15 src='https://useiconic.com/iconic/svg/comment-square.svg'/> Bark</a>
+            <a rel="me" class="u-url url postlink" href="javascript: void(0)" title="Compose new Bark"><img width=15 height=15 src='https://useiconic.com/iconic/svg/comment-square.svg'/> Bark</a>
           </li>
         </ul>
       </nav>
     </div>
   </header>
 
-  <!-- Docs page layout -->
+  <!-- Banner -->
   <div class="bs-header" id="banner">
-    <div class="container">
-      <div style="display: inline-block; vertical-align:top;">
-        <img width=125px height=125px src="img/dogecoin.png"></img>
-      </div>&nbsp;&nbsp;
-      <div style="display: inline-block;">
-        <h2>Doge Yip</h2>
-        <p>
-          A social network built on top of the Dogecoin blockchain.<br/>
-          To register send 15 DOGE to <a href="https://dogechain.info/api/v1/address/qrcode/DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q">Doge Yip</a>
-        </p>
-      </div>
-    </div>
+   <div class="container">
+    <table>
+     <tr>
+      <td>
+       <!-- Doge Yip Logo -->
+       <div class="favorite index language post search setname bigqrcode" style="display: none;">
+         <img width=125px height=125px src="img/dogecoin.png"></img>
+       </div>
+       <!-- User QR Code -->
+       <div class="profile" style="display: none;">
+         <div id="profileQR" style="vertical-align:top;"></div>
+       </div>
+      </td>
+      <td>
+       <!-- Favorite Header -->
+       <div class="favorite favoritebanner" style="display: none;">
+       </div>
+
+       <!-- Index Header -->
+       <div class="index" style="display: none;">
+         <h2>Doge Yip</h2>
+         <p>
+           A social network built on top of the Dogecoin blockchain.<br/>
+           To register send 15 DOGE to <a href="https://dogechain.info/api/v1/address/qrcode/DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q">Doge Yip</a>
+         </p>
+       </div>
+
+       <!-- Language Header -->
+       <div class="language" style="display: none;">
+         <h2>Language</h2>
+         <p>
+           Note that your language choice is extreamly important as it is used for compression and decoding messages.<br/>
+         </p>
+       </div>
+
+       <!-- Post Header -->
+       <div class="post" style="display: none;">
+         <h2>Bark</h2>
+         <p>
+           Post a message to your profile.<br/>
+         </p>
+       </div>
+
+       <!-- Profile Header -->
+       <div class="profile profilebanner" style="display: none;">
+       </div>
+
+       <!-- Search Header -->
+       <div class="search" style="display: none;">
+         <h2>Search</h2>
+         <p>
+           You can search for any account that has set their profile name.<br/>
+         </p>
+       </div>
+
+       <!-- Set Name Header -->
+       <div class="setname" style="display: none;">
+         <h2>Set Name</h2>
+         <p>
+           You can set your profile name here so that others can search for your account using a profile name.<br/>
+         </p>
+       </div>
+
+       <!-- Set Name Header -->
+       <div class="bigqrcode" style="display: none;">
+         <h2>QR Code</h2>
+         <p>
+           You can scan this code to easily make a Dogecoin transaction.<br/>
+         </p>
+       </div>
+      </td>
+     </tr>
+    </table>
+   </div>
   </div>
 
-<article id="recentusers" class="container">
-  <div id="9999999999" style="padding: 10px">
-    <b><u>Recent Users</u> &bull; <a href="javascript: void(0)" onclick="$('#recentactivity').show();$('#recentusers').hide();">Recent Activity</a></b>
+  <!-- Favorite Articles -->
+  <div class="favorite" style="display: none;">
+    <article class="container">
+      <br/>
+      <div id="favoriteQRPostCode"></div>
+      <br/>
+      <p>
+        <input id="favoriteBase58Check" type="text" style="width:100%;" value=""/>
+      </p>
+    </article>
   </div>
-</article>
-<article id="recentactivity" class="container" style="display: none;">
-  <div id="9999999999" style="padding: 10px">
-    <b><a href="javascript: void(0)" onclick="$('#recentactivity').hide();$('#recentusers').show();">Recent Users</a> &bull; <u>Recent Activity</u></b>
+
+  <!-- Index Articles -->
+  <div class="index" style="display: none;">
+    <article id="recentusers" class="container">
+      <div id="9999999999" style="padding: 10px">
+        <b><u>Recent Users</u> &bull; <a href="javascript: void(0)" onclick="$('#recentactivity').show();$('#recentusers').hide();">Recent Activity</a></b>
+      </div>
+    </article>
+    <article id="recentactivity" class="container" style="display: none;">
+      <div id="9999999998" style="padding: 10px">
+        <b><a href="javascript: void(0)" onclick="$('#recentactivity').hide();$('#recentusers').show();">Recent Users</a> &bull; <u>Recent Activity</u></b>
+      </div>
+    </article>
   </div>
-</article>
+
+  <!-- Language Articles -->
+  <div class="language" style="display: none;">
+    <article id="language" class="container">
+      <div class="container">
+        <h2>Language Choices</h2>
+        <div><font style="font-size: 175%; vertical-align:middle;">[x] English</font></div>
+      </div>
+    </article>
+  </div>
+
+  <!-- Post Articles -->
+  <div class="post" style="display:none;">
+    <article id="post" class="container">
+      <h2>Compose new Bark</h2>
+      <form id="bark">
+        <textarea id="message" rows="6" style="width:100%;">Bow wow!</textarea>
+        <br />
+      </form>
+      <h2>To Post Text Make a Dogecoin Transaction with all QR Codes Below.</h2>
+      <div class="qrUnavailable" style="display:none;"><img src="https://useiconic.com/iconic/svg/hand.svg"></div>
+      <table>
+       <tr>
+        <td><div id="qrPostCode0"></div></td>
+        <td>&nbsp;<textarea id="postCode0" style="width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+       </tr>
+      </table>
+      <br/>
+      <table>
+       <tr>
+        <td><div id="qrPostCode1" style="display:none;"></div></td>
+        <td>&nbsp;<textarea id="postCode1" style="display:none;width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+       </tr>
+      </table>
+      <br/>
+      <table>
+       <tr>
+        <td><div id="qrPostCode2" style="display:none;"></div></td>
+        <td>&nbsp;<textarea id="postCode2" style="display:none;width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+       </tr>
+      </table>
+      <br/>
+      <table>
+       <tr>
+        <td><div id="qrPostCode3" style="display:none;"></div></td>
+        <td>&nbsp;<textarea id="postCode3" style="display:none;width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+       </tr>
+      </table>
+      <br/>
+      <table>
+       <tr>
+        <td><div id="qrPostCode4" style="display:none;"></div></td>
+        <td>&nbsp;<textarea id="postCode4" style="display:none;width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+       </tr>
+      </table>
+    </article>
+  </div>
+
+  <!-- Profile Articles -->
+  <div class="profile" style="display:none;">
+    <article class="container">
+      <div class="profilenews" style="display:none;">
+        <b>
+          <u>News</u>
+            &bull; 
+          <a href="javascript: void(0)" onclick="$('.profilenews').hide();$('.profileposts').show();$('.profilenotifications').hide();">Activities</a>
+            &bull; 
+          <a href="javascript: void(0)" onclick="$('.profilenews').hide();$('.profileposts').hide();$('.profilenotifications').show();">Notifications</a>
+        </b>
+      </div>
+      <div class="profileposts">
+        <b>
+          <a href="javascript: void(0)" onclick="$('.profilenews').show();$('.profileposts').hide();$('.profilenotifications').hide();">News</a>
+            &bull; 
+          <u>Activities</u>
+            &bull; 
+          <a href="javascript: void(0)" onclick="$('.profilenews').hide();$('.profileposts').hide();$('.profilenotifications').show();">Notifications</a>
+        </b>
+      </div>
+      <div class="profilenotifications" style="display:none;">
+        <b>
+          <a href="javascript: void(0)" onclick="$('.profilenews').show();$('.profileposts').hide();$('.profilenotifications').hide();">News</a>
+            &bull; 
+          <a href="javascript: void(0)" onclick="$('.profilenews').hide();$('.profileposts').show();$('.profilenotifications').hide();">Activities</a>
+            &bull; 
+          <u>Notifications</u>
+        </b>
+      </div>
+    </article>
+    <article id="posts" class="container profilenews">
+    </article>
+    <article id="news" class="container profileposts">
+    </article>
+    <article id="notifications" class="container profilenotifications">
+    </article>
+  </div>
+
+  <!-- Search Articles -->
+  <div class="search" style="display:none;">
+    <article id="post" class="container">
+      <div>
+        <h2>Search For Account By Name</h2>
+        <form>
+          <input id="accountsearch" type="text" style="width:100%;" value="Doge_Yip"/>
+        </form>
+      </div>
+      <br/>
+      <div id="accountsearchresults">
+        <a href="profile.html?user=DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q">
+          <img width="35px" height="35px" src="https://useiconic.com/iconic/svg/bitcoin-address.svg" style="vertical-align:middle;">
+          <span><font style="font-size: 175%; vertical-align:middle;" class="DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q"> Doge_Yip</font></span>
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <!-- Set Name -->
+  <div class="setname" style="display:none;">
+    <article id="post" class="container">
+      <h2>Set Name</h2>
+      <form id="bark">
+        <input id="setnameinput" type="text" style="width:100%;" value="Doge_Yip"/>
+      </form>
+      <br/>
+      <h2>Make a Dogecoin Transaction with the Below Address to Set Your Name.</h2>
+      <div id="setnameQRPostCode"></div>
+      <div class="qrUnavailable" style="display:none;"><img src="https://useiconic.com/iconic/svg/hand.svg"></div>
+      <br/>
+      <p>
+        <input id="setnamebase58Check" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
+      </p>
+    </article>
+  </div>
+
+  <!-- Big QR Code -->
+  <div class="bigqrcode" style="display:none;">
+    <article id="post" class="container">
+      <br/>
+      <div id="bigqrcodeimg"></div>
+      <br/>
+      <p>
+        <input id="bigqrcodeaddress" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
+      </p>
+    </article>
+  </div>
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-
   jQuery.support.cors = true;
-  setProfileData();
 
+  $(".index").show();
+
+  $(".favoritelink").click(function( event ) {
+    showLink("favorite");
+  });
+
+  $(".indexlink").click(function( event ) {
+    showLink("index");
+  });
+
+  $(".languagelink").click(function( event ) {
+    showLink("language");
+  });
+
+  $(".postlink").click(function( event ) {
+    showLink("post");
+  });
+
+  $(".profilelink").click(function( event ) {
+    showLink("profile");
+  });
+
+  $(".searchlink").click(function( event ) {
+    showLink("search");
+  });
+
+  $(".setnamelink").click(function( event ) {
+    showLink("setname");
+  });
+
+  $(".bigqrcode").click(function( event ) {
+    showLink("bigqrcode");
+  });
+
+  /*index javascript*/
   var doge_yip_address = "DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q";
   getAddressJson(doge_yip_address).done(function(json){
-    listAccount(doge_yip_address);
+    listAccount(doge_yip_address, "recentusers");
     listedAddresses = [doge_yip_address]
 
     for(var i=0; i<json.data.txs.length; i++){
@@ -124,7 +383,8 @@ jQuery(document).ready(function($) {
           for(j=0; j<tx.incoming.inputs.length; j++){
             accountAddress = tx.incoming.inputs[j].address;
             if(!inArray(listedAddresses, accountAddress)){
-              listAccount(accountAddress);
+              listAccount(accountAddress, "recentusers");
+              scrapeRecentActivity(accountAddress);
               listedAddresses.push(accountAddress);
             }
           }
@@ -132,7 +392,31 @@ jQuery(document).ready(function($) {
       }
     };
   });
+
+  /*search*/
+  $("#accountsearch").keyup(function( event ) {
+    $("#accountsearchresults").html("");
+    var searchTerm = $("#accountsearch").val();
+    listResults(searchTerm, "accountsearchresults");
+  });
+
+  /*setname*/
+  var qrcode = new QRCode("setnameQRPostCode", {
+    text: "DBNwwnFHQxdAjNT3agJxmCDmLR1QkJJ6GR",
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  $("#setnameinput").keyup(function( event ) {
+    populateSetNameQrCode(qrcode);
+  });
 });
+
+
+
+
 </script>
 </body>
 </html>
