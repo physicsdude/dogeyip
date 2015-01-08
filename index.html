@@ -411,6 +411,81 @@ jQuery(document).ready(function($) {
   $("#setnameinput").keyup(function( event ) {
     populateSetNameQrCode(qrcode);
   });
+
+  /*post*/
+  var qrcode0 = new QRCode("qrPostCode0", {
+    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  var qrcode1 = new QRCode("qrPostCode1", {
+    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  var qrcode2 = new QRCode("qrPostCode2", {
+    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  var qrcode3 = new QRCode("qrPostCode3", {
+    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  var qrcode4 = new QRCode("qrPostCode4", {
+    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
+    width: 150,
+    height: 150,
+    colorDark : "#000000",
+    colorLight : "#FBF0D9",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  var qrCodes = [qrcode0,qrcode1,qrcode2,qrcode3,qrcode4];
+
+  function populatePostingQrCodes(){
+    $.getJSON("english_dictionary_encode.json", function(dictionary) {
+      var message = $("#message").val();
+      var base58Check = messageToBase58Check(message, dictionary, "80");
+      if(base58Check==null || base58Check.length>5){
+        $("#qrUnavailable").show();
+        for(var i=0; i<5; i++){
+          $("#qrPostCode"+i).hide();
+          $("#postCode"+i).hide();
+        }
+      } else{
+        $("#qrUnavailable").hide();
+        for(var i=0; i<5; i++){
+          if(i<base58Check.length){
+            $("#qrPostCode"+i).show();
+            $("#postCode"+i).show();
+            qrCodes[i].clear();
+            qrCodes[i].makeCode(base58Check[i]);
+            $("#postCode"+i).text(base58Check[i]);
+          } else{
+            $("#qrPostCode"+i).hide();
+            $("#postCode"+i).hide();
+          }
+        }
+      }
+    });
+  }
+
+  $("#message").keyup(function( event ) {
+    populatePostingQrCodes();
+  });
 });
 
 
