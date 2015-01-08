@@ -20,7 +20,9 @@ function messageToBase58Check(message, dictionary, dictionaryHex){
   var words = message.split(' ');
   for(var i=0; i<words.length; i++){
     var word = words[i];
-    if(dictionary.hasOwnProperty(word)){
+    if(dictionary==null){
+      word=textToHex(word);
+    } else if(dictionary.hasOwnProperty(word)){
       word=dictionary[word];
     } else if(word.length>3 && dictionary.hasOwnProperty(word.substring(0, word.length-1))){
       word=dictionary[word.substring(0, word.length-1)]+textToHex(word.substring(word.length-1));

@@ -36,6 +36,7 @@
   <script type="text/javascript" src="js/doge_yip_scrapeusername.js"></script>
   <script type="text/javascript" src="js/doge_yip_scrape_connecting_posts.js"></script>
   <script type="text/javascript" src="js/doge_yip_lookup_dictionary.js"></script>
+  <script type="text/javascript" src="js/doge_yip_listResults.js"></script>
 
   <style>
     body 
@@ -113,37 +114,13 @@
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-
   jQuery.support.cors = true;
-  setProfileData();
-
-  var dictionary;
-  var dictionaryHex;
-  $.getJSON("english_dictionary_encode.json", function( json ) {
-    dictionary = json;
-    dictionaryHex="9F"
-  });
 
   $("#search").keyup(function( event ) {
     $("#results").html("");
     var searchTerm = $("#search").val();
-    var base58Check = messageToBase58Check(searchTerm, dictionary, dictionaryHex);
-    listResults(base58Check);
+    listResults(searchTerm);
   });
-
-  function listResults(address){
-    getAddressJson(address).done(function(json){
-      for(var i=0; i<json.data.txs.length; i++){
-        var tx = json.data.txs[i];
-        if(tx.incoming!=null){
-          for(j=0; j<tx.incoming.inputs.length; j++){
-            accountAddress = tx.incoming.inputs[j].address;
-            listAccount(accountAddress);
-          }
-        }
-      };
-    });
-  }
 });
 </script>
 </body>
