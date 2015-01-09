@@ -61,16 +61,16 @@ function showQrCode(address){
 }
 
 function showProfile(address){
-  $.when(getUsername(address)).done(function(username){
+  getUser(address).done(function(user){
     $("#notifications").html("");
     $("#posts").html("");
     $("#news").html("");
-    var profileBanner = "<h2>"+username+"</h2>"
-                      + '<p>To tip send 15 DOGE to <a onclick="showQrCode(\''+address+'\')" href="javascript: void(0)">'+username+'</a></p>';
+    var profileBanner = "<h2>"+user.username+"</h2>"
+                      + '<p>To tip send 15 DOGE to <a onclick="showQrCode(\''+user.address+'\')" href="javascript: void(0)">'+user.username+'</a></p>';
     $(".profilebanner").html(profileBanner);
-    setQRCode(address);
+    setQRCode(user.address);
     showLink("profile");
-    scrapeTransactionData(address);
+    scrapeTransactionData(user.address);
   });
 }
 
@@ -89,10 +89,10 @@ function showFavorite(address, amount){
     favoriteqrcode.clear();
     favoriteqrcode.makeCode(address);
   }
-  $.when(getUsername(address)).done(function(username){
+  getUser(address).done(function(user){
     var favoritebanner = '<h2>Favorite</h2>'
                        + '<p>'
-                       +   'To favorite this bark send <b>'+amount+' DOGE</b> to <a onclick="showProfile(\''+address+'\')" href="javascript: void(0)">'+username+'</a>\'s address.'
+                       +   'To favorite this bark send <b>'+amount+' DOGE</b> to <a onclick="showProfile(\''+address+'\')" href="javascript: void(0)">'+user.username+'</a>\'s address.'
                        + '</p>';
     $("#favoriteBase58Check").val(address);
     $(".favoritebanner").html(favoritebanner);
@@ -205,133 +205,60 @@ function constructTipNotificationHtml(toName, toAddress, fromName, fromAddress, 
              + "</table></div>";
 }
 
-function createTipNotification(toName, toAddress, fromAddress, tx, dictionary){
-  var when = $.when(getAddressJson(fromAddress), getUsername(fromAddress));
-  when.done(function(json,fromName){
-    var time = tx.time;
-    var notification = constructTipNotificationHtml(toName, toAddress, fromName, fromAddress, time);
+function createTipNotification(toName, toAddress, fromAddress, time){
+  var when = getUser(fromAddress).done(function(from){
+    var notification = constructTipNotificationHtml(toName, toAddress, from.username, from.address, time);
     insertHtml("notifications", notification, time);
-    insertHtml("recentactivity", notification, time);    
   });
 }
 
-function createFavoriteNotification(toAddress, fromAddress, txs, notificationAmount, createFavorite){
-  var when = $.when(getUsername(toAddress),getUsername(fromAddress));
-  when.done(function(toName, fromName){
-    createdFavoriteNotification = false;
-    for(var i=0; i<txs.length; i++){
-      var tx = txs[i];
-      if(tx.outgoing!=null){
-        for(j=0; j<tx.outgoing.outputs.length; j++){
-          var output = tx.outgoing.outputs[j];
-          if(tx.time/100000000==notificationAmount){
-            var hash160 = base58CheckTohash160(output.address);
-            var hexMessage = hash160.substring(0,38);
-            var hexToken = parseInt(hash160.substring(38,40), 16);
-            if(isPost(hexToken) && !createdFavoriteNotification){
-              var favaccount = toAddress;
-              var favamount = notificationAmount;
-              var time = tx.time;
-              $.when(hash160ToText(hexMessage, hexToken, createFavorite)).done(function(message){
-                var notification = constructFavoriteNotificationHtml(toName, toAddress, fromName, fromAddress, favaccount, favamount, time, message)
-                insertHtml("notifications", notification, time);
-                insertHtml("recentactivity", notification, time);
-                createdFavoriteNotification=true;
-              });
-            }
-          }
-        }
+function createFavoriteNotification(to, fromAddress, fromAmount){
+  getUser(fromAddress).done(function(from){
+    for(var i=0; i<to.posts.length; i++){
+      if(to.posts[i].time==fromAmount*100000000){
+        var toHexMessage = to.posts[i].hexMessage;
+        var toHexLibrary = to.posts[i].hexLibrary;
+        var toConnectingPosts = to.connectingPosts;
+        var toTime = to.posts[i].time;
+        hash160ToText(toHexMessage, toHexLibrary, toConnectingPosts).done(function(toMessage){
+          var notification = constructFavoriteNotificationHtml(to.username, to.address, from.username, from.address, to.address, fromAmount, toTime, toMessage);
+          insertHtml("notifications", notification, toTime);
+        });
       }
     }
   });
 }
 
-function createPost(divId, username, useraddress, tx, hexMessage, hexToken, connectingPosts){
+function createPost(divId, username, useraddress, time, hexMessage, hexToken, connectingPosts){
   var favaccount = useraddress;
-  var favamount = tx.time/100000000;
-  var time = tx.time;
-  $.when(hash160ToText(hexMessage, hexToken, connectingPosts)).done(function(message){
+  var favamount = time/100000000;
+  hash160ToText(hexMessage, hexToken, connectingPosts).done(function(message){
     var post = constructPostHtml(username, useraddress, favaccount, favamount, time, message); 
     insertHtml(divId, post, time);
   });
 }
 
-function createFavorite(divId, favamount, favaccount, username, useraddress, tx, hexMessage, dictionary){
-  var when = $.when(getAddressJson(favaccount), getUsername(favaccount), getConnectingPosts(favaccount));
-  when.done(function(json,favname,connectingPosts){
-    for(var i=0; i<json.data.txs.length; i++){
-      var tx = json.data.txs[i];
-      if(tx.outgoing!=null){
-        for(j=0; j<tx.outgoing.outputs.length; j++){
-          var output = tx.outgoing.outputs[j];
-          var hash160 = base58CheckTohash160(output.address);
-          var hexMessage = hash160.substring(0,38);
-          var hexToken = parseInt(hash160.substring(38,40), 16);
-          if(isPost(hexToken) && favamount==(tx.time/100000000)){
-            var time = tx.time;
-            $.when(hash160ToText(hexMessage, hexToken, connectingPosts)).done(function(message){
-              var post = constructFavoriteHtml(username, useraddress, favaccount, favamount, favname, time, message);
-              insertHtml(divId, post, time);
-            });
-          };
-        }
+function createFavorite(divId, favamount, favaccount, username, useraddress){
+  getUser(favaccount).done(function(fav){
+    for(var i=0; i<fav.posts.length; i++){
+      if(fav.posts[i].time==favamount*100000000){
+        var favHexMessage = fav.posts[i].hexMessage;
+        var favHexLibrary = fav.posts[i].hexLibrary;
+        var favConnectingPosts = fav.connectingPosts;
+        var favTime = fav.posts[i].time;
+        hash160ToText(favHexMessage, favHexLibrary, favConnectingPosts).done(function(message){
+          var favorite = constructFavoriteHtml(username, useraddress, favaccount, favamount, fav.username, favTime, message);
+          insertHtml(divId, favorite, favTime);
+        });
       }
-    };
-    $("."+favaccount).text(" "+favname);
+    }
   });
 }
 
-function createTip(username, useraddress, tipaddress, tx, dictionary){
-  var when = $.when(getAddressJson(tipaddress), getUsername(tipaddress));
-  when.done(function(json, tipname){
-    var time = tx.time;
-    var post = constructTipHtml(username, useraddress, tipname, tipaddress, time);
-    insertHtml("posts", post, time);
-  });
-}
-
-function createNews(userAddress, tipaddress, dictionary){
-  var when = $.when(getAddressJson(tipaddress),
-                 getUsername(tipaddress),
-                 getConnectingPosts(tipaddress));
-  when.done(function(json,tipname,connectingPosts){
-    var sentFavoriteAmounts = [];
-    var sentTipAddresses = [];
-    var txs = json.data.txs;
-    for(var i=0; i<txs.length; i++){
-      var tx = txs[i];
-      if(tx.outgoing!=null){
-        for(j=0; j<tx.outgoing.outputs.length; j++){
-          var output = tx.outgoing.outputs[j];
-          var hash160 = base58CheckTohash160(output.address);
-          var hexMessage = hash160.substring(0,38);
-          var hexToken = parseInt(hash160.substring(38,40), 16);
-          if(isPost(hexToken)){
-            var time = tx.time;
-            var favamount = time/100000000;
-            var favaccount = tipaddress;
-            $.when(hash160ToText(hexMessage, hexToken, connectingPosts)).done(function(message){
-              var post = constructPostHtml(tipname, tipaddress, favaccount, favamount, time, message); 
-              insertHtml("news", post, time);
-            });
-          }
-          if(isTip(output) && userAddress!=output.address && !inArray(sentTipAddresses, output.address)){
-            var outputAddress = output.address;
-            var time = tx.time;
-            var when = $.when(getUsername(outputAddress));
-            when.done(function(outputName){
-              var post = constructTipHtml(tipname, tipaddress, outputName, outputAddress, time);
-              insertHtml("news", post, time);
-              sentTipAddresses.push(output.address);
-            });
-          }
-          if(isFavorite(tx, output) && userAddress!=output.address && !inArray(sentFavoriteAmounts, output.address+"_"+output.value)){
-            createFavorite("news", output.value, output.address, tipname, tipaddress, tx, hexMessage, dictionary);
-            sentFavoriteAmounts.push(output.address+"_"+output.value)
-          }
-        }
-      }
-    };
+function createTip(divId, username, useraddress, tipaddress, time){
+  var when = getUser(tipaddress).done(function(tip){
+    var tipHtml = constructTipHtml(username, useraddress, tip.username, tipaddress, time);
+    insertHtml(divId, tipHtml, time);
   });
 }
 
@@ -374,90 +301,57 @@ function isName(hexToken){
   return (hexToken==hexNameToken);
 }
 
-function scrapeRecentActivity(userAddress){
-  var when = $.when(getAddressJson(userAddress),
-                 getUsername(userAddress),
-                 getConnectingPosts(userAddress));
-  when.done(function(json,userName,connectingPosts){
-    var txs = json.data.txs;
-    for(var i=0; i<txs.length; i++){
-      var tx = txs[i];
-      if(tx.outgoing!=null){
-        for(j=0; j<tx.outgoing.outputs.length; j++){
-          var output = tx.outgoing.outputs[j];
-          var hash160 = base58CheckTohash160(output.address);
-          var hexMessage = hash160.substring(0,38);
-          var hexTokenA = parseInt(hash160.substring(36,38), 16);
-          var hexTokenB = parseInt(hash160.substring(38,40), 16);
-          if(isPost(hexTokenB)){
-            createPost("recentactivity", userName, userAddress, tx, hexMessage, hexTokenB, connectingPosts);
-          }
-        }
-      }
+function scrapeRecentActivity(address, divId){
+  getUser(address).done(function(user){
+    for(var i=0; i<user.posts.length; i++){
+      var post = user.posts[i];
+      createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
+    }
+    for (var key in user.output.favorites) {
+      favoriteaddress = user.output.favorites[key].address
+      favoriteamount = user.output.favorites[key].amount
+      favoritetime = user.output.favorites[key].time
+      createFavorite(divId, favoriteamount, favoriteaddress, user.username, user.address);
+    }
+    for (var key in user.output.tips) {
+      tipaddress = user.output.tips[key].address
+      tipamount = user.output.tips[key].amount
+      tiptime = user.output.tips[key].time
+      createTip(divId, user.username, user.address, tipaddress, tiptime);
     }
   });
 }
 
-function scrapeTransactionData(userAddress){
-  var when = $.when($.getJSON("english_dictionary_decode.json"),
-                 getAddressJson(userAddress),
-                 getUsername(userAddress),
-                 getConnectingPosts(userAddress));
-  when.done(function(dictionary,json,userName,connectingPosts){
-    var followedAddresses = [userAddress];
-    var sentFavoriteAmounts = [];
-    var sentTipAddresses = [];
-    var receivedFavoriteAmounts = [];
-    var receivedTipAddresses = [];
-    var txs = json.data.txs;
-    for(var i=0; i<txs.length; i++){
-      var tx = txs[i];
-      if(tx.outgoing!=null){
-        for(j=0; j<tx.outgoing.outputs.length; j++){
-          var output = tx.outgoing.outputs[j];
-          var hash160 = base58CheckTohash160(output.address);
-          var hexMessage = hash160.substring(0,38);
-          var hexTokenA = parseInt(hash160.substring(36,38), 16);
-          var hexTokenB = parseInt(hash160.substring(38,40), 16);
-          if(isPost(hexTokenB)){
-            createPost("posts", userName, userAddress, tx, hexMessage, hexTokenB, connectingPosts);
-          }
-          if(isFavorite(tx, output) && !inArray(sentFavoriteAmounts, output.value)){
-            createFavorite("posts", output.value, output.address, userName, userAddress, tx, hexMessage, dictionary);
-            sentFavoriteAmounts.push(output.value);
-            if(!inArray(followedAddresses, output.address)){
-              createNews(userAddress, output.address, dictionary);
-              followedAddresses.push(output.address);
-            }
-          }
-          if(isTip(output)){
-            if(!inArray(sentTipAddresses, output.address)){
-              var tipAddress = output.address;
-              createTip(userName, userAddress, tipAddress, tx, dictionary);
-              sentTipAddresses.push(output.address);
-            }
-            if(!inArray(followedAddresses, output.address)){
-              createNews(userAddress, output.address, dictionary);
-              followedAddresses.push(output.address);
-            }
-          }
-        }
-      }
-      if(tx.incoming!=null && isFavoriteNotification(tx)){
-        var amount = tx.incoming.value;
-        var input = tx.incoming.inputs[0];
-        if(!inArray(receivedFavoriteAmounts, input.address+"_"+amount)){
-          createFavoriteNotification(userAddress, input.address, txs, amount, connectingPosts);
-          receivedFavoriteAmounts.push(input.address+"_"+amount);
-        }
-      }
-      if(tx.incoming!=null && isTipNotification(tx)){
-        var input = tx.incoming.inputs[0];
-        if(!inArray(receivedTipAddresses, input.address)){
-          createTipNotification(userName, userAddress, input.address, tx, dictionary);
-          receivedTipAddresses.push(input.address);
-        }
-      }
-    };
+function scrapeTransactionData(address){
+  getUser(address).done(function(user){
+    for(var i=0; i<user.posts.length; i++){
+      var post = user.posts[i];
+      createPost("posts", user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
+    }
+    for (var key in user.output.favorites) {
+      favoriteaddress = user.output.favorites[key].address
+      favoriteamount = user.output.favorites[key].amount
+      favoritetime = user.output.favorites[key].time
+      createFavorite("posts", favoriteamount, favoriteaddress, user.username, user.address);
+    }
+    for (var key in user.output.tips) {
+      tipaddress = user.output.tips[key].address
+      tipamount = user.output.tips[key].amount
+      tiptime = user.output.tips[key].time
+      createTip("posts", user.username, user.address, tipaddress, tiptime);
+      scrapeRecentActivity(tipaddress, "news")
+    }
+    for (var key in user.input.favorites) {
+      favoriteaddress = user.input.favorites[key].address
+      favoriteamount = user.input.favorites[key].amount
+      favoritetime = user.input.favorites[key].time
+      createFavoriteNotification(user, favoriteaddress, favoriteamount);
+    }
+    for (var key in user.input.tips) {
+      tipaddress = user.input.tips[key].address
+      tipamount = user.input.tips[key].amount
+      tiptime = user.input.tips[key].time
+      createTipNotification(user.username, user.address, tipaddress, tiptime);
+    }
   });
 }

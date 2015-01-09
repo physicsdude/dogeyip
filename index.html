@@ -375,26 +375,15 @@ jQuery(document).ready(function($) {
 
   /*index javascript*/
   var doge_yip_address = "DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q";
-  getAddressJson(doge_yip_address).done(function(json){
+  getUser(doge_yip_address).done(function(user){
     listAccount(doge_yip_address, "recentusers");
-    listedAddresses = [doge_yip_address]
+    scrapeRecentActivity(doge_yip_address);
 
-    for(var i=0; i<json.data.txs.length; i++){
-      var tx = json.data.txs[i];
-      if(tx.incoming!=null){
-        var is_registered = tx.incoming.value==15;
-        if(is_registered){
-          for(j=0; j<tx.incoming.inputs.length; j++){
-            accountAddress = tx.incoming.inputs[j].address;
-            if(!inArray(listedAddresses, accountAddress)){
-              listAccount(accountAddress, "recentusers");
-              scrapeRecentActivity(accountAddress);
-              listedAddresses.push(accountAddress);
-            }
-          }
-        }
-      }
-    };
+    for (var key in user.input.tips) {
+      var tip = user.input.tips[key];
+      listAccount(tip.address, "recentusers");
+      scrapeRecentActivity(tip.address, "recentactivity");
+    }
   });
 
   /*search*/
