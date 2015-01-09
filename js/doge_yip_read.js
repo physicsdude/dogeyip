@@ -259,8 +259,8 @@ function createPost(divId, username, useraddress, tx, hexMessage, hexToken, conn
 function createFavorite(divId, favamount, favaccount, username, useraddress, tx, hexMessage, dictionary){
   var when = $.when(getAddressJson(favaccount), getUsername(favaccount), getConnectingPosts(favaccount));
   when.done(function(json,favname,connectingPosts){
-    for(var i=0; i<json[0].data.txs.length; i++){
-      var tx = json[0].data.txs[i];
+    for(var i=0; i<json.data.txs.length; i++){
+      var tx = json.data.txs[i];
       if(tx.outgoing!=null){
         for(j=0; j<tx.outgoing.outputs.length; j++){
           var output = tx.outgoing.outputs[j];
@@ -297,7 +297,7 @@ function createNews(userAddress, tipaddress, dictionary){
   when.done(function(json,tipname,connectingPosts){
     var sentFavoriteAmounts = [];
     var sentTipAddresses = [];
-    var txs = json[0].data.txs;
+    var txs = json.data.txs;
     for(var i=0; i<txs.length; i++){
       var tx = txs[i];
       if(tx.outgoing!=null){
@@ -379,7 +379,7 @@ function scrapeRecentActivity(userAddress){
                  getUsername(userAddress),
                  getConnectingPosts(userAddress));
   when.done(function(json,userName,connectingPosts){
-    var txs = json[0].data.txs;
+    var txs = json.data.txs;
     for(var i=0; i<txs.length; i++){
       var tx = txs[i];
       if(tx.outgoing!=null){
@@ -409,7 +409,7 @@ function scrapeTransactionData(userAddress){
     var sentTipAddresses = [];
     var receivedFavoriteAmounts = [];
     var receivedTipAddresses = [];
-    var txs = json[0].data.txs;
+    var txs = json.data.txs;
     for(var i=0; i<txs.length; i++){
       var tx = txs[i];
       if(tx.outgoing!=null){
