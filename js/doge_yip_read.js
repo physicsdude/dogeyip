@@ -262,45 +262,6 @@ function createTip(divId, username, useraddress, tipaddress, time){
   });
 }
 
-function isTip(output){
-  return 15==output.value;
-}
-
-function isFavoriteNotification(tx){
-  var amount = tx.incoming.value
-  var time = tx.time/100000000;
-  return (tx.incoming.inputs!=null && amount>time-1 && amount<time+1);
-}
-
-function isTipNotification(tx){
-  var amount = tx.incoming.value
-  var time = tx.time/100000000;
-  return (tx.incoming.inputs!=null && amount==15);
-}
-
-function isFavorite(tx, output){
-  var amount = output.value
-  var time = tx.time/100000000;
-  return (amount>time-1 && amount<time+1);
-}
-
-function isConnectingPost(hexToken){
-  var startHexLibraryTokenRange = parseInt("00",16);
-  var endHexLibraryTokenRange = parseInt("1F",16);
-  return (hexToken>=startHexLibraryTokenRange && hexToken<=endHexLibraryTokenRange);
-}
-
-function isPost(hexToken){
-  var startHexLibraryTokenRange = parseInt("80",16);
-  var endHexLibraryTokenRange = parseInt("9E",16);
-  return (hexToken>=startHexLibraryTokenRange && hexToken<=endHexLibraryTokenRange);
-}
-
-function isName(hexToken){
-  var hexNameToken = parseInt("9F",16);
-  return (hexToken==hexNameToken);
-}
-
 function scrapeRecentActivity(address, divId){
   getUser(address).done(function(user){
     for(var i=0; i<user.posts.length; i++){
