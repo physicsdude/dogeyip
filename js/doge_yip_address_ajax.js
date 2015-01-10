@@ -2,6 +2,9 @@ var baseUrl = "https://chain.so/api/v2/address/DOGE/";
 var addressCache = {};
 var searchCache = {};
 
+setInterval(function(){addressCache={}},90000);
+setInterval(function(){searchCache={}},90000);
+
 function getUser(address){
   var deferred = new $.Deferred();
 
@@ -55,6 +58,7 @@ function constructSearchData(json){
 
 function constructUserData(json, address){
   var user = {}
+  user.timestamp = new Date();
   user.username = address;
   user.address = address;
   user.posts = [];
