@@ -57,6 +57,7 @@ function showQrCode(address){
     bigqrcode.clear();
     bigqrcode.makeCode(address);
   }
+  $("#bigqrcodeaddress").val(address);
   showLink("bigqrcode");
 }
 
