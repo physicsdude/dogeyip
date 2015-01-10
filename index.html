@@ -123,7 +123,10 @@
        <div class="post" style="display: none;">
          <h2>Yip</h2>
          <p>
-           Post a yip to your profile.<br/>
+           To post a yip to your profile type whatever you want into 
+           the text field and then send some dogecoin to each of the 
+           generated addresses. Once finished the yip is forever 
+           associated with the wallet that made the transactions.
          </p>
        </div>
 
@@ -210,47 +213,14 @@
       <h2>Compose new Yip</h2>
       <form>
         <textarea id="message" rows="6" style="width:100%;">Bow wow!</textarea>
-        <br />
       </form>
-      <h2>To Post Text Make a Dogecoin Transaction with all QR Codes Below.</h2>
-      <div class="qrUnavailable" style="display:none;"><img width=150px height=150px src="img/open-iconic/ban.svg"></div>
-      <table id="postCodeTable0">
+      <table id="postCodeTable">
        <tr>
-        <td><b>A</b>&nbsp;</td>
-        <td><div id="qrPostCode0"></div></td>
-        <td>&nbsp;<textarea id="postCode0" style="width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+         <td colspan="2"><h2><a id="nextPostCode" href="javascript: void(0)" style="display: none;">Next</a>&nbsp;</h2></td>
        </tr>
-      </table>
-      <br/>
-      <table id="postCodeTable1" style="display:none;">
        <tr>
-        <td><b>B</b>&nbsp;</td>
-        <td><div id="qrPostCode1"></div></td>
-        <td>&nbsp;<textarea id="postCode1" style="width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
-       </tr>
-      </table>
-      <br/>
-      <table id="postCodeTable2" style="display:none;">
-       <tr>
-        <td>C&nbsp;</td>
-        <td><div id="qrPostCode2"></div></td>
-        <td>&nbsp;<textarea id="postCode2" style="width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
-       </tr>
-      </table>
-      <br/>
-      <table id="postCodeTable3" style="display:none;">
-       <tr>
-        <td><b>D</b>&nbsp;</td>
-        <td><div id="qrPostCode3"></div></td>
-        <td>&nbsp;<textarea id="postCode3" style="width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
-       </tr>
-      </table>
-      <br/>
-      <table id="postCodeTable4" style="display:none;">
-       <tr>
-        <td><b>E</b>&nbsp;</td>
-        <td><div id="qrPostCode4"></div></td>
-        <td>&nbsp;<textarea id="postCode4" style="width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
+        <td><div id="qrPostCode"></div></td>
+        <td>&nbsp;<textarea id="postCode" style="width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
        </tr>
       </table>
     </article>
@@ -498,7 +468,7 @@ jQuery(document).ready(function($) {
   });
 
   /*post*/
-  var qrcode0 = new QRCode("qrPostCode0", {
+  var qrcode = new QRCode("qrPostCode",{
     text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
     width: 150,
     height: 150,
@@ -506,71 +476,32 @@ jQuery(document).ready(function($) {
     colorLight : "#FBF0D9",
     correctLevel : QRCode.CorrectLevel.H
   });
-  var qrcode1 = new QRCode("qrPostCode1", {
-    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
-    width: 150,
-    height: 150,
-    colorDark : "#000000",
-    colorLight : "#FBF0D9",
-    correctLevel : QRCode.CorrectLevel.H
-  });
-  var qrcode2 = new QRCode("qrPostCode2", {
-    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
-    width: 150,
-    height: 150,
-    colorDark : "#000000",
-    colorLight : "#FBF0D9",
-    correctLevel : QRCode.CorrectLevel.H
-  });
-  var qrcode3 = new QRCode("qrPostCode3", {
-    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
-    width: 150,
-    height: 150,
-    colorDark : "#000000",
-    colorLight : "#FBF0D9",
-    correctLevel : QRCode.CorrectLevel.H
-  });
-  var qrcode4 = new QRCode("qrPostCode4", {
-    text: "DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4",
-    width: 150,
-    height: 150,
-    colorDark : "#000000",
-    colorLight : "#FBF0D9",
-    correctLevel : QRCode.CorrectLevel.H
-  });
-  var qrCodes = [qrcode0,qrcode1,qrcode2,qrcode3,qrcode4];
 
-  function populatePostingQrCodes(){
+  var postingQRValue=0;
+  var postingAddresses;
+  function populatePostingQrCode(value){
+    qrcode.clear();
+    qrcode.makeCode(postingAddresses[value]);
+    if(value+1<postingAddresses.length){
+      $("#nextPostCode").text("Next ("+(value+1)+" of "+postingAddresses.length+")")
+      $("#nextPostCode").show();
+    } else{
+      $("#nextPostCode").hide();
+    }
+  }
+  $("#nextPostCode").click(function( event ) {
+    postingQRValue++;
+    populatePostingQrCode(postingQRValue);
+  });
+  $("#message").keyup(function( event ) {
+    postingQRValue=0;
     $.getJSON("english_dictionary_encode.json", function(dictionary) {
       var message = $("#message").val();
-      var base58Check = messageToBase58Check(message, dictionary, "80");
-      if(base58Check==null || base58Check.length>5){
-        $(".qrUnavailable").show();
-        for(var i=0; i<5; i++){
-          $("#postCodeTable"+i).hide();
-        }
-      } else{
-        $(".qrUnavailable").hide();
-        for(var i=0; i<5; i++){
-          if(i<base58Check.length){
-            $("#postCodeTable"+i).show();
-            qrCodes[i].clear();
-            qrCodes[i].makeCode(base58Check[i]);
-            $("#postCode"+i).text(base58Check[i]);
-          } else{
-            $("#postCodeTable"+i).hide();
-          }
-        }
-      }
+      postingAddresses = messageToBase58Check(message, dictionary, "80");
+      populatePostingQrCode(0);
     });
-  }
-
-  $("#message").keyup(function( event ) {
-    populatePostingQrCodes();
   });
 });
-
-
 
 
 </script>
