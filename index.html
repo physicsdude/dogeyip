@@ -31,8 +31,6 @@
   <script type="text/javascript" src="js/doge_yip_listaccount.js"></script>
   <script type="text/javascript" src="js/doge_yip_inarray.js"></script>
   <script type="text/javascript" src="js/doge_yip_address_ajax.js"></script>
-  <script type="text/javascript" src="js/doge_yip_scrapeusername.js"></script>
-  <script type="text/javascript" src="js/doge_yip_scrape_connecting_posts.js"></script>
   <script type="text/javascript" src="js/doge_yip_lookup_dictionary.js"></script>
   <script type="text/javascript" src="js/doge_yip_navagation.js"></script>
   <script type="text/javascript" src="js/doge_yip_setname.js"></script>
@@ -76,6 +74,9 @@
           <li>
             <a rel="me" class="u-url url postlink" href="javascript: void(0)" title="Compose new Yip"><img width=15 height=15 src='img/open-iconic/comment-square.svg'/> Yip</a>
           </li>
+          <li>
+            <a rel="me" class="u-url url faq" href="javascript: void(0)" title="FAQ"><img width=15 height=15 src='img/open-iconic/question-mark.svg'/> FAQ</a>
+          </li>
         </ul>
       </nav>
     </div>
@@ -88,7 +89,7 @@
      <tr>
       <td>
        <!-- Doge Yip Logo -->
-       <div class="favorite index language post search setname bigqrcode" style="display: none;">
+       <div class="favorite index language post search setname bigqrcode faq" style="display: none;">
          <img width=125px height=125px src="img/dogecoin.png"></img>
        </div>
        <!-- User QR Code -->
@@ -122,7 +123,7 @@
        <div class="post" style="display: none;">
          <h2>Yip</h2>
          <p>
-           Post a message to your profile.<br/>
+           Post a yip to your profile.<br/>
          </p>
        </div>
 
@@ -151,6 +152,14 @@
          <h2>QR Code</h2>
          <p>
            You can scan this code to easily make a Dogecoin transaction.<br/>
+         </p>
+       </div>
+
+       <!-- Set Name Header -->
+       <div class="faq" style="display: none;">
+         <h2>FAQ</h2>
+         <p>
+           Common questions regarding Dogeyip.<br/>
          </p>
        </div>
       </td>
@@ -335,6 +344,84 @@
     </article>
   </div>
 
+  <!-- FAQ Code -->
+  <div class="faq" style="display:none;">
+    <article id="post" class="container">
+      <br/>
+      <h2>General</h2>
+      <h3>What is Doge Yip?</h3>
+      <p>
+        Doge Yip is a decentrialized microbloging service that reads encoded data from the dogecoin blockchain using client-side javascript.
+      </p>
+      <h3>What do I need to start using Doge Yip?</h3>
+      <p>
+        All you need is a dogecoin wallet and some dogecoin. I would suggest going to <a href="http://dogecoin.com/">dogecoin.com</a> to learn more about dogecoin.
+      </p>
+      <h3>How do I post a yip to Doge Yip?</h3>
+      <p>
+        Click on the Yip link in the navagation bar, type whatever 
+        you want into the text field, and then send some dogecoin to 
+        each of the generated addresses. Once finished the yip is 
+        forever associated with the wallet that made the 
+        transactions.
+      </p>
+      <h3>How do I assign a name to my wallet?</h3>
+      <p>
+        Click on the Set Name link in the navagation bar, type 
+        whatever name you want into the text field, and then send 
+        some dogecoin to the generated address. Once finished that 
+        name is forever associated with the wallet that made the 
+        transaction.
+      </p>
+      <h2>Technical</h2>
+      <h3>What are the fees to send messages?</h3>
+      <p>
+        To send a message you must make a transaction to the 
+        generated address. To do so you would send over 1 Doge to 
+        the generated address and another Doge to a miner as 
+        incentive to put your transaction into the block chain. Note 
+        that the generated address has no known private key. Thus 
+        sending a Doge to that address is equivalent to burning a 
+        Doge.
+      </p>
+      <h3>What's the maximum message length?</h3>
+      <p>
+        There isn't a theoretical limit. Currently you are limited 
+        by how many transactions you want to commit for that message.
+      </p>
+      <p>
+        Some things to note: Currently chain.so only returns the 
+        last 50 transactions for a user. This means that if you use 
+        10 transactions for one message then you are allocating 20% 
+        of your content to one post. Either chain.so will need to 
+        add in the ability to page transactions or I will need to 
+        launch my own block chain api to address this.
+      </p>
+      <p>
+        Also, on the site ui I currently have a hardcoded limit of 5 
+        transactions per message. I plan to remove this restriction 
+        soon. The limit is there solely because it was quicker to 
+        code in the limit than to code in the ability to have no limit.
+      </p>
+      <p>
+        The end goal is for there to be no character limit. Currently 
+        the following is the longest message that I have successfully 
+        posted. It was encoded into 5 transactions:
+      </p>
+      <p>
+        two roads diverged in a yellow wood; and sorry I could not 
+        travel both; and be one traveler, long I stood; and looked 
+        down both as far as I could;
+      </p>
+      <h3>Won't this bloat the blockchain?</h3>
+      <p>
+        Potentially. But if a transaction amount is too small then no 
+        miner should actually write it into the block chain. I would 
+        think that it would produce no more bloat than the faucet sites.
+      </p>
+    </article>
+  </div>
+
 <script type="text/javascript">
 jQuery(document).ready(function($) {
   jQuery.support.cors = true;
@@ -371,6 +458,10 @@ jQuery(document).ready(function($) {
 
   $(".bigqrcode").click(function( event ) {
     showLink("bigqrcode");
+  });
+
+  $(".faq").click(function( event ) {
+    showLink("faq");
   });
 
   /*index javascript*/

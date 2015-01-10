@@ -1,4 +1,4 @@
-links=["favorite","index","language","post","profile","search","setname","bigqrcode"];
+links=["favorite","index","language","post","profile","search","setname","bigqrcode","faq"];
 
 function showLink(link){
   var on;
