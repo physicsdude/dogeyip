@@ -101,7 +101,7 @@ function constructUserData(json, address){
           tip.time = tx.time;
           user.output.tips[tip.address] = tip;
         } 
-        if(isName(hexTokenB)){
+        if(isName(hexTokenB) && user.username==user.address){
           user.username = hash160ToUsername(hexMessage).trim();
         } 
         if(isConnectingPost(hexTokenA)){
