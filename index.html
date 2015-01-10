@@ -495,9 +495,9 @@ jQuery(document).ready(function($) {
   });
   $("#message").keyup(function( event ) {
     postingQRValue=0;
-    $.getJSON("english_dictionary_encode.json", function(dictionary) {
+    getEncodeDictionary("80").done(function(encodeDictionary) {
       var message = $("#message").val();
-      postingAddresses = messageToBase58Check(message, dictionary, "80");
+      postingAddresses = messageToBase58Check(message, encodeDictionary, "80");
       populatePostingQrCode(0);
     });
   });
