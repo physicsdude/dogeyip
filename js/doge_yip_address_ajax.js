@@ -80,7 +80,7 @@ function constructUserData(json, address){
         var hexMessage = hash160.substring(0,38);
         var hexTokenA = parseInt(hash160.substring(36,38), 16);
         var hexTokenB = parseInt(hash160.substring(38,40), 16);
-        if(isPost(hexTokenB)){
+        if(isPost(hexTokenA, hexTokenB)){
           var post = {}
           post.hexMessage = hexMessage;
           post.hexLibrary = hexTokenB;
@@ -155,10 +155,12 @@ function isConnectingPost(hexToken){
   return (hexToken>=startHexLibraryTokenRange && hexToken<=endHexLibraryTokenRange);
 }
 
-function isPost(hexToken){
+function isPost(hexTokenA, hexTokenB){
   var startHexLibraryTokenRange = parseInt("80",16);
   var endHexLibraryTokenRange = parseInt("9E",16);
-  return (hexToken>=startHexLibraryTokenRange && hexToken<=endHexLibraryTokenRange);
+  var hasLibraryHex = (hexTokenB>=startHexLibraryTokenRange && hexTokenB<=endHexLibraryTokenRange);
+  var hasConnectingPostHex = isConnectingPost(hexTokenA)
+  return (hasLibraryHex && !hasConnectingPostHex);
 }
 
 function isName(hexToken){
