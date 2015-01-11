@@ -63,7 +63,7 @@
       <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
         <ul class="nav navbar-nav">
           <li>
-            <a rel="me" class="u-url url languagelink" href="javascript: void(0)" title="Select Language"><img width=15 height=15 src='img/open-iconic/globe.svg'/> Language: English</a>
+            <a rel="me" class="u-url url settingslink" href="javascript: void(0)" title="Settings"><img width=15 height=15 src='img/open-iconic/globe.svg'/> Settings</a>
           </li>
           <li>
             <a rel="me" class="u-url url searchlink" href="javascript: void(0)" title="Search"><img width=15 height=15 src='img/open-iconic/magnifying-glass.svg'/> Search</a>
@@ -89,7 +89,7 @@
      <tr>
       <td>
        <!-- Doge Yip Logo -->
-       <div class="favorite index language post search setname bigqrcode faq" style="display: none;">
+       <div class="favorite index language post search setname bigqrcode faq settings" style="display: none;">
          <img width=125px height=125px src="img/dogecoin.png"></img>
        </div>
        <!-- User QR Code -->
@@ -111,11 +111,11 @@
          </p>
        </div>
 
-       <!-- Language Header -->
-       <div class="language" style="display: none;">
-         <h2>Language</h2>
+       <!-- Settings Header -->
+       <div class="settings" style="display: none;">
+         <h2>Settings</h2>
          <p>
-           Note that your language choice is extreamly important as it is used for compression and decoding messages.<br/>
+           Configure the Doge Yip app here.
          </p>
        </div>
 
@@ -197,9 +197,24 @@
     </article>
   </div>
 
-  <!-- Language Articles -->
-  <div class="language" style="display: none;">
-    <article id="language" class="container">
+  <!-- Settings Articles -->
+  <div class="settings" style="display: none;">
+    <article id="settings" class="container">
+      <div class="container">
+        <h2>Api Choices</h2>
+        <div><u><font id="dogeyip_api_on" style="font-size: 175%; vertical-align:middle;">[x] DogeYip</font></u></div>
+        <div>
+          <a href="javascript: void(0)" onclick="$('#dogeyip_api_on').show();$('#dogeyip_api_off').hide();$('#chain_api_off').show();$('#chain_api_on').hide();baseUrl='http://api-dogeyip.rhcloud.com/?address=';">
+            <font id="dogeyip_api_off" style="font-size: 175%; vertical-align:middle; display:none;">[&nbsp;] DogeYip</font>
+          </a>
+        </div>
+        <div><u><font id="chain_api_on" style="font-size: 175%; vertical-align:middle; display:none;">[x] Chain.so</font></u></div>
+        <div>
+          <a href="javascript: void(0)" onclick="$('#dogeyip_api_on').hide();$('#dogeyip_api_off').show();$('#chain_api_off').hide();$('#chain_api_on').show();baseUrl='https://chain.so/api/v2/address/DOGE/';">
+            <font id="chain_api_off" style="font-size: 175%; vertical-align:middle;">[&nbsp;] Chain.so</font>
+          </a>
+        </div>
+      </div>
       <div class="container">
         <h2>Language Choices</h2>
         <div><font style="font-size: 175%; vertical-align:middle;">[x] English</font></div>
@@ -400,8 +415,8 @@ jQuery(document).ready(function($) {
     showLink("index");
   });
 
-  $(".languagelink").click(function( event ) {
-    showLink("language");
+  $(".settingslink").click(function( event ) {
+    showLink("settings");
   });
 
   $(".postlink").click(function( event ) {

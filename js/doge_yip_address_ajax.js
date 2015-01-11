@@ -1,4 +1,5 @@
-var baseUrl = "https://chain.so/api/v2/address/DOGE/";
+var baseUrl = "http://api-dogeyip.rhcloud.com/?address=";
+//var baseUrl = "https://chain.so/api/v2/address/DOGE/";
 var addressCache = {};
 var searchCache = {};
 
@@ -14,8 +15,13 @@ function getUser(address){
     addressCache[address] = deferred;
     var ajax = $.getJSON(baseUrl+address);
     $.when(ajax).done(function(json){
-      var user = constructUserData(json, address);
-      deferred.resolve(user);
+      if(baseUrl=="http://api-dogeyip.rhcloud.com/?address="){
+        var user = constructUserDataFromDogeYip(json, address);
+        deferred.resolve(user);
+      } else if(baseUrl=="https://chain.so/api/v2/address/DOGE/"){
+        var user = constructUserDataFromChainSo(json, address);
+        deferred.resolve(user);
+      }
     });
   }
 
@@ -31,15 +37,34 @@ function getSearch(address){
     searchCache[address] = deferred;
     var ajax = $.getJSON(baseUrl+address);
     $.when(ajax).done(function(json){
-      var searchData = constructSearchData(json);
-      deferred.resolve(searchData);
+      if(baseUrl=="http://api-dogeyip.rhcloud.com/?address="){
+        var searchData = constructSearchDataFromDogeYip(json);
+        deferred.resolve(searchData);
+      } else if(baseUrl=="https://chain.so/api/v2/address/DOGE/"){
+        var searchData = constructSearchDataFromChainSo(json);
+        deferred.resolve(searchData);
+      }
     });
   }
 
   return deferred.promise();
 }
 
-function constructSearchData(json){
+function constructSearchDataFromDogeYip(json){
+  var searchResults = [];
+  for(var i=0; i<json.length; i++){
+    var tx = json[i];
+    if(tx.type=='input'){
+      accountAddress = tx.address;
+      if(!inArray(searchResults, accountAddress)){
+        searchResults.push(accountAddress);
+      }
+    }
+  }
+  return searchResults;
+}
+
+function constructSearchDataFromChainSo(json){
   var searchResults = [];
   for(var i=0; i<json.data.txs.length; i++){
     var tx = json.data.txs[i];
@@ -55,8 +80,76 @@ function constructSearchData(json){
   return searchResults;
 }
 
+function constructUserDataFromDogeYip(json, address){
+  var user = {}
+  user.timestamp = new Date();
+  user.username = address;
+  user.address = address;
+  user.posts = [];
+  user.connectingPosts = [];
+  user.output = {};
+  user.output.favorites = {};
+  user.output.tips = {};
+  user.input = {};
+  user.input.favorites = [];
+  user.input.tips = [];
 
-function constructUserData(json, address){
+  for(var i=0; i<json.length; i++){
+    var tx = json[i];
+    if(tx.type=='output'){
+      var hash160 = base58CheckTohash160(tx.address);
+      var hexMessage = hash160.substring(0,38);
+      var hexTokenA = parseInt(hash160.substring(36,38), 16);
+      var hexTokenB = parseInt(hash160.substring(38,40), 16);
+      if(isPost(hexTokenA, hexTokenB)){
+        var post = {}
+        post.hexMessage = hexMessage;
+        post.hexLibrary = hexTokenB;
+        post.time = tx.time;
+        user.posts.push(post);
+      }
+      if(isFavorite(tx.amount, tx.time)){
+        var favorite = {};
+        favorite.address = tx.address;
+        favorite.amount = tx.amount;
+        favorite.time = tx.time;
+        user.output.favorites[favorite.address+"_"+favorite.timestamp]=favorite;
+      } 
+      if(isTip(tx.amount)){
+        var tip = {};
+        tip.address = tx.address;
+        tip.amount = tx.amount;
+        tip.time = tx.time;
+        user.output.tips[tip.address] = tip;
+      } 
+      if(isName(hexTokenB) && user.username==user.address){
+        user.username = hash160ToUsername(hexMessage).trim();
+      } 
+      if(isConnectingPost(hexTokenA)){
+        user.connectingPosts[hash160.substring(36,40)]=hexMessage.substring(0,36);
+      }
+    } else if(tx.type=='input'){
+      if(isFavoriteNotification(tx.amount, tx.time)){
+        var favorite = {};
+        favorite.address = tx.address;
+        favorite.amount = tx.amount;
+        favorite.time = tx.time;
+        user.input.favorites[favorite.address+"_"+favorite.timestamp]=favorite;
+      }
+      if(isTipNotification(tx.amount)){
+        var tip = {};
+        tip.address = tx.address;
+        tip.amount = tx.amount;
+        tip.time = tx.time;
+        user.input.tips[tip.address] = tip;
+      }
+
+    }
+  }
+  return user;
+}
+
+function constructUserDataFromChainSo(json, address){
   var user = {}
   user.timestamp = new Date();
   user.username = address;
@@ -87,14 +180,14 @@ function constructUserData(json, address){
           post.time = tx.time;
           user.posts.push(post);
         } 
-        if(isFavorite(tx, output)){
+        if(isFavorite(output.value, tx.time)){
           var favorite = {};
           favorite.address = output.address;
           favorite.amount = output.value;
           favorite.time = tx.time;
           user.output.favorites[favorite.address+"_"+favorite.timestamp]=favorite;
-        } 
-        if(isTip(output)){
+        }
+        if(isTip(output.value)){
           var tip = {};
           tip.address = output.address;
           tip.amount = output.value;
@@ -109,14 +202,14 @@ function constructUserData(json, address){
         }
       }
     }
-    if(tx.incoming!=null && isFavoriteNotification(tx)){
+    if(tx.incoming!=null && isFavoriteNotification(tx.incoming.value, tx.time)){
       var favorite = {};
       favorite.address = tx.incoming.inputs[0].address;
       favorite.amount = tx.incoming.value;
       favorite.time = tx.time;
       user.input.favorites[favorite.address+"_"+favorite.timestamp]=favorite;
     }
-    if(tx.incoming!=null && isTipNotification(tx)){
+    if(tx.incoming!=null && isTipNotification(tx.incoming.value)){
       var tip = {};
       tip.address = tx.incoming.inputs[0].address;
       tip.amount = tx.incoming.value;
@@ -127,25 +220,39 @@ function constructUserData(json, address){
   return user;
 }
 
-function isTip(output){
-  return 15==output.value;
+function isTip(amount){
+  return 15==amount;
 }
 
-function isFavoriteNotification(tx){
-  var amount = tx.incoming.value
-  var time = tx.time/100000000;
-  return (tx.incoming.inputs!=null && amount>time-1 && amount<time+1);
+//function isFavoriteNotification(tx){
+//  var amount = tx.incoming.value
+//  var time = tx.time/100000000;
+//  return (tx.incoming.inputs!=null && amount>time-1 && amount<time+1);
+//}
+
+function isFavoriteNotification(amount, time){
+  var time = time/100000000;
+  return (amount>time-1 && amount<time+1);
 }
 
-function isTipNotification(tx){
-  var amount = tx.incoming.value
-  var time = tx.time/100000000;
-  return (tx.incoming.inputs!=null && amount==15);
+//function isTipNotification(tx){
+//  var amount = tx.incoming.value
+//  var time = tx.time/100000000;
+//  return (tx.incoming.inputs!=null && amount==15);
+//}
+
+function isTipNotification(amount){
+  return amount==15;
 }
 
-function isFavorite(tx, output){
-  var amount = output.value
-  var time = tx.time/100000000;
+//function isFavorite(tx, output){
+//  var amount = output.value
+//  var time = tx.time/100000000;
+//  return (amount>time-1 && amount<time+1) && amount!=15;
+//}
+
+function isFavorite(amount, time){
+  var time = time/100000000;
   return (amount>time-1 && amount<time+1) && amount!=15;
 }
 
