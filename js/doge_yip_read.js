@@ -101,120 +101,43 @@ function showFavorite(address, amount){
   });
 }
 
-function constructPostHtml(username, useraddress, favaccount, favamount, time, message){
-  return '<div id="'+time+'" style="padding: 10px">'
-             + '<table>'
-             +  '<tr>'
-             +   '<td><img width=20 height=20 src="img/open-iconic/comment-square.svg"/></td>'
-             +   '<td>&nbsp;'
-             +    '<a onclick="showProfile(\''+useraddress+'\')" href="javascript: void(0)">'+username+'</a> posted: '
-             +   '</td>'
-             +  '</tr>'
-             +  '<tr><td></td><td>&nbsp;'+message+'</td></tr>'
-             +  '<tr>'
-             +   '<td></td>'
-             +   '<td>&nbsp;'
-             +    '<a onclick="showFavorite(\''+favaccount+'\',\''+favamount+'\')" href="javascript: void(0)">'
-             +     '<img width=15 height=15 src="img/open-iconic/thumb-up.svg"/>'
-             +    '</a><i><font color="gray"> &bull; '+timestamp(time)+'</font></i>'
-             +   '</td>'
-             +  '</tr>'
-             + "</table></div>";
+/* POPULATE HTML CACHE */
+var cachedHTML = {};
+function getHtml(url){
+  var deferred = new $.Deferred();
+  if(cachedHTML[url]!=null){
+    return cachedHTML[url];
+  } else{
+    $.ajax({
+      url: url,
+      dataType: 'html'
+    }).done(function(html) {
+      cachedHTML[url]=html;
+      deferred.resolve(html);
+    });
+  }
+  return deferred.promise();
 }
 
-function constructFavoriteHtml(username, useraddress, favaccount, favamount, favname, time, message){
-  return '<div id="'+time+'" style="padding: 10px">'
-              + '<table>'
-              +  '<tr>'
-              +   '<td><img width=20 height=20 src="img/open-iconic/star.svg"/></td>'
-              +   '<td>&nbsp;'
-              +    '<a onclick="showProfile(\''+useraddress+'\')" href="javascript: void(0)">'+username+'</a> favorited '
-              +    '<a onclick="showProfile(\''+favaccount+'\')" href="javascript: void(0)">'+favname+'</a> post'
-              +   '</td>'
-              +  '</tr>'
-              +  '<tr><td></td><td>&nbsp;'+message+'</td></tr>'
-              +  '<tr>'
-              +   '<td></td>'
-              +   '<td>&nbsp;'
-              +    '<a onclick="showFavorite(\''+favaccount+'\',\''+favamount+'\')" href="javascript: void(0)">'
-              +     '<img width=15 height=15 src="img/open-iconic/thumb-up.svg"/>'
-              +    '</a><i><font color="gray"> &bull; '+timestamp(time)+'</font></i>'
-              +   '</td>'
-              +  '</tr>'
-              + "</table></div>";
-}
-
-function constructFavoriteNotificationHtml(toName, toAddress, fromName, fromAddress, favaccount, favamount, time, message){
-  return '<div id="'+time+'" style="padding: 10px">'
-             + '<table>'
-             +  '<tr>'
-             +   '<td><img width=20 height=20 src="img/open-iconic/star.svg"/></td>'
-             +   '<td>&nbsp;'
-             +    '<a onclick="showProfile(\''+fromAddress+'\')" href="javascript: void(0)">'+fromName+'</a> favorited '
-             +    '<a onclick="showProfile(\''+toAddress+'\')" href="javascript: void(0)">'+toName+"'s Bark."
-             +   '</td>'
-             +  '</tr>'
-             +  '<tr><td></td><td>&nbsp;'+message+'</td></tr>'
-             +  '<tr>'
-             +   '<td></td>'
-             +   '<td>&nbsp;'
-             +    '<a onclick="showFavorite(\''+favaccount+'\',\''+favamount+'\')" href="javascript: void(0)">'
-             +     '<img width=15 height=15 src="img/open-iconic/thumb-up.svg"/>'
-             +    '</a><i><font color="gray"> &bull; '+timestamp(time)+'</font></i>'
-             +   '</td>'
-             +  '</tr>'
-             + "</table></div>";
-}
-
-function constructTipHtml(username, useraddress, tipname, tipaddress, time){
-  return '<div id="'+time+'" style="padding: 10px">'
-             + '<table>'
-             +  '<tr>'
-             +   '<td><img width=20 height=20 src="img/open-iconic/badge.svg"/></td>'
-             +   '<td>&nbsp;'
-             +    '<a onclick="showProfile(\''+useraddress+'\')" href="javascript: void(0)">'+username+'</a> tipped '
-             +    '<a onclick="showProfile(\''+tipaddress+'\')" href="javascript: void(0)">'+tipname+'</a>'
-             +   '</td>'
-             +  '</tr>'
-             +  '<tr>'
-             +   '<td></td>'
-             +   '<td>&nbsp;'
-             +    '<img width=15 height=15 src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D"/>'
-             +    '<i><font color="gray"> &bull; '+timestamp(time)+'</font></i>'
-             +   '</td>'
-             +  '</tr>'
-             + "</table></div>";
-}
-
-function constructTipNotificationHtml(toName, toAddress, fromName, fromAddress, time){
-  return '<div id="'+time+'" style="padding: 10px">'
-             + '<table>'
-             +  '<tr>'
-             +   '<td><img width=20 height=20 src="img/open-iconic/badge.svg"/></td>'
-             +   '<td>&nbsp;'
-             +    '<a onclick="showProfile(\''+fromAddress+'\')" href="javascript: void(0)">'+fromName+'</a> tipped '
-             +    '<a onclick="showProfile(\''+toAddress+'\')" href="javascript: void(0)">'+toName+'</a>'
-             +   '</td>'
-             +  '</tr>'
-             +  '<tr>'
-             +   '<td></td>'
-             +   '<td>&nbsp;'
-             +    '<img width=15 height=15 src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D"/>'
-             +    '<i><font color="gray"> &bull; '+timestamp(time)+'</font></i>'
-             +   '</td>'
-             +  '</tr>'
-             + "</table></div>";
-}
-
+/* POPULATE TIP NOTIFICATION */
 function createTipNotification(toName, toAddress, fromAddress, time){
-  var when = getUser(fromAddress).done(function(from){
-    var notification = constructTipNotificationHtml(toName, toAddress, from.username, from.address, time);
+  var when = $.when(getUser(fromAddress),getHtml("html/posts/tip_notification.html"));
+
+  when.done(function(from, html){
+    var notification = html.replace("&TONAME;",toName)
+                           .replace("&TOADDRESS;",toAddress)
+                           .replace("&FROMNAME;",from.username)
+                           .replace("&FROMADDRESS;",from.address)
+                           .replace("&TIMESTAMP;",timestamp(time))
+                           .replace("&TIME;",time);
     insertHtml("notifications", notification, time);
   });
 }
 
+/* POPULATE FAVORITE NOTIFICATION */
 function createFavoriteNotification(to, fromAddress, fromAmount){
-  getUser(fromAddress).done(function(from){
+  var when = $.when(getUser(fromAddress), getHtml("html/posts/favorite_notification.html"));
+  when.done(function(from,html){
     for(var i=0; i<to.posts.length; i++){
       if(to.posts[i].time==fromAmount*100000000){
         var toHexMessage = to.posts[i].hexMessage;
@@ -222,7 +145,15 @@ function createFavoriteNotification(to, fromAddress, fromAmount){
         var toConnectingPosts = to.connectingPosts;
         var toTime = to.posts[i].time;
         hash160ToText(toHexMessage, toHexLibrary, toConnectingPosts).done(function(toMessage){
-          var notification = constructFavoriteNotificationHtml(to.username, to.address, from.username, from.address, to.address, fromAmount, toTime, toMessage);
+          var notification = html.replace("&TONAME;", to.username)
+                                 .replace("&TOADDRESS;", to.address)
+                                 .replace("&FROMNAME;", from.username)
+                                 .replace("&FROMADDRESS;", from.address)
+                                 .replace("&FAVACCOUNT;", to.address)
+                                 .replace("&FAVAMOUNT;", fromAmount)
+                                 .replace("&TIMESTAMP;", timestamp(toTime))
+                                 .replace("&TIME;", toTime)
+                                 .replace("&MESSAGE;", toMessage);
           insertHtml("notifications", notification, toTime);
         });
       }
@@ -230,17 +161,27 @@ function createFavoriteNotification(to, fromAddress, fromAmount){
   });
 }
 
+/* POPULATE YIP */
 function createPost(divId, username, useraddress, time, hexMessage, hexToken, connectingPosts){
   var favaccount = useraddress;
   var favamount = time/100000000;
-  hash160ToText(hexMessage, hexToken, connectingPosts).done(function(message){
-    var post = constructPostHtml(username, useraddress, favaccount, favamount, time, message); 
+  var when = $.when(hash160ToText(hexMessage, hexToken, connectingPosts), getHtml("html/posts/yip.html"))
+  when.done(function(message, html){
+    var post = html.replace("&TIME;", time)
+                   .replace("&USERADDRESS;", useraddress)
+                   .replace("&USERNAME;", username)
+                   .replace("&FAVACCOUNT;", favaccount)
+                   .replace("&FAVAMOUNT;", favamount)
+                   .replace("&TIMESTAMP;", timestamp(time))
+                   .replace("&MESSAGE;", message);
     insertHtml(divId, post, time);
   });
 }
 
+/* POPULATE FAVORITE */
 function createFavorite(divId, favamount, favaccount, username, useraddress){
-  getUser(favaccount).done(function(fav){
+  var when = $.when(getUser(favaccount), getHtml("html/posts/favorite.html"));
+  when.done(function(fav, html){
     for(var i=0; i<fav.posts.length; i++){
       if(fav.posts[i].time==favamount*100000000){
         var favHexMessage = fav.posts[i].hexMessage;
@@ -248,7 +189,14 @@ function createFavorite(divId, favamount, favaccount, username, useraddress){
         var favConnectingPosts = fav.connectingPosts;
         var favTime = fav.posts[i].time;
         hash160ToText(favHexMessage, favHexLibrary, favConnectingPosts).done(function(message){
-          var favorite = constructFavoriteHtml(username, useraddress, favaccount, favamount, fav.username, favTime, message);
+          var favorite = html.replace("&TIME;", favTime)
+                             .replace("&USERADDRESS;", useraddress)
+                             .replace("&USERNAME;", username)
+                             .replace("&FAVACCOUNT;", favaccount)
+                             .replace("&FAVNAME;", fav.username)
+                             .replace("&MESSAGE;", message)
+                             .replace("&FAVAMOUNT;", favamount)
+                             .replace("&TIMESTAMP;", timestamp(favTime));
           insertHtml(divId, favorite, favTime);
         });
       }
@@ -257,8 +205,14 @@ function createFavorite(divId, favamount, favaccount, username, useraddress){
 }
 
 function createTip(divId, username, useraddress, tipaddress, time){
-  var when = getUser(tipaddress).done(function(tip){
-    var tipHtml = constructTipHtml(username, useraddress, tip.username, tipaddress, time);
+  var when = $.when(getUser(tipaddress), getHtml("html/posts/tip.html"));
+  when.done(function(tip, html){
+    var tipHtml = html.replace("&TIME;", time)
+                      .replace("&USERADDRESS;", useraddress)
+                      .replace("&USERNAME;", username)
+                      .replace("&TIPADDRESS;", tipaddress)
+                      .replace("&TIPNAME;", tip.username)
+                      .replace("&TIMESTAMP;", timestamp(time))
     insertHtml(divId, tipHtml, time);
   });
 }
