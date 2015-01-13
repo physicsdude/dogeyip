@@ -1,4 +1,5 @@
 var dictionaryCache = {};
+var dictionaryChoice = "english_dictionary_decode.json";
 
 function lookupDictionary(address){
   if(dictionaryCache[address] != null){
@@ -13,7 +14,7 @@ function lookupDictionary(address){
 function getDictionary(dictionaryToken){
   var deferred = new $.Deferred();
 
-  lookupDictionary("english_dictionary_decode.json").done(function(json){
+  lookupDictionary(dictionaryChoice).done(function(json){
     deferred.resolve(json);
   });
 
@@ -23,7 +24,7 @@ function getDictionary(dictionaryToken){
 function getEncodeDictionary(dictionaryToken){
   var deferred = new $.Deferred();
 
-  lookupDictionary("english_dictionary_encode.json").done(function(json){
+  lookupDictionary(dictionaryChoice).done(function(json){
     deferred.resolve(json);
   });
 

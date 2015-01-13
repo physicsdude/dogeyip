@@ -77,6 +77,7 @@ function showProfile(address){
 
 var favoriteqrcode;
 function showFavorite(address, amount){
+  showLink("favorite");
   if(favoriteqrcode==null){
       favoriteqrcode = new QRCode("favoriteQRPostCode", {
       text: address,
@@ -97,7 +98,6 @@ function showFavorite(address, amount){
                        + '</p>';
     $("#favoriteBase58Check").val(address);
     $(".favoritebanner").html(favoritebanner);
-    showLink("favorite");
   });
 }
 

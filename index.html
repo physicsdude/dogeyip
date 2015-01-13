@@ -32,7 +32,6 @@
   <script type="text/javascript" src="js/doge_yip_inarray.js"></script>
   <script type="text/javascript" src="js/doge_yip_address_ajax.js"></script>
   <script type="text/javascript" src="js/doge_yip_lookup_dictionary.js"></script>
-  <script type="text/javascript" src="js/doge_yip_navagation.js"></script>
   <script type="text/javascript" src="js/doge_yip_setname.js"></script>
   <script type="text/javascript" src="js/qrcode.js"></script>
 
@@ -171,18 +170,6 @@
    </div>
   </div>
 
-  <!-- Favorite Articles -->
-  <div class="favorite" style="display: none;">
-    <article class="container">
-      <br/>
-      <div id="favoriteQRPostCode"></div>
-      <br/>
-      <p>
-        <input id="favoriteBase58Check" type="text" style="width:100%;" value=""/>
-      </p>
-    </article>
-  </div>
-
   <!-- Index Articles -->
   <div class="index" style="display: none;">
     <article id="recentusers" class="container">
@@ -197,30 +184,11 @@
     </article>
   </div>
 
+  <!-- Favorite Articles -->
+  <div id="favoritearticle" class="favorite" style="display: none;"></div>
+
   <!-- Settings Articles -->
-  <div class="settings" style="display: none;">
-    <article id="settings" class="container">
-      <div class="container">
-        <h2>Api Choices</h2>
-        <div><u><font id="dogeyip_api_on" style="font-size: 175%; vertical-align:middle;">[x] DogeYip</font></u></div>
-        <div>
-          <a href="javascript: void(0)" onclick="$('#dogeyip_api_on').show();$('#dogeyip_api_off').hide();$('#chain_api_off').show();$('#chain_api_on').hide();baseUrl='http://api-dogeyip.rhcloud.com/?address=';">
-            <font id="dogeyip_api_off" style="font-size: 175%; vertical-align:middle; display:none;">[&nbsp;] DogeYip</font>
-          </a>
-        </div>
-        <div><u><font id="chain_api_on" style="font-size: 175%; vertical-align:middle; display:none;">[x] Chain.so</font></u></div>
-        <div>
-          <a href="javascript: void(0)" onclick="$('#dogeyip_api_on').hide();$('#dogeyip_api_off').show();$('#chain_api_off').hide();$('#chain_api_on').show();baseUrl='https://chain.so/api/v2/address/DOGE/';">
-            <font id="chain_api_off" style="font-size: 175%; vertical-align:middle;">[&nbsp;] Chain.so</font>
-          </a>
-        </div>
-      </div>
-      <div class="container">
-        <h2>Language Choices</h2>
-        <div><font style="font-size: 175%; vertical-align:middle;">[x] English</font></div>
-      </div>
-    </article>
-  </div>
+  <div id="settingsarticle" class="settings" style="display: none;"></div>
 
   <!-- Post Articles -->
   <div class="post" style="display:none;">
@@ -330,100 +298,14 @@
   </div>
 
   <!-- FAQ Code -->
-  <div class="faq" style="display:none;">
-    <article id="post" class="container">
-      <br/>
-      <h2>General</h2>
-      <h3>What is Doge Yip?</h3>
-      <p>
-        Doge Yip is a decentrialized microbloging service that reads encoded data from the dogecoin blockchain using client-side javascript.
-      </p>
-      <h3>What do I need to start using Doge Yip?</h3>
-      <p>
-        All you need is a dogecoin wallet and some dogecoin. I would suggest going to <a href="http://dogecoin.com/">dogecoin.com</a> to learn more about dogecoin.
-      </p>
-      <h3>How do I post a yip to Doge Yip?</h3>
-      <p>
-        Click on the Yip link in the navagation bar, type whatever 
-        you want into the text field, and then send some dogecoin to 
-        each of the generated addresses. Once finished the yip is 
-        forever associated with the wallet that made the 
-        transactions.
-      </p>
-      <h3>How do I assign a name to my wallet?</h3>
-      <p>
-        Click on the Set Name link in the navagation bar, type 
-        whatever name you want into the text field, and then send 
-        some dogecoin to the generated address. Once finished that 
-        name is forever associated with the wallet that made the 
-        transaction.
-      </p>
-      <h2>Technical</h2>
-      <h3>What are the fees to send messages?</h3>
-      <p>
-        To send a message you must make a transaction to the 
-        generated address. To do so you would send over 1 Doge to 
-        the generated address and another Doge to a miner as 
-        incentive to put your transaction into the block chain. Note 
-        that the generated address has no known private key. Thus 
-        sending a Doge to that address is equivalent to burning a 
-        Doge.
-      </p>
-      <h3>What's the maximum message length?</h3>
-      <p>
-        There isn't a theoretical limit. Currently you are limited 
-        by how many Dogecoins you have.
-      </p>
-      <h3>Won't this bloat the blockchain?</h3>
-      <p>
-        Potentially. But if a transaction amount is too small then no 
-        miner should actually write it into the block chain. I would 
-        think that it would produce no more bloat than the faucet sites.
-      </p>
-    </article>
-  </div>
+  <div id="faqarticle" class="faq" style="display:none;"></div>
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
+  $.getScript( "js/doge_yip_navagation.js" );
+
+
   jQuery.support.cors = true;
-
-  $(".index").show();
-
-  $(".favoritelink").click(function( event ) {
-    showLink("favorite");
-  });
-
-  $(".indexlink").click(function( event ) {
-    showLink("index");
-  });
-
-  $(".settingslink").click(function( event ) {
-    showLink("settings");
-  });
-
-  $(".postlink").click(function( event ) {
-    showLink("post");
-  });
-
-  $(".profilelink").click(function( event ) {
-    showLink("profile");
-  });
-
-  $(".searchlink").click(function( event ) {
-    showLink("search");
-  });
-
-  $(".setnamelink").click(function( event ) {
-    showLink("setname");
-  });
-
-  $(".bigqrcode").click(function( event ) {
-    showLink("bigqrcode");
-  });
-
-  $(".faqlink").click(function( event ) {
-    showLink("faq");
-  });
 
   /*index javascript*/
   var doge_yip_address = "DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q";
