@@ -13,13 +13,15 @@ function listResults(searchTerm, divId){
 
 function listAccount(address, divId){
   $.when(getUser(address)).done(function(user){
-    var profile = "profile.html?user="+user.address;
-    var result = "<div class='container'>"
+    if(user.username!=user.address){
+      var profile = "profile.html?user="+user.address;
+      var result = "<div class='container'>"
                + '<a onclick="showProfile(\''+user.address+'\')" href="javascript: void(0)">'
                +   "<img style='vertical-align:middle;' width=35px height=35px src='img/open-iconic/person.svg'></img>"
                +   "<span><font style='font-size: 175%; vertical-align:middle;'>&nbsp;"+user.username+"</font></span>"
                + "</a>"
                + "</div><br/>";
-    $("#"+divId).append(result);
+      $("#"+divId).append(result);
+    }
   });
 }
