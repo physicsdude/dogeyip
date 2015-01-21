@@ -28,10 +28,6 @@ $.ajax({
   $("#settingsarticle").html(html);
 });
 
-  $(".indexlink").click(function( event ) {
-    showLink("index");
-  });
-
 $(".settingslink").click(function( event ) {
   $('#dogeyip_api').click(function( event ){
     baseUrl='http://api-dogeyip.rhcloud.com/?address=';
