@@ -6,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="author" content="George Carlson">
 
+  <link href="http://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css">
+  <link href="http://fonts.googleapis.com/css?family=Cabin" rel="stylesheet" type="text/css">
+
   <link rel="stylesheet" type="text/css" href="../default.css">
   <!-- Bootstrap -->
   <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
@@ -23,8 +26,9 @@
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
 
   <!-- Dogecoin Librarys -->
-  <script type="text/javascript" src="js/bitcoin.js"></script>
+  <script type="text/javascript" src="js/bitcoinjs.js"></script>
   <script type="text/javascript" src="js/doge_yip_post.js"></script>
+  <script type="text/javascript" src="js/doge_yip_wallet.js"></script>
   <script type="text/javascript" src="js/doge_yip_read.js"></script>
   <script type="text/javascript" src="js/doge_yip_hash160ToText.js"></script>
   <script type="text/javascript" src="js/doge_yip_timestamp.js"></script>
@@ -106,7 +110,7 @@
          <h2>Doge Yip</h2>
          <p>
            A social network built on top of the Dogecoin blockchain.<br/>
-           To register send 15 DOGE to <a href="javascript: void(0)" onclick="showQrCode('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')">Doge_Yip</a>
+           To register send 15 DOGE to <a href="javascript: void(0)" onclick="if(privateKey==null){showQrCode('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')}else{sendTipTransaction('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')};">Doge_Yip</a>
          </p>
        </div>
 
@@ -170,6 +174,64 @@
    </div>
   </div>
 
+  <!-- Splash Page -->
+  <div id="splashpagearticle" class="splashpage" style="display: none;">
+    <div class="jumbotron fill" style="background-image:url(img/shibainu.png); background-size:100%;">
+      <div class="container strong" style="color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">
+        <center>
+        <h1 style="font-family: 'Lobster', Georgia, Times, serif; font-size: 100px; line-height: 130px;">Welcome to Doge Yip!</h1>
+        <h2 style="font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 40px; line-height: 55px;">The social network that helps you make money from your content.</h2>
+        <h3 style="font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 30px; line-height: 45px;"">The social network that can not censor you.</h3>
+        <h3 style="font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 30px; line-height: 45px;"">The social network that values your privacy.</h3>
+        <h3 style="font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 30px; line-height: 45px;"">The social network that is favored by Shiba Inus everywhere!</h3>
+        <p>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('signup')">Create Account</a>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('signin')">Sign In</a>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Use Anonymously</a>
+        </p>
+        </center>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sign In -->
+  <div id="signinarticle" class="signin signup" style="display: none;">
+    <div class="jumbotron fill" style="background-image:url(img/shibainu.png); background-size:100%;">
+      <div class="container strong" style="color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">
+        <center>
+        <h1 style="font-family: 'Lobster', Georgia, Times, serif; font-size: 100px; line-height: 130px;">Welcome to Doge Yip!</h1>
+        <h2 style="font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 40px; line-height: 55px;">Email: </h2>
+        <input id="walletemail" style="color:black; font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 40px; line-height: 55px;"></input>
+        <h2 style="font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 40px; line-height: 55px;">Password: </h2>
+        <input id="walletpassword" type="password" style="color:black; font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 40px; line-height: 55px;"></input>
+        <br/>
+        <br/>
+        <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signin" onclick="setPrivateKey();showLink('index')">Sign In</a>
+        <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signup" onclick="setPrivateKey();showLink('gettingstarted');$('#new_wallet').text(getWalletAddress().toString())">Create Account</a>
+        </center>
+      </div>
+    </div>
+  </div>
+
+  <!-- Getting Started -->
+  <div id="gettingstartedarticle" class="gettingstarted" style="display: none;">
+    <div class="jumbotron fill" style="background-image:url(img/shibainu.png); background-size:100%;">
+      <div class="container strong" style="color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">
+        <center>
+        <h1 style="font-family: 'Lobster', Georgia, Times, serif; font-size: 100px; line-height: 130px;">Getting Started</h1>
+        <h2 style="font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 40px; line-height: 55px;">Your new Dogecoin wallet is:</h2>
+        <h2 style="font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 40px; line-height: 55px;"><a id='new_wallet' href="javascript: void(0)" onclick="showQrCode(getWalletAddress().toString())"></a></h2>
+        <h3 style="font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 30px; line-height: 45px;"">You need to fund your wallet to interact on Doge Yip.</h3>
+        <h3 style="font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 30px; line-height: 45px;"">All sensitive information is handled client-side. We never see it.</h3>
+        <h3 style="font-family: 'Cabin', Helvetica, Arial, sans-serif; font-size: 30px; line-height: 45px;"">You can learn more about Dogecoin at <a hres="http://dogecoin.com/">Dogecoin.com</a></h3>
+        <p>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Proceed</a>
+        </p>
+        </center>
+      </div>
+    </div>
+  </div>
+
   <!-- Index Articles -->
   <div class="index" style="display: none;">
     <article id="recentusers" class="container">
@@ -206,6 +268,7 @@
         <td>&nbsp;<textarea id="postCode" style="width:150px;height:150px;">DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4</textarea></td>
        </tr>
       </table>
+      <a id="postButton" style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="">Post</a>
     </article>
   </div>
 
@@ -274,14 +337,17 @@
       <form>
         <input id="setnameinput" type="text" style="width:100%;" value="Doge_Yip"/>
       </form>
-      <br/>
-      <h2>Make a Dogecoin Transaction with the Below Address to Set Your Name.</h2>
-      <div id="setnameQRPostCode"></div>
-      <div class="qrUnavailable" style="display:none;"><img width=150px; height=150px src="img/open-iconic/ban.svg"></div>
-      <br/>
-      <p>
-        <input id="setnamebase58Check" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
-      </p>
+      <div id="setnameCodes">
+        <br/>
+        <h2>Make a Dogecoin Transaction with the Below Address to Set Your Name.</h2>
+        <div id="setnameQRPostCode"></div>
+        <div class="qrUnavailable" style="display:none;"><img width=150px; height=150px src="img/open-iconic/ban.svg"></div>
+        <br/>
+        <p>
+          <input id="setnamebase58Check" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
+        </p>
+      </div>
+      <a id="setNameButton" style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="">Set Name</a>
     </article>
   </div>
 
@@ -339,6 +405,13 @@ jQuery(document).ready(function($) {
   $("#setnameinput").keyup(function( event ) {
     populateSetNameQrCode(nameQRCode);
   });
+  $("#setNameButton").click(function( event ) {
+    getEncodeDictionary("80").done(function(encodeDictionary) {
+      var message = $("#setnameinput").val();
+      sendTransaction(messageToBase58Check(message, null, "9F"));
+      $("#setnameinput").val("");
+    });
+  });
 
   /*post*/
   var postQRCode = new QRCode("qrPostCode",{
@@ -355,6 +428,7 @@ jQuery(document).ready(function($) {
   function populatePostingQrCode(value){
     postQRCode.clear();
     postQRCode.makeCode(postingAddresses[value]);
+    $("#postCode").text(postingAddresses[value])
     if(value+1<postingAddresses.length){
       $("#nextPostCode").text("Next ("+(value+1)+" of "+postingAddresses.length+")")
       $("#nextPostCode").show();
@@ -372,6 +446,13 @@ jQuery(document).ready(function($) {
       var message = $("#message").val();
       postingAddresses = messageToBase58Check(message, encodeDictionary, "80");
       populatePostingQrCode(0);
+    });
+  });
+  $("#postButton").click(function( event ) {
+    getEncodeDictionary("80").done(function(encodeDictionary) {
+      var message = $("#message").val();
+      sendTransaction(messageToBase58Check(message, encodeDictionary, "80"));
+      $("#message").val("");
     });
   });
 });

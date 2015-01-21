@@ -7,8 +7,13 @@ function textToHex(str) {
 };
 
 function hash160ToBase58Check(hash160){
-  var address = new Bitcoin.Address(Crypto.util.hexToBytes(hash160))
-  address.version = 0x1E //testnet would be 0x6F
+  var hash160Array = [];
+  for(var i=0; i<40; i+=2){
+    var hex = hash160.substring(i, i+2);
+    hash160Array.push(parseInt(hex,16));
+  }
+  var chunk2 = window.dogeyip.buffer(hash160Array);
+  var address = new bitcoin.Address(chunk2, 30);
   return address.toString();
 };
 

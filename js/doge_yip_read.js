@@ -1,12 +1,6 @@
 function base58CheckTohash160(base58Check){
-  var hash160 = Bitcoin.Base58.decode(base58Check);
-  var hexString = "";
-  for(var i=0; i<hash160.length; i++){
-    var hex = "0"+hash160[i].toString(16);
-    hex = hex.substring(hex.length-2,hex.length);
-    hexString+=hex;
-  }
-  return hexString.substring(2,42);
+  var address = bitcoin.Address.fromBase58Check(base58Check);
+  return address.hash.toString('hex');
 }
 
 function insertHtml(divId, html, time){
@@ -66,8 +60,14 @@ function showProfile(address){
     $("#notifications").html("");
     $("#posts").html("");
     $("#news").html("");
-    var profileBanner = "<h2>"+user.username+"</h2>"
+    var provileBanner;
+    if(privateKey!=null){
+        profileBanner = "<h2>"+user.username+"</h2>"
+                      + '<p>To tip send 15 DOGE to <a onclick="sendTipTransaction(\''+user.address+'\')" href="javascript: void(0)">'+user.username+'</a></p>';
+    } else{
+        profileBanner = "<h2>"+user.username+"</h2>"
                       + '<p>To tip send 15 DOGE to <a onclick="showQrCode(\''+user.address+'\')" href="javascript: void(0)">'+user.username+'</a></p>';
+    }
     $(".profilebanner").html(profileBanner);
     setQRCode(user.address);
     showLink("profile");
@@ -77,28 +77,32 @@ function showProfile(address){
 
 var favoriteqrcode;
 function showFavorite(address, amount){
-  showLink("favorite");
-  if(favoriteqrcode==null){
-      favoriteqrcode = new QRCode("favoriteQRPostCode", {
-      text: address,
-      width: 150,
-      height: 150,
-      colorDark : "#000000",
-      colorLight : "#FBF0D9",
-      correctLevel : QRCode.CorrectLevel.H
-    });
+  if(privateKey!=null){
+    sendFavoriteTransaction(address, amount);
   } else{
-    favoriteqrcode.clear();
-    favoriteqrcode.makeCode(address);
-  }
-  getUser(address).done(function(user){
-    var favoritebanner = '<h2>Favorite</h2>'
+    showLink("favorite");
+    if(favoriteqrcode==null){
+        favoriteqrcode = new QRCode("favoriteQRPostCode", {
+        text: address,
+        width: 150,
+        height: 150,
+        colorDark : "#000000",
+        colorLight : "#FBF0D9",
+        correctLevel : QRCode.CorrectLevel.H
+      });
+    } else{
+      favoriteqrcode.clear();
+      favoriteqrcode.makeCode(address);
+    }
+    getUser(address).done(function(user){
+      var favoritebanner = '<h2>Favorite</h2>'
                        + '<p>'
                        +   'To favorite this bark send <b>'+amount+' DOGE</b> to <a onclick="showProfile(\''+address+'\')" href="javascript: void(0)">'+user.username+'</a>\'s address.'
                        + '</p>';
-    $("#favoriteBase58Check").val(address);
-    $(".favoritebanner").html(favoritebanner);
-  });
+      $("#favoriteBase58Check").val(address);
+      $(".favoritebanner").html(favoritebanner);
+    });
+  }
 }
 
 /* POPULATE HTML CACHE */

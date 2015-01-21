@@ -1,4 +1,4 @@
-links=["favorite","index","settings","post","profile","search","setname","bigqrcode","faq"];
+links=["favorite","index","settings","post","profile","search","setname","bigqrcode","faq","splashpage", "signup", "signin", "gettingstarted"];
 
 function showLink(link){
   var on;
@@ -10,7 +10,7 @@ function showLink(link){
   }
 }
 
-  $(".index").show();
+  $(".splashpage").show();
 
 /* LOAD FAVORITE HTML */
 $.ajax({
