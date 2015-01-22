@@ -1,4 +1,7 @@
-links=["favorite","index","settings","post","profile","search","setname","bigqrcode","faq","splashpage", "signup", "signin", "gettingstarted"];
+links=["favorite","index","settings","post","profile","search",
+       "setname","bigqrcode","faq","splashpage", "signup", "signin", 
+       "gettingstarted", "fundingyourwallet", "settingyourusername", 
+       "broadcastingyouraccount"];
 
 function showLink(link){
   var on;
@@ -72,19 +75,6 @@ $(".settingslink").click(function( event ) {
     showLink("bigqrcode");
   });
 
-var faqarticle;
-$(".faqlink").click(function( event ) {
-  if(faqarticle!=null){
-    $("#faqarticle").html(html);
+  $(".faqlink").click(function( event ) {
     showLink("faq");
-  } else{
-    $.ajax({
-      url: "html/faq.html",
-      dataType: 'html'
-    }).done(function(html) {
-      faqarticle = html;
-      $("#faqarticle").html(faqarticle);
-      showLink("faq");
-    });
-  }
-});
+  });

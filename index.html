@@ -231,9 +231,152 @@
             <li>You can learn more about Dogecoin at <a hres="http://dogecoin.com/">Dogecoin.com</a></li>
           </ul>
         <p>
-          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Proceed</a>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('fundingyourwallet')">Start Tutorial</a>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Proceed to Site</a>
         </p>
         </center>
+      </div>
+    </div>
+  </div>
+
+  <!-- Funding Your Wallet -->
+  <div id="fundingyourwalletarticle" class="fundingyourwallet" style="display: none;">
+    <div class="jumbotron fill" style="background-color:#54C571;">
+      <div>
+        <center>
+        <img src="img/shibainu.png" width=250px height=250px class="img-circle" style="box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);">
+        <h1 style="font-family: 'Lobster', Georgia, Times, serif; color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;" class="container strong">Getting Started</h1>
+        </center>
+        <p>
+          The first thing you need to do in Doge Yip is to fund your 
+          wallet. This is because all interaction in Doge Yip is 
+          done by making transactions in the Dogecoin blockchain and 
+          if you do not have any dogecoin in your wallet then you 
+          are not able to make any transaction. The reason for this 
+          is because Doge Yip uses the dogecoin blockchain as a 
+          datastore instead of using a traditional database.
+        </p>
+        <p>
+          There are several different ways of funding your wallet. 
+          The easiest is by simply transfering Dogecoin from an 
+          existing wallet to your new 
+          <a id='new_wallet' href="javascript: void(0)" onclick="showQrCode(getWalletAddress().toString())">Doge Yip Wallet</a>.
+        </p>
+        <p>
+          A second easy way to fund your new wallet is by going to 
+          faucet sites. Faucet sites are typically a page full of 
+          ads that send you Dogecoins in exchange for page views. I 
+          personally find 
+          <a href="http://freedoge.co.in/?r=173321">Free Doge Coin</a> 
+          to be the easiest to use but a more comprehensive list of 
+          options can be found at the 
+          <a href="http://makingmoneyhoney.com/dogefaucets.htm"> Doge Coin Faucet List</a>.
+        </p>
+        <p>
+          A third way to fund your new wallet is by buying Dogeyip from an exchange. Here are some trusted exchanges:
+          <ul>
+            <li><a href="https://www.weselldoges.com/">WeSellDoge</a>(Paypal)</li>
+            <li><a href="https://anxpro.com">ANXPRO</a> (USD, EUR, GBP, AUD, CAD, HKD, SGD, NZD)</li>
+            <li><a href="https://www.kraken.com/">Kraken</a> (USD, EUR)</li>
+            <li><a href="https://www.gocelery.com/">Celery</a> (USD)</li>
+            <li><a href="http://www.localdogecoin.com/">LocalDogecoin</a>(A website to purchase Dogecoin locally)</li>
+          </ul>
+        </p>
+        <p>
+          Lastly, the hardest but most anonymous way to fund your 
+          new wallet is by mining. Mining is when you use your 
+          computer to process Dogecoin transactions by other people, 
+          and in return you get Dogecoin. Mining is intended for 
+          advanced users only, as it requires a lot of technical 
+          knowledge to do. If you are interested, 
+          <a href="http://dogecointutorial.com/mining.html">read more here</a>.
+        </p>
+        <p>
+          Note: These online faucets and exchanges are not owned or 
+          maintained by Doge Yip or Dog Yip. While 
+          we are satisfied they are trustworthy, reliable services - 
+          please use at your own risk.
+        </p>
+        <p>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('settingyourusername')">Setting Your Username</a>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Proceed to Site</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setting Your Username -->
+  <div id="settingyourusernamearticle" class="settingyourusername" style="display: none;">
+    <div class="jumbotron fill" style="background-color:#54C571;">
+      <div>
+        <center>
+        <img src="img/shibainu.png" width=250px height=250px class="img-circle" style="box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);">
+        <h1 style="font-family: 'Lobster', Georgia, Times, serif; color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;" class="container strong">Getting Started</h1>
+        </center>
+        <p>
+          After funding your wallet the second thing that you should 
+          do is to set your username. This allows your account to be 
+          searchable so that other people can find you on Doge Yip. 
+          It also helps make it easier for people to recognize your 
+          user account when you post because all Doge Yip private 
+          keys tend to look the same.
+        </p>
+        <p>
+          You can set your username by going to the set name link in 
+          the navagation bar or by clicking 
+          <a href="javascript: void(0)" onclick="showLink('setname')">here</a>.
+        </p>
+        <p>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('broadcastingyouraccount')">Broadcasting Your Account</a>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Proceed to Site</a>
+        </p>
+        <p>
+          Technical: Behind the scenes setting your username 
+          consists of converting a 19 character string to its 
+          hexidecimal representation, prepending 0x1E, appending 
+          0x9F, and then base58check encoding the entire string. 
+          After that we simply send a transaction to that address. 
+          Finally, when Doge Yip loads your recent transactions it 
+          simply decodes all the addresses that you have sent 
+          dogecoins to and your most recent transaction whose hex 
+          value ends in 0x9F becomes your username. Likewise, it 
+          becomes trivial to search on this name by simply base58check 
+          encoding a searchvalue and looking through all users that 
+          have sent dogecoin to that address. 
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Broadcasting your Account -->
+  <div id="broadcastingyouraccountarticle" class="broadcastingyouraccount" style="display: none;">
+    <div class="jumbotron fill" style="background-color:#54C571;">
+      <div>
+        <center>
+        <img src="img/shibainu.png" width=250px height=250px class="img-circle" style="box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);">
+        <h1 style="font-family: 'Lobster', Georgia, Times, serif; color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;" class="container strong">Getting Started</h1>
+        </center>
+        <p>
+          After Setting your name the next thing that you might 
+          choose to do is to broadcast your account.
+        </p>
+        <p>
+          You can broadcast your account by clicking 
+          <a href="javascript: void(0)" onclick="if(privateKey==null){showQrCode('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')}else{sendTipTransaction('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')};">here</a>.
+        </p>
+        <p>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('faq')">Frequently Asked Questions</a>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Proceed to Site</a>
+        </p>
+        <p>
+          Technical:
+          Broadcasting your account will make you appear in the 
+          Discover page under the Recent Users tab and the Recent 
+          News tab. This is essencially a way to bootstrap yourself 
+          into the Doge Yip network. This is probably most 
+          benificial to do if you are trying to connect with other 
+          Doge Yip users while the userbase is still small.
+        </p>
       </div>
     </div>
   </div>
@@ -370,7 +513,70 @@
   </div>
 
   <!-- FAQ Code -->
-  <div id="faqarticle" class="faq" style="display:none;"></div>
+  <div id="faqarticle" class="faq" style="display:none;">
+<article id="post" class="container">
+  <br/>
+  <h2>General</h2>
+  <h3>What is Doge Yip?</h3>
+  <p>
+    Doge Yip is a decentrialized microbloging service that reads encoded data from the dogecoin blockchain using client-side javascript.
+  </p>
+  <h3>What do I need to start using Doge Yip?</h3>
+  <p>
+    All you need is a dogecoin wallet and some dogecoin. I would suggest going to <a href="http://dogecoin.com/">dogecoin.com</a> to learn more about dogecoin.
+  </p>
+  <h3>How do I post a yip to Doge Yip?</h3>
+  <p>
+    Click on the Yip link in the navagation bar, type whatever 
+    you want into the text field, and then send some dogecoin to 
+    each of the generated addresses. Once finished the yip is 
+    forever associated with the wallet that made the 
+    transactions.
+  </p>
+  <h3>Why do I need to pay to post on Dogeyip?</h3>
+  <p>
+    Every post that you make consists of sending dogecoins to 
+    multiple dogecoin addresses. This is done because Dogeyip does 
+    not have an underlying database. Instead it uses the dogecoin 
+    blockchain as a distributated datastore and client-side 
+    javascript for decoding this datastore in place of a database. 
+    That is what makes this so unique. As long as you have access to 
+    the block chain and have some html locally on your computer you 
+    can read and write whatever you want and no one can do anything 
+    about it.
+  </p>
+  <h3>How do I assign a name to my wallet?</h3>
+  <p>
+    Click on the Set Name link in the navagation bar, type 
+    whatever name you want into the text field, and then send 
+    some dogecoin to the generated address. Once finished that 
+    name is forever associated with the wallet that made the 
+    transaction.
+  </p>
+  <h2>Technical</h2>
+  <h3>What are the fees to send messages?</h3>
+  <p>
+    To send a message you must make a transaction to the 
+    generated address. To do so you would send over 1 Doge to 
+    the generated address and another Doge to a miner as 
+    incentive to put your transaction into the block chain. Note 
+    that the generated address has no known private key. Thus 
+    sending a Doge to that address is equivalent to burning a 
+    Doge.
+  </p>
+  <h3>What's the maximum message length?</h3>
+  <p>
+    There isn't a theoretical limit. Currently you are limited 
+    by how many Dogecoins you have.
+  </p>
+  <h3>Won't this bloat the blockchain?</h3>
+  <p>
+    Potentially. But if a transaction amount is too small then no 
+    miner should actually write it into the block chain. I would 
+    think that it would produce no more bloat than the faucet sites.
+  </p>
+</article>
+  </div>
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
