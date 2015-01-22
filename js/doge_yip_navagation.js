@@ -55,6 +55,10 @@ $(".settingslink").click(function( event ) {
   showLink("settings");
 });
 
+  $(".indexlink").click(function( event ) {
+    showLink("index");
+  });
+
   $(".postlink").click(function( event ) {
     showLink("post");
   });
