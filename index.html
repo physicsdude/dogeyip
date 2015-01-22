@@ -218,15 +218,18 @@
   <!-- Getting Started -->
   <div id="gettingstartedarticle" class="gettingstarted" style="display: none;">
     <div class="jumbotron fill" style="background-color:#54C571;">
-      <div class="container strong" style="color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">
+      <div>
         <center>
         <img src="img/shibainu.png" width=250px height=250px class="img-circle" style="box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);">
-        <h1 style="font-family: 'Lobster', Georgia, Times, serif;">Getting Started</h1>
-        <h2 style="font-family: 'Cabin', Helvetica, Arial, sans-serif;">Your new Dogecoin wallet is:</h2>
-        <h2 style="font-family: 'Cabin', Helvetica, Arial, sans-serif;"><a id='new_wallet' href="javascript: void(0)" onclick="showQrCode(getWalletAddress().toString())"></a></h2>
-        <h3 style="font-family: 'Cabin', Helvetica, Arial, sans-serif;">You need to fund your wallet to interact on Doge Yip.</h3>
-        <h3 style="font-family: 'Cabin', Helvetica, Arial, sans-serif;">All sensitive information is handled client-side. We never see it.</h3>
-        <h3 style="font-family: 'Cabin', Helvetica, Arial, sans-serif;">You can learn more about Dogecoin at <a hres="http://dogecoin.com/">Dogecoin.com</a></h3>
+        <h1 style="font-family: 'Lobster', Georgia, Times, serif; color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;" class="container strong">Getting Started</h1>
+        <p>
+          Your new Dogecoin wallet is:<br/>
+          <a id='new_wallet' href="javascript: void(0)" onclick="showQrCode(getWalletAddress().toString())"></a><br/>
+          <ul>
+            <li>You need to fund your wallet to interact on Doge Yip.</li>
+            <li>All sensitive information is handled client-side. We never see it.</li>
+            <li>You can learn more about Dogecoin at <a hres="http://dogecoin.com/">Dogecoin.com</a></li>
+          </ul>
         <p>
           <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Proceed</a>
         </p>
