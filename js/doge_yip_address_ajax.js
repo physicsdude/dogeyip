@@ -93,6 +93,7 @@ function constructUserDataFromDogeYip(json, address){
   user.input = {};
   user.input.favorites = [];
   user.input.tips = [];
+  user.input.messages = [];
 
   for(var i=0; i<json.length; i++){
     var tx = json[i];
@@ -114,17 +115,17 @@ function constructUserDataFromDogeYip(json, address){
         favorite.amount = tx.amount;
         favorite.time = tx.time;
         user.output.favorites[favorite.address+"_"+favorite.timestamp]=favorite;
-      } 
+      }
       if(isTip(tx.amount)){
         var tip = {};
         tip.address = tx.address;
         tip.amount = tx.amount;
         tip.time = tx.time;
         user.output.tips[tip.address] = tip;
-      } 
+      }
       if(isName(hexTokenB) && user.username==user.address){
         user.username = hash160ToUsername(hexMessage).trim();
-      } 
+      }
       if(isConnectingPost(hexTokenA)){
         user.connectingPosts[hash160.substring(36,40)]=hexMessage.substring(0,36);
       }
@@ -143,7 +144,13 @@ function constructUserDataFromDogeYip(json, address){
         tip.time = tx.time;
         user.input.tips[tip.address] = tip;
       }
-
+      if(isMessageNotification(tx.amount)){
+        var message = {};
+        message.address = tx.address;
+        message.amount = tx.amount;
+        message.time = tx.time;
+        user.input.messages[message.address] = message;
+      }
     }
   }
   return user;
@@ -162,6 +169,7 @@ function constructUserDataFromChainSo(json, address){
   user.input = {};
   user.input.favorites = [];
   user.input.tips = [];
+  user.input.messages = [];
 
   var txs = json.data.txs;
   for(var i=0; i<txs.length; i++){
@@ -216,6 +224,13 @@ function constructUserDataFromChainSo(json, address){
       tip.time = tx.time;
       user.input.tips[tip.address] = tip;
     }
+    if(tx.incoming!=null && isMessageNotification(tx.incoming.value)){
+      var message = {};
+      message.address = tx.incoming.inputs[0].address;
+      message.amount = tx.incoming.value;
+      message.time = tx.time;
+      user.input.messages[message.address] = message;
+    }
   }
   return user;
 }
@@ -224,32 +239,18 @@ function isTip(amount){
   return 15==amount;
 }
 
-//function isFavoriteNotification(tx){
-//  var amount = tx.incoming.value
-//  var time = tx.time/100000000;
-//  return (tx.incoming.inputs!=null && amount>time-1 && amount<time+1);
-//}
-
 function isFavoriteNotification(amount, time){
   var time = time/100000000;
   return (amount>time-1 && amount<time+1);
 }
 
-//function isTipNotification(tx){
-//  var amount = tx.incoming.value
-//  var time = tx.time/100000000;
-//  return (tx.incoming.inputs!=null && amount==15);
-//}
-
 function isTipNotification(amount){
   return amount==15;
 }
 
-//function isFavorite(tx, output){
-//  var amount = output.value
-//  var time = tx.time/100000000;
-//  return (amount>time-1 && amount<time+1) && amount!=15;
-//}
+function isMessageNotification(amount){
+  return amount==1;
+}
 
 function isFavorite(amount, time){
   var time = time/100000000;
@@ -264,10 +265,15 @@ function isConnectingPost(hexToken){
 
 function isPost(hexTokenA, hexTokenB){
   var startHexLibraryTokenRange = parseInt("80",16);
-  var endHexLibraryTokenRange = parseInt("9E",16);
+  var endHexLibraryTokenRange = parseInt("9D",16);
   var hasLibraryHex = (hexTokenB>=startHexLibraryTokenRange && hexTokenB<=endHexLibraryTokenRange);
   var hasConnectingPostHex = isConnectingPost(hexTokenA)
   return (hasLibraryHex && !hasConnectingPostHex);
+}
+
+function isMessageToName(hexToken){
+  var hexNameToken = parseInt("9E",16);
+  return (hexToken==hexNameToken);
 }
 
 function isName(hexToken){

@@ -26,7 +26,7 @@ function getWalletAddress(){
   return privateKey.pub.getAddress(bitcoin.networks.dogecoin);
 }
 
-function sendTransaction(outputs){
+function sendTransaction(outputs, usernames){
   var ajax = $.getJSON(unspentUrl+getWalletAddress());
   $.when(ajax).done(function(json){
     var unspentOutputs = json.unspent_outputs[0];
@@ -45,6 +45,14 @@ function sendTransaction(outputs){
         value-=100000000;
       }
 
+      if(usernames!=null){
+        for(var i=0; i<usernames.length; i++){
+          var outboxAddress = messageToBase58Check(usernames[i], null, "9E")[0];
+          txb.addOutput(outboxAddress, 100000000);
+          value-=100000000;
+        }
+      }
+
       var change = value-100000000-(outputs.length/20)*100000000;
       if(change>100000000){
         txb.addOutput(getWalletAddress(), change);
@@ -54,7 +62,7 @@ function sendTransaction(outputs){
       jQuery.support.cors = true;
       var postTransaction = $.post(pushTxUrl, {tx_hex:txb.build().toHex()});
       $.when(postTransaction).done(function(json){
-        console.log(json);
+        //console.log(json);
       });
     }
   });
@@ -85,7 +93,7 @@ function sendTipTransaction(tipAddress){
       jQuery.support.cors = true;
       var postTransaction = $.post(pushTxUrl, {tx_hex:txb.build().toHex()});
       $.when(postTransaction).done(function(json){
-        console.log(json);
+        //console.log(json);
       });
     }
   });

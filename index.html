@@ -620,7 +620,7 @@ jQuery(document).ready(function($) {
   $("#setNameButton").click(function( event ) {
     getEncodeDictionary("80").done(function(encodeDictionary) {
       var message = $("#setnameinput").val();
-      sendTransaction(messageToBase58Check(message, null, "9F"));
+      sendTransaction(messageToBase58Check(message, null, "9F"), null);
       $("#setnameinput").val("");
     });
   });
@@ -663,12 +663,21 @@ jQuery(document).ready(function($) {
   $("#postButton").click(function( event ) {
     getEncodeDictionary("80").done(function(encodeDictionary) {
       var message = $("#message").val();
-      sendTransaction(messageToBase58Check(message, encodeDictionary, "80"));
+      var words = message.split(' ');
+      var usernames = [];      
+
+      for(var i=0; i<words.length; i++){
+        var word = words[i];
+        if(word.substring(0, 1)=="@"){
+          usernames.push(word.substring(1));
+        }
+      }
+
+      sendTransaction(messageToBase58Check(message, encodeDictionary, "80"), usernames);
       $("#message").val("");
     });
   });
 });
-
 
 </script>
 </body>

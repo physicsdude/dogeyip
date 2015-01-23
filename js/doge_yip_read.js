@@ -242,6 +242,27 @@ function scrapeRecentActivity(address, divId){
   });
 }
 
+function scrapeDirectMessages(user){
+  var base58Check = messageToBase58Check(user.username, null, "9E");
+  getUser(base58Check).done(function(inbox){
+    for(var key in inbox.input.messages){
+      message = inbox.input.messages[key];
+        getUser(message.address).done(function(sender){
+          for(var j=0; j<sender.posts.length; j++){
+            var post = sender.posts[j];
+            var when = $.when(hash160ToText(post.hexMessage, post.hexToken, sender.connectingPosts), getHtml("html/posts/yip.html"))
+            when.done(function(message, html){
+              /*check to see if the post mentions the user*/
+              if((message+" ").indexOf("@"+user.username+" ")>-1){
+                createPost("notifications", sender.username, sender.address, post.time, post.hexMessage, post.hexLibrary, sender.connectingPosts);
+              }
+            });
+          }
+        });
+    }
+  });
+}
+
 function scrapeTransactionData(address){
   getUser(address).done(function(user){
     for(var i=0; i<user.posts.length; i++){
@@ -273,5 +294,6 @@ function scrapeTransactionData(address){
       tiptime = user.input.tips[key].time
       createTipNotification(user.username, user.address, tipaddress, tiptime);
     }
+    scrapeDirectMessages(user);
   });
 }
