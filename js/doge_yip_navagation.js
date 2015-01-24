@@ -1,7 +1,5 @@
 links=["favorite","index","settings","post","profile","search",
-       "setname","bigqrcode","faq","splashpage", "signup", "signin", 
-       "gettingstarted", "fundingyourwallet", "settingyourusername", 
-       "broadcastingyouraccount"];
+       "setname","bigqrcode","faq","splashpage", "signup", "signin"];
 
 function showLink(link){
   var on;

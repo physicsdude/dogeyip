@@ -224,7 +224,7 @@
         <h3 style="font-family: 'Cabin', Helvetica, Arial, sans-serif;">&bull; Uncensorable</h3>
         <h3 style="font-family: 'Cabin', Helvetica, Arial, sans-serif;">&bull; Distributed</h3>
         <p>
-          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('signup')">Create Account</a>
+          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('signup');">Create Account</a>
           <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('signin')">Sign In</a>
           <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Use Anonymously</a>
         </p>
@@ -246,50 +246,51 @@
         <input id="walletpassword" type="password" style="color:black; font-family: 'Cabin', Helvetica, Arial, sans-serif;"></input>
         <br/>
         <br/>
-        <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signin" onclick="setPrivateKey();showLink('index')">Sign In</a>
-        <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signup" onclick="setPrivateKey();showLink('gettingstarted');$('#new_wallet').text(getWalletAddress().toString())">Create Account</a>
+          <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signup" onclick="setPrivateKey();showLink('index');$('#getting-started').modal('show');$('#new_wallet').text(getWalletAddress().toString())">Create Account</a>
         </center>
       </div>
     </div>
   </div>
 
   <!-- Getting Started -->
-  <div id="gettingstartedarticle" class="gettingstarted" style="display: none;">
-    <div class="jumbotron fill" style="background-color:#54C571;">
-      <div>
-        <center>
-        <img src="img/shibainu.png" width=250px height=250px class="img-circle" style="box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);">
-        <h1 style="font-family: 'Lobster', Georgia, Times, serif; color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;" class="container strong">Getting Started</h1>
-        <p>
-          Your new Dogecoin wallet is:<br/>
-          <a id='new_wallet' href="javascript: void(0)" onclick="showQrCode(getWalletAddress().toString())"></a><br/>
-          <ul>
-            <li>You need to fund your wallet to interact on Doge Yip.</li>
-            <li>All sensitive information is handled client-side. We never see it.</li>
-            <li>You can learn more about Dogecoin at <a hres="http://dogecoin.com/">Dogecoin.com</a></li>
-          </ul>
-        <p>
-          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('fundingyourwallet')">Start Tutorial</a>
-          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Proceed to Site</a>
-        </p>
-        </center>
+<div id="getting-started" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content dogeyip-modal">
+      <div class="modal-header" style="text-align: center;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title getting-started-1">Getting Started</h4>
+        <h4 class="modal-title getting-started-2" style="display: none;">Funding Your Wallet</h4>
+        <h4 class="modal-title getting-started-3" style="display: none;">Setting Your Username</h4>
+        <h4 class="modal-title getting-started-4" style="display: none;">Broadcasting Your Account</h4>
       </div>
-    </div>
-  </div>
-
-  <!-- Funding Your Wallet -->
-  <div id="fundingyourwalletarticle" class="fundingyourwallet" style="display: none;">
-    <div class="jumbotron fill" style="background-color:#54C571;">
-      <div>
-        <center>
-        <img src="img/shibainu.png" width=250px height=250px class="img-circle" style="box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);">
-        <h1 style="font-family: 'Lobster', Georgia, Times, serif; color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;" class="container strong">Getting Started</h1>
-        </center>
+      <div class="modal-body banner">
+        <div class="banner">
+          <table>
+            <tr>
+              <td>
+                <div id="gettingStartedQR" style="vertical-align:top;"></div>
+              </td>
+              <td>
+                Your new Dogecoin wallet is:<br/>
+                <a id='new_wallet' href="javascript: void(0)" onclick="showQrCode(getWalletAddress().toString())"></a><br/>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="modal-body getting-started-1">
+        <ul>
+          <li>You need to fund your wallet to interact on Doge Yip.</li>
+          <li>All sensitive information is handled client-side. We never see it.</li>
+          <li>You can learn more about Dogecoin at <a herf="http://dogecoin.com/" target="_blank">Dogecoin.com</a></li>
+        </ul>
+      </div>
+      <div class="modal-body getting-started-2" style="display:none;">
         <p>
           The first thing you need to do in Doge Yip is to fund your 
           wallet. This is because all interaction in Doge Yip is 
-          done by making transactions in the Dogecoin blockchain and 
-          if you do not have any dogecoin in your wallet then you 
+          done by making transactions in the Dogecoin blockchain. 
+          If you do not have any dogecoin in your wallet then you 
           are not able to make any transaction. The reason for this 
           is because Doge Yip uses the dogecoin blockchain as a 
           datastore instead of using a traditional database.
@@ -311,7 +312,7 @@
           <a href="http://makingmoneyhoney.com/dogefaucets.htm"> Doge Coin Faucet List</a>.
         </p>
         <p>
-          A third way to fund your new wallet is by buying Dogeyip from an exchange. Here are some trusted exchanges:
+          A third way to fund your new wallet is by buying Dogecoin from an exchange. Here are some trusted exchanges:
           <ul>
             <li><a href="https://www.weselldoges.com/">WeSellDoge</a>(Paypal)</li>
             <li><a href="https://anxpro.com">ANXPRO</a> (USD, EUR, GBP, AUD, CAD, HKD, SGD, NZD)</li>
@@ -335,22 +336,8 @@
           we are satisfied they are trustworthy, reliable services - 
           please use at your own risk.
         </p>
-        <p>
-          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('settingyourusername')">Setting Your Username</a>
-          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Proceed to Site</a>
-        </p>
       </div>
-    </div>
-  </div>
-
-  <!-- Setting Your Username -->
-  <div id="settingyourusernamearticle" class="settingyourusername" style="display: none;">
-    <div class="jumbotron fill" style="background-color:#54C571;">
-      <div>
-        <center>
-        <img src="img/shibainu.png" width=250px height=250px class="img-circle" style="box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);">
-        <h1 style="font-family: 'Lobster', Georgia, Times, serif; color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;" class="container strong">Getting Started</h1>
-        </center>
+      <div class="modal-body getting-started-3" style="display:none;">
         <p>
           After funding your wallet the second thing that you should 
           do is to set your username. This allows your account to be 
@@ -365,11 +352,8 @@
           <a href="javascript: void(0)" onclick="showLink('setname')">here</a>.
         </p>
         <p>
-          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('broadcastingyouraccount')">Broadcasting Your Account</a>
-          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Proceed to Site</a>
-        </p>
-        <p>
-          Technical: Behind the scenes setting your username 
+          Technical:<br/>
+          Behind the scenes setting your username 
           consists of converting a 19 character string to its 
           hexidecimal representation, prepending 0x1E, appending 
           0x9F, and then base58check encoding the entire string. 
@@ -383,17 +367,7 @@
           have sent dogecoin to that address. 
         </p>
       </div>
-    </div>
-  </div>
-
-  <!-- Broadcasting your Account -->
-  <div id="broadcastingyouraccountarticle" class="broadcastingyouraccount" style="display: none;">
-    <div class="jumbotron fill" style="background-color:#54C571;">
-      <div>
-        <center>
-        <img src="img/shibainu.png" width=250px height=250px class="img-circle" style="box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);">
-        <h1 style="font-family: 'Lobster', Georgia, Times, serif; color:tan; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;" class="container strong">Getting Started</h1>
-        </center>
+      <div class="modal-body getting-started-4" style="display: none;">
         <p>
           After Setting your name the next thing that you might 
           choose to do is to broadcast your account.
@@ -403,11 +377,7 @@
           <a href="javascript: void(0)" onclick="if(privateKey==null){showQrCode('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')}else{sendTipTransaction('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')};">here</a>.
         </p>
         <p>
-          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('faq')">Frequently Asked Questions</a>
-          <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg" onclick="showLink('index')">Proceed to Site</a>
-        </p>
-        <p>
-          Technical:
+          Technical:<br/>
           Broadcasting your account will make you appear in the 
           Discover page under the Recent Users tab and the Recent 
           News tab. This is essencially a way to bootstrap yourself 
@@ -416,8 +386,15 @@
           Doge Yip users while the userbase is still small.
         </p>
       </div>
+      <div class="modal-footer" style="text-align: center;">
+        <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg getting-started-1" onclick="$('.getting-started-1').hide();$('.getting-started-2').show();">Funding Your Wallet</a>
+        <a role="button" style="display: none;" href="javascript: void(0)" class="btn btn-primary btn-lg getting-started-2" onclick="$('.getting-started-2').hide();$('.getting-started-3').show();">Setting Your Username</a>
+        <a role="button" style="display: none;" href="javascript: void(0)" class="btn btn-primary btn-lg getting-started-3" onclick="$('.getting-started-3').hide();$('.getting-started-4').show();">Broadcasting Your Account</a>
+        <a role="button" style="display: none;" href="javascript: void(0)" class="btn btn-primary btn-lg getting-started-4" onclick="showLink('faq');$('#getting-started').modal('hide');">Frequently Asked Questions</a>
+      </div>
     </div>
   </div>
+</div>
 
   <!-- Index Articles -->
   <div class="index" style="display: none;">
