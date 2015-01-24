@@ -18,7 +18,7 @@ function listKeywordPostsPerUser(address, searchTerm, divId){
       if(user.username!=user.address){
         var when = $.when(hash160ToText(post.hexMessage, post.hexToken, user.connectingPosts), getHtml("html/posts/yip.html"))
         when.done(function(message, html){
-          if(s.indexOf("#"+searchTerm) > -1){
+          if(message.indexOf("#"+searchTerm) > -1){
             createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexToken, user.connectingPosts)
           }
         });
