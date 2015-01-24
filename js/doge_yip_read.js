@@ -18,7 +18,6 @@ function insertHtml(divId, html, time){
   }
 }
 
-
 var profileqrcode;
 function setQRCode(address){
   if(profileqrcode==null){
@@ -33,6 +32,23 @@ function setQRCode(address){
   } else{
     profileqrcode.clear();
     profileqrcode.makeCode(address);
+  }
+}
+
+var profilepreviewqrcode;
+function setPreviewQRCode(address){
+  if(profilepreviewqrcode==null){
+    profilepreviewqrcode = new QRCode("profilePreviewQR", {
+      text: address,
+      width: 125,
+      height: 125,
+      colorDark : "#000000",
+      colorLight : "#54C571",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+  } else{
+    profilepreviewqrcode.clear();
+    profilepreviewqrcode.makeCode(address);
   }
 }
 
@@ -68,9 +84,9 @@ function showProfilePreview(address){
                       + '<p>To tip send 15 DOGE to <a onclick="showQrCode(\''+user.address+'\')" href="javascript: void(0)">'+user.username+'</a></p>';
     }
     $(".profile-summary-banner").html(profileBanner);
-    setQRCode(user.address);
+    setPreviewQRCode(user.address);
     $('#largeModal').modal('show');
-    scrapeTransactionData(user.address);
+    scrapeProfilePreviewData(user.address);
   });  
 }
 
@@ -282,14 +298,22 @@ function scrapeDirectMessages(user){
   });
 }
 
+function scrapeProfilePreviewData(address){
+  getUser(address).done(function(user){
+    for(var i=0; i<user.posts.length; i++){
+      var post = user.posts[i];
+      if(i<4){
+        createPost("profile-summary-posts", user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
+      }
+    }
+  });
+}
+
 function scrapeTransactionData(address){
   getUser(address).done(function(user){
     for(var i=0; i<user.posts.length; i++){
       var post = user.posts[i];
       createPost("posts", user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
-      if(i<4){
-        createPost("profile-summary-posts", user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
-      }
     }
     for (var key in user.output.favorites) {
       favoriteaddress = user.output.favorites[key].address
