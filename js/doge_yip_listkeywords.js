@@ -18,21 +18,8 @@ function listKeywordPostsPerUser(address, searchTerm, divId){
       if(user.username!=user.address){
         var when = $.when(hash160ToText(post.hexMessage, post.hexToken, user.connectingPosts), getHtml("html/posts/yip.html"))
         when.done(function(message, html){
-          var words = message.split(' ');
-          var keywords = [];      
-          for(var i=0; i<words.length; i++){
-            var word = words[i];
-            if(word.substring(0, 1)=="#"){
-              keywords.push(word.substring(1));
-            }
-          }
-          if(keywords.length>0){
-            for(var key in keywords){
-              var keyword = keywords[key];
-              if(keyword==searchTerm){
-                createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexToken, user.connectingPosts)
-              }
-            }
+          if(s.indexOf("#"+searchTerm) > -1){
+            createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexToken, user.connectingPosts)
           }
         });
       }
