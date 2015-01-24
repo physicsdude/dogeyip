@@ -1,5 +1,5 @@
 links=["favorite","index","settings","post","profile","search",
-       "setname","bigqrcode","faq","splashpage", "signup", "signin"];
+       "setname","bigqrcode","splashpage", "signup", "signin"];
 
 function showLink(link){
   var on;
@@ -75,8 +75,4 @@ $(".settingslink").click(function( event ) {
 
   $(".bigqrcode").click(function( event ) {
     showLink("bigqrcode");
-  });
-
-  $(".faqlink").click(function( event ) {
-    showLink("faq");
   });

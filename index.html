@@ -83,7 +83,7 @@
             <a rel="me" class="u-url url postlink" href="javascript: void(0)" title="Compose new Yip"><img width=15 height=15 src='img/open-iconic/comment-square.svg'/> Yip</a>
           </li>
           <li>
-            <a rel="me" class="u-url url faqlink" href="javascript: void(0)" title="FAQ"><img width=15 height=15 src='img/open-iconic/question-mark.svg'/> FAQ</a>
+            <a rel="me" class="u-url url" href="javascript: void(0)" title="Tutorial" onclick="$('#getting-started').modal('show');$('#new_wallet').text(getWalletAddress().toString())"><img width=15 height=15 src='img/open-iconic/question-mark.svg'/> Tutorial</a>
           </li>
         </ul>
       </nav>
@@ -263,6 +263,7 @@
         <h4 class="modal-title getting-started-2" style="display: none;">Funding Your Wallet</h4>
         <h4 class="modal-title getting-started-3" style="display: none;">Setting Your Username</h4>
         <h4 class="modal-title getting-started-4" style="display: none;">Broadcasting Your Account</h4>
+        <h4 class="modal-title getting-started-5" style="display: none;">Frequently Asked Questions</h4>
       </div>
       <div class="modal-body banner">
         <div class="banner">
@@ -387,11 +388,72 @@
           Doge Yip users while the userbase is still small.
         </p>
       </div>
+      <div class="modal-body getting-started-5" style="display: none;">
+  <h3>General</h3>
+  <h4>What is Doge Yip?</h4>
+  <p>
+    Doge Yip is a decentrialized microbloging service that reads encoded data from the dogecoin blockchain using client-side javascript.
+  </p>
+  <h4>What do I need to start using Doge Yip?</h4>
+  <p>
+    All you need is a dogecoin wallet and some dogecoin. I would suggest going to <a href="http://dogecoin.com/">dogecoin.com</a> to learn more about dogecoin.
+  </p>
+  <h4>How do I post a yip to Doge Yip?</h4>
+  <p>
+    Click on the Yip link in the navagation bar, type whatever 
+    you want into the text field, and then send some dogecoin to 
+    each of the generated addresses. Once finished the yip is 
+    forever associated with the wallet that made the 
+    transactions.
+  </p>
+  <h4>Why do I need to pay to post on Dogeyip?</h4>
+  <p>
+    Every post that you make consists of sending dogecoins to 
+    multiple dogecoin addresses. This is done because Dogeyip does 
+    not have an underlying database. Instead it uses the dogecoin 
+    blockchain as a distributated datastore and client-side 
+    javascript for decoding this datastore in place of a database. 
+    That is what makes this so unique. As long as you have access to 
+    the block chain and have some html locally on your computer you 
+    can read and write whatever you want and no one can do anything 
+    about it.
+  </p>
+  <h4>How do I assign a name to my wallet?</h4>
+  <p>
+    Click on the Set Name link in the navagation bar, type 
+    whatever name you want into the text field, and then send 
+    some dogecoin to the generated address. Once finished that 
+    name is forever associated with the wallet that made the 
+    transaction.
+  </p>
+  <h3>Technical</h3>
+  <h4>What are the fees to send messages?</h4>
+  <p>
+    To send a message you must make a transaction to the 
+    generated address. To do so you would send over 1 Doge to 
+    the generated address and another Doge to a miner as 
+    incentive to put your transaction into the block chain. Note 
+    that the generated address has no known private key. Thus 
+    sending a Doge to that address is equivalent to burning a 
+    Doge.
+  </p>
+  <h4>What's the maximum message length?</h4>
+  <p>
+    There isn't a theoretical limit. Currently you are limited 
+    by how many Dogecoins you have.
+  </p>
+  <h4>Won't this bloat the blockchain?</h4>
+  <p>
+    Potentially. But if a transaction amount is too small then no 
+    miner should actually write it into the block chain. I would 
+    think that it would produce no more bloat than the faucet sites.
+  </p>
+      </div>
       <div class="modal-footer" style="text-align: center;">
         <a role="button" href="javascript: void(0)" class="btn btn-primary btn-lg getting-started-1" onclick="$('.getting-started-1').hide();$('.getting-started-2').show();">Funding Your Wallet</a>
         <a role="button" style="display: none;" href="javascript: void(0)" class="btn btn-primary btn-lg getting-started-2" onclick="$('.getting-started-2').hide();$('.getting-started-3').show();">Setting Your Username</a>
         <a role="button" style="display: none;" href="javascript: void(0)" class="btn btn-primary btn-lg getting-started-3" onclick="$('.getting-started-3').hide();$('.getting-started-4').show();">Broadcasting Your Account</a>
-        <a role="button" style="display: none;" href="javascript: void(0)" class="btn btn-primary btn-lg getting-started-4" onclick="showLink('faq');$('#getting-started').modal('hide');">Frequently Asked Questions</a>
+        <a role="button" style="display: none;" href="javascript: void(0)" class="btn btn-primary btn-lg getting-started-4" onclick="$('.getting-started-4').hide();$('.getting-started-5').show();">Frequently Asked Questions</a>
       </div>
     </div>
   </div>
@@ -526,72 +588,6 @@
         <input id="bigqrcodeaddress" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
       </p>
     </article>
-  </div>
-
-  <!-- FAQ Code -->
-  <div id="faqarticle" class="faq" style="display:none;">
-<article id="post" class="container">
-  <br/>
-  <h2>General</h2>
-  <h3>What is Doge Yip?</h3>
-  <p>
-    Doge Yip is a decentrialized microbloging service that reads encoded data from the dogecoin blockchain using client-side javascript.
-  </p>
-  <h3>What do I need to start using Doge Yip?</h3>
-  <p>
-    All you need is a dogecoin wallet and some dogecoin. I would suggest going to <a href="http://dogecoin.com/">dogecoin.com</a> to learn more about dogecoin.
-  </p>
-  <h3>How do I post a yip to Doge Yip?</h3>
-  <p>
-    Click on the Yip link in the navagation bar, type whatever 
-    you want into the text field, and then send some dogecoin to 
-    each of the generated addresses. Once finished the yip is 
-    forever associated with the wallet that made the 
-    transactions.
-  </p>
-  <h3>Why do I need to pay to post on Dogeyip?</h3>
-  <p>
-    Every post that you make consists of sending dogecoins to 
-    multiple dogecoin addresses. This is done because Dogeyip does 
-    not have an underlying database. Instead it uses the dogecoin 
-    blockchain as a distributated datastore and client-side 
-    javascript for decoding this datastore in place of a database. 
-    That is what makes this so unique. As long as you have access to 
-    the block chain and have some html locally on your computer you 
-    can read and write whatever you want and no one can do anything 
-    about it.
-  </p>
-  <h3>How do I assign a name to my wallet?</h3>
-  <p>
-    Click on the Set Name link in the navagation bar, type 
-    whatever name you want into the text field, and then send 
-    some dogecoin to the generated address. Once finished that 
-    name is forever associated with the wallet that made the 
-    transaction.
-  </p>
-  <h2>Technical</h2>
-  <h3>What are the fees to send messages?</h3>
-  <p>
-    To send a message you must make a transaction to the 
-    generated address. To do so you would send over 1 Doge to 
-    the generated address and another Doge to a miner as 
-    incentive to put your transaction into the block chain. Note 
-    that the generated address has no known private key. Thus 
-    sending a Doge to that address is equivalent to burning a 
-    Doge.
-  </p>
-  <h3>What's the maximum message length?</h3>
-  <p>
-    There isn't a theoretical limit. Currently you are limited 
-    by how many Dogecoins you have.
-  </p>
-  <h3>Won't this bloat the blockchain?</h3>
-  <p>
-    Potentially. But if a transaction amount is too small then no 
-    miner should actually write it into the block chain. I would 
-    think that it would produce no more bloat than the faucet sites.
-  </p>
-</article>
   </div>
 
 <script type="text/javascript">
