@@ -106,6 +106,9 @@ function showProfile(address){
     $(".profilebanner").html(profileBanner);
     setQRCode(user.address);
     showLink("profile");
+    $('.profileposts').show();
+    $('.profilenews').hide();
+    $('.profilenotifications').hide();
     scrapeTransactionData(user.address);
   });
 }
