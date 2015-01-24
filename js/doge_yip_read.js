@@ -171,6 +171,26 @@ function createPost(divId, username, useraddress, time, hexMessage, hexToken, co
   var favamount = time/100000000;
   var when = $.when(hash160ToText(hexMessage, hexToken, connectingPosts), getHtml("html/posts/yip.html"))
   when.done(function(message, html){
+    var words = message.split(' ');
+    var mentions = [];      
+    for(var i=0; i<words.length; i++){
+      var word = words[i];
+      if(word.substring(0, 1)=="@"){
+        mentions.push(word.substring(1));
+      }
+    }
+    if(mentions.length>0){
+      for(var key in mentions){
+        var mention = mentions[key];
+        var onclick = "onclick='showLink(\"search\");$(\"#accountsearchresults\").html(\"\");$(\"#accountsearch\").val(\""+mention+"\");listResults(\""+mention+"\", \"accountsearchresults\");'"
+        //var onclick = "onclick='showLink(\"search\");'"
+        message = message.replace('@'+mention, "<a href='javascript: void(0)' "+onclick+">@"+mention+"</a>");
+        console.log(message)
+      }
+    }
+
+    
+
     var post = html.replace("&TIME;", time)
                    .replace("&USERADDRESS;", useraddress)
                    .replace("&USERNAME;", username)
