@@ -59,7 +59,6 @@ function hash160ToText(hex, dictionaryToken, connectingPosts) {
         message = message.replace('#'+keyword, "<a href='javascript: void(0)' "+onclick+">#"+keyword+"</a>");
       }
     }
-    console.log(message)
     deferred.resolve(message);
   });
 
