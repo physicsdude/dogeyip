@@ -70,7 +70,7 @@ function hash160ToText(hex, dictionaryToken, connectingPosts) {
     if(images.length>0){
       for(var key in images){
         var image = images[key];
-        message = message.replace(image, "<ah href='"+image+"'><img width=25% src='"+image+"'/></a>")
+        message = message.replace(image, "<a style='display: block;' href='"+image+"'><img style='box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);' width=25% src='"+image+"'/></a>")
       }
     }
 
