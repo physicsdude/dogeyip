@@ -55,6 +55,25 @@ function showQrCode(address){
   showLink("bigqrcode");
 }
 
+function showProfilePreview(address){
+  getUser(address).done(function(user){
+    $("#profile-summary-posts").html("");
+    $("#full-profile-link").html("<a href='javascript: void(0)' onclick='showProfile(\""+address+"\");$(\"#largeModal\").modal(\"hide\");'>Go to full profile</a>")
+    var provileBanner;
+    if(privateKey!=null){
+        profileBanner = "<h2>"+user.username+"</h2>"
+                      + '<p>To tip send 15 DOGE to <a onclick="sendTipTransaction(\''+user.address+'\')" href="javascript: void(0)">'+user.username+'</a></p>';
+    } else{
+        profileBanner = "<h2>"+user.username+"</h2>"
+                      + '<p>To tip send 15 DOGE to <a onclick="showQrCode(\''+user.address+'\')" href="javascript: void(0)">'+user.username+'</a></p>';
+    }
+    $(".profile-summary-banner").html(profileBanner);
+    setQRCode(user.address);
+    $('#largeModal').modal('show');
+    scrapeTransactionData(user.address);
+  });  
+}
+
 function showProfile(address){
   getUser(address).done(function(user){
     $("#notifications").html("");
@@ -97,7 +116,7 @@ function showFavorite(address, amount){
     getUser(address).done(function(user){
       var favoritebanner = '<h2>Favorite</h2>'
                        + '<p>'
-                       +   'To favorite this bark send <b>'+amount+' DOGE</b> to <a onclick="showProfile(\''+address+'\')" href="javascript: void(0)">'+user.username+'</a>\'s address.'
+                       +   'To favorite this bark send <b>'+amount+' DOGE</b> to <a onclick="showProfilePreview(\''+address+'\')" href="javascript: void(0)">'+user.username+'</a>\'s address.'
                        + '</p>';
       $("#favoriteBase58Check").val(address);
       $(".favoritebanner").html(favoritebanner);
@@ -268,6 +287,9 @@ function scrapeTransactionData(address){
     for(var i=0; i<user.posts.length; i++){
       var post = user.posts[i];
       createPost("posts", user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
+      if(i<4){
+        createPost("profile-summary-posts", user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
+      }
     }
     for (var key in user.output.favorites) {
       favoriteaddress = user.output.favorites[key].address

@@ -45,7 +45,11 @@
     {
       background-color:#FBF0D9;
     }
-    #banner
+    .dogeyip-modal
+    {
+      background-color:#FBF0D9;
+    }
+    .banner
     {
       background-color:#54C571;
     }
@@ -87,7 +91,7 @@
   </header>
 
   <!-- Banner -->
-  <div class="bs-header" id="banner">
+  <div class="bs-header banner">
    <div class="container">
     <table>
      <tr>
@@ -174,6 +178,39 @@
     </table>
    </div>
   </div>
+
+
+  <!-- Profile Popup Page -->
+<div id="largeModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content dogeyip-modal">
+      <div class="modal-header" style="text-align: center;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Profile Summary</h4>
+      </div>
+      <div class="modal-body banner">
+        <div class="banner">
+          <table>
+            <tr>
+              <td>
+                <div id="modalProfileQR" style="vertical-align:top;"></div>
+              </td>
+              <td>
+                <div class="profile-summary-banner">
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div id="profile-summary-posts" class="modal-body profileposts">
+      </div>
+      <div class="modal-footer" style="text-align: center;">
+        <h4 id="full-profile-link"></h4>
+      </div>
+    </div>
+  </div>
+</div>
 
   <!-- Splash Page -->
   <div id="splashpagearticle" class="splashpage" style="display: none;">
@@ -472,7 +509,7 @@
       </div>
       <br/>
       <div id="dogeyipsearchresults">
-        <a href="profile.html?user=DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q">
+        <a href="javascript: void(0)" onclick="showProfilePreview('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q');">
           <img width="35px" height="35px" src="img/open-iconic/person.svg" style="vertical-align:middle;">
           <span><font style="font-size: 175%; vertical-align:middle;" class="DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q"> Doge_Yip</font></span>
         </a>
