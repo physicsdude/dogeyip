@@ -302,7 +302,7 @@ function scrapeProfilePreviewData(address){
   getUser(address).done(function(user){
     for(var i=0; i<user.posts.length; i++){
       var post = user.posts[i];
-      if(i<4){
+      if(i>user.posts.length-5){
         createPost("profile-summary-posts", user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
       }
     }
