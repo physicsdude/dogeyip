@@ -182,15 +182,25 @@ function createPost(divId, username, useraddress, time, hexMessage, hexToken, co
     if(mentions.length>0){
       for(var key in mentions){
         var mention = mentions[key];
-        var onclick = "onclick='showLink(\"search\");$(\"#accountsearchresults\").html(\"\");$(\"#accountsearch\").val(\""+mention+"\");listResults(\""+mention+"\", \"accountsearchresults\");'"
+        var onclick = "onclick='showLink(\"search\");$(\"#dogeyipsearchresults\").html(\"\");$(\"#dogeyipsearch\").val(\""+mention+"\");listResults(\""+mention+"\", \"dogeyipsearchresults\");'"
         //var onclick = "onclick='showLink(\"search\");'"
         message = message.replace('@'+mention, "<a href='javascript: void(0)' "+onclick+">@"+mention+"</a>");
-        console.log(message)
       }
     }
-
-    
-
+    var keywords = [];      
+    for(var i=0; i<words.length; i++){
+      var word = words[i];
+      if(word.substring(0, 1)=="#"){
+        keywords.push(word.substring(1));
+      }
+    }
+    if(keywords.length>0){
+      for(var key in keywords){
+        var keyword = keywords[key];
+        var onclick = "onclick='showLink(\"search\");$(\"#dogeyipsearchresults\").html(\"\");$(\"#dogeyipsearch\").val(\"#"+keyword+"\");listKeywordPosts(\""+keyword+"\", \"dogeyipsearchresults\");'"
+        message = message.replace('#'+keyword, "<a href='javascript: void(0)' "+onclick+">#"+keyword+"</a>");
+      }
+    }
     var post = html.replace("&TIME;", time)
                    .replace("&USERADDRESS;", useraddress)
                    .replace("&USERNAME;", username)

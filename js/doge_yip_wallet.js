@@ -26,7 +26,7 @@ function getWalletAddress(){
   return privateKey.pub.getAddress(bitcoin.networks.dogecoin);
 }
 
-function sendTransaction(outputs, usernames){
+function sendTransaction(outputs, usernames, keywords){
   var ajax = $.getJSON(unspentUrl+getWalletAddress());
   $.when(ajax).done(function(json){
     var unspentOutputs = json.unspent_outputs[0];
@@ -49,6 +49,14 @@ function sendTransaction(outputs, usernames){
         for(var i=0; i<usernames.length; i++){
           var outboxAddress = messageToBase58Check(usernames[i], null, "9E")[0];
           txb.addOutput(outboxAddress, 100000000);
+          value-=100000000;
+        }
+      }
+
+      if(keywords!=null){
+        for(var i=0; i<keywords.length; i++){
+          var keywordAddress = messageToBase58Check(keywords[i], null, "9D")[0];
+          txb.addOutput(keywordAddress, 100000000);
           value-=100000000;
         }
       }

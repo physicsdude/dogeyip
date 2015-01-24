@@ -265,7 +265,7 @@ function isConnectingPost(hexToken){
 
 function isPost(hexTokenA, hexTokenB){
   var startHexLibraryTokenRange = parseInt("80",16);
-  var endHexLibraryTokenRange = parseInt("9D",16);
+  var endHexLibraryTokenRange = parseInt("9C",16);
   var hasLibraryHex = (hexTokenB>=startHexLibraryTokenRange && hexTokenB<=endHexLibraryTokenRange);
   var hasConnectingPostHex = isConnectingPost(hexTokenA)
   return (hasLibraryHex && !hasConnectingPostHex);
