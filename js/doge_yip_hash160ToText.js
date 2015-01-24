@@ -30,13 +30,24 @@ function hash160ToText(hex, dictionaryToken, connectingPosts) {
     }
 
     var words = message.split(' ');
-    var mentions = [];      
+    var mentions = [];  
+    var keywords = [];
+    var links = [];
+    var images = [];
     for(var i=0; i<words.length; i++){
       var word = words[i];
-      if(word.substring(0, 1)=="@"){
+      if(isMention(word)){
         mentions.push(word.substring(1));
+      } else if(isKeyword(word)){
+        keywords.push(word.substring(1))
+      } else if(isImage(word)){
+        images.push(word);
+      } else if(isUrl(word)){
+        links.push(word);
       }
     }
+
+    /*DO SRING REPLACEMENTS FOR MENTIONS*/
     if(mentions.length>0){
       for(var key in mentions){
         var mention = mentions[key];
@@ -45,13 +56,8 @@ function hash160ToText(hex, dictionaryToken, connectingPosts) {
         message = message.replace('@'+mention, "<a href='javascript: void(0)' "+onclick+">@"+mention+"</a>");
       }
     }
-    var keywords = [];      
-    for(var i=0; i<words.length; i++){
-      var word = words[i];
-      if(word.substring(0, 1)=="#"){
-        keywords.push(word.substring(1));
-      }
-    }
+
+    /*DO SRING REPLACEMENTS FOR HASHTAGS*/
     if(keywords.length>0){
       for(var key in keywords){
         var keyword = keywords[key];
@@ -59,11 +65,45 @@ function hash160ToText(hex, dictionaryToken, connectingPosts) {
         message = message.replace('#'+keyword, "<a href='javascript: void(0)' "+onclick+">#"+keyword+"</a>");
       }
     }
+
+    /*DO STRING REPLACEMENTS FOR IMAGES*/
+    if(images.length>0){
+      for(var key in images){
+        var image = images[key];
+        message = message.replace(image, "<ah href='"+image+"'><img width=25% src='"+image+"'/></a>")
+      }
+    }
+
     deferred.resolve(message);
   });
 
   return deferred.promise();
 };
+
+function isMention(word){
+  return word.substring(0, 1)=="@";
+}
+
+function isKeyword(word){
+  return word.substring(0, 1)=="#";
+}
+
+function isUrl(word){
+  return (word.substring(0,7)=='http://' || word.substring(0,4)=='www.')
+}
+
+function isImage(word){
+  var imageSuffixes = [".png",".gif",".jpg",".jpeg",".bmp"]
+  if(isUrl(word)){
+    for(var i=0; i<imageSuffixes.length; i++){
+      var suffix = imageSuffixes[i];
+      if(word.indexOf(suffix, word.length - suffix.length) !== -1){
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 function hash160ToUsername(hex) {
   var str = '';
