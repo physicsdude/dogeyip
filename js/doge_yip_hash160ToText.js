@@ -74,6 +74,15 @@ function hash160ToText(hex, dictionaryToken, connectingPosts) {
       }
     }
 
+    /*DO STRING REPLACEMENTS FOR HYPERLINKS*/
+    if(links.length>0){
+      for(var key in links){
+        var link = links[key];
+        var linktext = link.replace('http://','').replace('www.','');
+        message = message.replace(link, "<a href='"+link+"'>"+linktext+"</a>")
+      }
+    }
+
     deferred.resolve(message);
   });
 
