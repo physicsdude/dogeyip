@@ -97,7 +97,7 @@
      <tr>
       <td>
        <!-- Doge Yip Logo -->
-       <div class="favorite index language post search setname bigqrcode faq settings" style="display: none;">
+       <div class="index" style="display: none;">
          <img src="img/shibainu.png" width=125px height=125px class="img-circle">
        </div>
        <!-- User QR Code -->
@@ -113,9 +113,17 @@
        <!-- Index Header -->
        <div class="index" style="display: none;">
          <h2>Doge Yip</h2>
-         <p>
-           <a title="Click to send Ð15 to regiser." href="javascript: void(0)" onclick="if(privateKey==null){showQrCode('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')}else{sendTipTransaction('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')};"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to regiser.
-         </p>
+         <div>
+           <a title="Click to show your dogecoin address." onclick="$('.show-dogecoin-address').text('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')" href="javascript: void(0)">
+             <img width="20" height="20" src="img/open-iconic/globe.svg">
+           </a>
+           <font class="show-dogecoin-address">Show Address</font>
+         </div>
+         <div>
+           <a title="Click to send Ð15 to regiser." href="javascript: void(0)" onclick="if(privateKey==null){showQrCode('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')}else{sendTipTransaction('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')};">
+             <img width="20" height="20" src="img/open-iconic/badge.svg"/>
+           </a> Send Ð15 to regiser.
+         </div>
        </div>
 
        <!-- Profile Header -->
