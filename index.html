@@ -70,6 +70,9 @@
       </div>
       <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
         <ul class="nav navbar-nav">
+          <li id="my-profile-link" style="display: none;">
+            <a rel="me" class="u-url url" href="javascript: void(0)" title="My Profile" onclick="showProfilePreview(getWalletAddress().toString());"><img width=15 height=15 src='img/open-iconic/person.svg'/> My Profile</a>
+          </li>
           <li>
             <a rel="me" class="u-url url settingslink" href="javascript: void(0)" title="Settings"><img width=15 height=15 src='img/open-iconic/globe.svg'/> Settings</a>
           </li>
@@ -138,7 +141,7 @@
     <div class="modal-content dogeyip-modal">
       <div class="modal-header" style="text-align: center;">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Profile Summary</h4>
+        <h4 class="modal-title" id="profile-summary-title"></h4>
       </div>
       <div class="modal-body banner">
         <div class="banner">
@@ -198,8 +201,8 @@
         <input id="walletpassword" type="password" style="color:black; font-family: 'Cabin', Helvetica, Arial, sans-serif;"></input>
         <br/>
         <br/>
-          <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signup" onclick="setPrivateKey();showLink('index');showTutorial();$('#new_wallet').text(getWalletAddress().toString())">Create Account</a>
-          <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signin" onclick="setPrivateKey();showLink('index');">Log In</a>
+          <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signup" onclick="setPrivateKey();$('#my-profile-link').show();showLink('index');showTutorial();$('#new_wallet').text(getWalletAddress().toString())">Create Account</a>
+          <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signin" onclick="setPrivateKey();$('#my-profile-link').show();showLink('index');showLoggedInPreview(getWalletAddress().toString());">Log In</a>
         </center>
       </div>
     </div>

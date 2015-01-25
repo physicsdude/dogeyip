@@ -107,6 +107,15 @@ function constructProfileBanner(username, address){
 }
 
 function showProfilePreview(address){
+  showAccountPreview(address, 'Profile Summary');
+}
+
+function showLoggedInPreview(address){
+  showAccountPreview(address, 'Logged In As');
+}
+
+function showAccountPreview(address, header){
+  $('#profile-summary-title').text(header)
   $('#profile-summary').modal('show');
   setPreviewQRCode(address);
   $(".profile-summary-banner").html(constructProfileBanner(address,address));
