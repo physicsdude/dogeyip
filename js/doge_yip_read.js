@@ -275,20 +275,10 @@ function createTip(divId, username, useraddress, tipaddress, time){
 function scrapeRecentActivity(address, divId){
   getUser(address).done(function(user){
     for(var i=0; i<user.posts.length; i++){
-      var post = user.posts[i];
-      createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
-    }
-    for (var key in user.output.favorites) {
-      favoriteaddress = user.output.favorites[key].address
-      favoriteamount = user.output.favorites[key].amount
-      favoritetime = user.output.favorites[key].time
-      createFavorite(divId, favoriteamount, favoriteaddress, user.username, user.address);
-    }
-    for (var key in user.output.tips) {
-      tipaddress = user.output.tips[key].address
-      tipamount = user.output.tips[key].amount
-      tiptime = user.output.tips[key].time
-      createTip(divId, user.username, user.address, tipaddress, tiptime);
+      if(i>user.posts.length-5){
+        var post = user.posts[i];
+        createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
+      }
     }
   });
 }
