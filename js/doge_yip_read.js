@@ -71,21 +71,25 @@ function showQrCode(address){
   showLink("bigqrcode");
 }
 
+function constructProfileBanner(username, address){
+  if(privateKey!=null){
+    return "<h2>"+username+"</h2>"
+                    + '<p><a onclick="sendTipTransaction(\''+address+'\')" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</p>';
+  } else{
+    return "<h2>"+username+"</h2>"
+                    + '<p><a onclick="showQrCode(\''+address+'\')" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</p>';
+  }
+}
+
 function showProfilePreview(address){
+  $('#largeModal').modal('show');
+  setPreviewQRCode(address);
+  $(".profile-summary-banner").html(constructProfileBanner(address,address));
+  $("#profile-summary-posts").html("<button class='btn btn-lg btn-warning'><span class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span> Loading...</button>");
   getUser(address).done(function(user){
     $("#profile-summary-posts").html("");
     $("#full-profile-link").html("<a href='javascript: void(0)' onclick='showProfile(\""+address+"\");$(\"#largeModal\").modal(\"hide\");'>Go to full profile</a>")
-    var provileBanner;
-    if(privateKey!=null){
-        profileBanner = "<h2>"+user.username+"</h2>"
-                      + '<p>To tip send 15 DOGE to <a onclick="sendTipTransaction(\''+user.address+'\')" href="javascript: void(0)">'+user.username+'</a></p>';
-    } else{
-        profileBanner = "<h2>"+user.username+"</h2>"
-                      + '<p>To tip send 15 DOGE to <a onclick="showQrCode(\''+user.address+'\')" href="javascript: void(0)">'+user.username+'</a></p>';
-    }
-    $(".profile-summary-banner").html(profileBanner);
-    setPreviewQRCode(user.address);
-    $('#largeModal').modal('show');
+    $(".profile-summary-banner").html(constructProfileBanner(user.username,user.address));
     scrapeProfilePreviewData(user.address);
   });  
 }
@@ -95,15 +99,7 @@ function showProfile(address){
     $("#notifications").html("");
     $("#posts").html("");
     $("#news").html("");
-    var provileBanner;
-    if(privateKey!=null){
-        profileBanner = "<h2>"+user.username+"</h2>"
-                      + '<p>To tip send 15 DOGE to <a onclick="sendTipTransaction(\''+user.address+'\')" href="javascript: void(0)">'+user.username+'</a></p>';
-    } else{
-        profileBanner = "<h2>"+user.username+"</h2>"
-                      + '<p>To tip send 15 DOGE to <a onclick="showQrCode(\''+user.address+'\')" href="javascript: void(0)">'+user.username+'</a></p>';
-    }
-    $(".profilebanner").html(profileBanner);
+    $(".profilebanner").html(constructProfileBanner(user.username,user.address));
     setQRCode(user.address);
     showLink("profile");
     $('.profileposts').show();
