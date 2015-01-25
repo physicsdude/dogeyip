@@ -276,10 +276,12 @@ function createTip(divId, username, useraddress, tipaddress, time){
 
 function scrapeRecentActivity(address, divId){
   getUser(address).done(function(user){
-    for(var i=0; i<user.posts.length; i++){
-      if(i>user.posts.length-5){
-        var post = user.posts[i];
-        createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts, "html/posts/yip.html");
+    if(user.username!=user.address){
+      for(var i=0; i<user.posts.length; i++){
+        if(i>user.posts.length-5){
+          var post = user.posts[i];
+          createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts, "html/posts/yip.html");
+        }
       }
     }
   });
