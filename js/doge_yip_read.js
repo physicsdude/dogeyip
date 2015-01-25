@@ -85,7 +85,13 @@ function showQrCode(address){
     bigqrcode.makeCode(address);
   }
   $("#bigqrcodeaddress").val(address);
-  showLink("bigqrcode");
+  showQRCodeModal();
+}
+
+function showQRCodeModal(){
+  $('#qrcode-modal').modal('show');
+  $('#profile-summary').modal('hide');
+  $('#search-modal').modal('hide');
 }
 
 function constructProfileBanner(username, address){
@@ -96,7 +102,7 @@ function constructProfileBanner(username, address){
   } else{
     return "<h2 title='"+address+"'>"+username+"</h2>"
            + '<div><a title="Click to show your dogecoin address." onclick="$(\'.show-dogecoin-address\').text(\''+address+'\')" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/globe.svg"></a> <font class="show-dogecoin-address">Show Address</font></div>'
-           + '<div><a title="Click to send Ð15 to tip." onclick="showQrCode(\''+address+'\');$(\'#profile-summary\').modal(\'hide\');" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</div>';
+           + '<div><a title="Click to send Ð15 to tip." onclick="showQrCode(\''+address+'\');" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</div>';
   }
 }
 

@@ -62,7 +62,3 @@ $(".settingslink").click(function( event ) {
   $(".profilelink").click(function( event ) {
     showLink("profile");
   });
-
-  $(".bigqrcode").click(function( event ) {
-    showLink("bigqrcode");
-  });

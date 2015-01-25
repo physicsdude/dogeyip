@@ -129,14 +129,6 @@
        <!-- Profile Header -->
        <div class="profile profilebanner" style="display: none;">
        </div>
-
-       <!-- QR Code Header -->
-       <div class="bigqrcode" style="display: none;">
-         <h2>QR Code</h2>
-         <p>
-           You can scan this code to easily make a Dogecoin transaction.<br/>
-         </p>
-       </div>
       </td>
      </tr>
     </table>
@@ -451,7 +443,7 @@
       <div class="modal-body banner">
         Configure the Doge Yip app here.
       </div>
-      <div id="profile-summary-posts" class="modal-body">
+      <div class="modal-body">
         <article id="settings" class="container">
           <div class="container">
             <h2>Api Choices</h2>
@@ -505,7 +497,7 @@
           to learn more about dogecoin.
         </p>
       </div>
-      <div id="profile-summary-posts" class="modal-body">
+      <div class="modal-body">
         <form>
           <textarea id="message" rows="6" style="width:100%;">Bow wow!</textarea>
         </form>
@@ -577,7 +569,7 @@
       <div class="modal-body banner">
         You can search for any username or hashtag here.
       </div>
-      <div id="profile-summary-posts" class="modal-body">
+      <div class="modal-body">
         <form>
           <input id="dogeyipsearch" type="text" style="width:100%;" value="Doge_Yip"/>
         </form>
@@ -601,7 +593,7 @@
       <div class="modal-body banner">
         You can set your profile name here so that others can search for your account using a profile name.
       </div>
-      <div id="profile-summary-posts" class="modal-body">
+      <div class="modal-body">
         <form>
           <input id="setnameinput" type="text" style="width:100%;" value="Doge_Yip"/>
         </form>
@@ -625,16 +617,27 @@
 </div>
 
   <!-- Big QR Code -->
-  <div class="bigqrcode" style="display:none;">
-    <article id="post" class="container">
-      <br/>
-      <div id="bigqrcodeimg"></div>
-      <br/>
-      <p>
+<div id="qrcode-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content dogeyip-modal">
+      <div class="modal-header" style="text-align: center;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">QR Code</h4>
+      </div>
+      <div class="modal-body banner">
+        You can scan this code to easily make a Dogecoin transaction.
+      </div>
+      <div class="modal-body">
+        <div id="bigqrcodeimg"></div>
+      </div>
+      <div class="modal-body">
         <input id="bigqrcodeaddress" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
-      </p>
-    </article>
+      </div>
+      <div class="modal-footer" style="text-align: center;">
+      </div>
+    </div>
   </div>
+</div>
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
