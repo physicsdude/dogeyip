@@ -29,16 +29,26 @@ function getWalletAddress(){
 function sendTransaction(outputs, usernames, keywords){
   var ajax = $.getJSON(unspentUrl+getWalletAddress());
   $.when(ajax).done(function(json){
-    var unspentOutputs = json.unspent_outputs[0];
-    if(unspentOutputs==null){
+    var unspentOutputs = json.unspent_outputs;
+    if(unspentOutputs.length==0){
       alert("Transaction failed. You are probably out of dogecoins.");
     } else {
-      var txHash = unspentOutputs.tx_hash;
-      var txOutputN = unspentOutputs.tx_output_n;
-      var value = window.dogeyip.bnFromString(unspentOutputs.value);
-
       var txb = new bitcoin.TransactionBuilder();
+
+      /*Bit of a hack but I am having trouble spending from multiple inputs*/
+      var value = 0;
+      var txHash = null;
+      var txOutputN = null;
+      for(var i=0; i<json.unspent_outputs.length; i++){
+        var inputValue = window.dogeyip.bnFromString(unspentOutputs[i].value);
+        if(inputValue>value){
+          txHash = unspentOutputs[i].tx_hash;
+          txOutputN = unspentOutputs[i].tx_output_n;
+        }
+      }
       txb.addInput(txHash, txOutputN);
+
+
       for(var i=0; i<outputs.length; i++){
         var output = outputs[i];
         txb.addOutput(output, 100000000);
@@ -65,6 +75,7 @@ function sendTransaction(outputs, usernames, keywords){
       if(change>100000000){
         txb.addOutput(getWalletAddress(), change);
       }
+
       txb.sign(0, privateKey);
 
       jQuery.support.cors = true;
