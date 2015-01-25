@@ -457,7 +457,46 @@
   <div id="favoritearticle" class="favorite" style="display: none;"></div>
 
   <!-- Settings Articles -->
-  <div id="settingsarticle" class="settings" style="display: none;"></div>
+<div id="settings-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content dogeyip-modal">
+      <div class="modal-header" style="text-align: center;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Settings</h4>
+      </div>
+      <div class="modal-body banner">
+        Configure the Doge Yip app here.
+      </div>
+      <div id="profile-summary-posts" class="modal-body">
+        <article id="settings" class="container">
+          <div class="container">
+            <h2>Api Choices</h2>
+            <div>
+              <input id="dogeyip_api" name="api_selector" type="radio">
+                <font style="font-size: 175%; vertical-align:middle;">DogeYip</font>
+              </input>
+            </div>
+            <div>
+              <input id="chain_api" name="api_selector" type="radio">
+                <font style="font-size: 175%; vertical-align:middle;">Chain.so</font>
+              </input>
+            </div>
+          </div>
+          <div class="container">
+            <h2>Language Choices</h2>
+            <div>
+              <input id="english_language" name="language_selector" type="radio">
+                <font style="font-size: 175%; vertical-align:middle;">English</font>
+              </input>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="modal-footer" style="text-align: center;">
+      </div>
+    </div>
+  </div>
+</div>
 
   <!-- Post Articles -->
 <div id="post-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">

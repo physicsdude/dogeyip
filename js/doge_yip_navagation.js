@@ -1,4 +1,4 @@
-links=["favorite","index","settings","profile","search",
+links=["favorite","index","profile","search",
        "bigqrcode","splashpage", "signup", "signin"];
 
 function showLink(link){
@@ -31,14 +31,6 @@ $.ajax({
   $("#favoritearticle").html(html);
 });
 
-/* LOAD SETTINGS HTML */
-$.ajax({
-  url: "html/settings.html",
-  dataType: 'html'
-}).done(function(html) {
-  $("#settingsarticle").html(html);
-});
-
 $(".settingslink").click(function( event ) {
   $('#dogeyip_api').click(function( event ){
     baseUrl='http://api-dogeyip.rhcloud.com/?address=';
@@ -60,7 +52,7 @@ $(".settingslink").click(function( event ) {
     $('#english_language').attr('checked',true);
   }
 
-  showLink("settings");
+  $('#settings-modal').modal('show');
 });
 
   $(".indexlink").click(function( event ) {
