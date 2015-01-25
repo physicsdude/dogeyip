@@ -11,6 +11,16 @@ function showLink(link){
   }
 }
 
+function showTutorial(){
+  if(privateKey!=null){
+    $('#new_wallet').text(getWalletAddress().toString());
+    setGettingStartedQRCode(getWalletAddress().toString());
+  } else{
+    $('#getting-started-banner').hide();
+  }
+  $('#getting-started').modal('show');
+}
+
   $(".splashpage").show();
 
 /* LOAD FAVORITE HTML */

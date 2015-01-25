@@ -35,6 +35,23 @@ function setQRCode(address){
   }
 }
 
+var gettingstartedqrqrcode;
+function setGettingStartedQRCode(address){
+  if(gettingstartedqrqrcode==null){
+    gettingstartedqrqrcode = new QRCode("gettingStartedQR", {
+      text: address,
+      width: 125,
+      height: 125,
+      colorDark : "#000000",
+      colorLight : "#54C571",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+  } else{
+    gettingstartedqrqrcode.clear();
+    gettingstartedqrqrcode.makeCode(address);
+  }
+}
+
 var profilepreviewqrcode;
 function setPreviewQRCode(address){
   if(profilepreviewqrcode==null){

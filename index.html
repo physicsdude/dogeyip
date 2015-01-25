@@ -83,7 +83,7 @@
             <a rel="me" class="u-url url postlink" href="javascript: void(0)" title="Compose new Yip"><img width=15 height=15 src='img/open-iconic/comment-square.svg'/> Yip</a>
           </li>
           <li>
-            <a rel="me" class="u-url url" href="javascript: void(0)" title="Tutorial" onclick="$('#getting-started').modal('show');$('#new_wallet').text(getWalletAddress().toString())"><img width=15 height=15 src='img/open-iconic/question-mark.svg'/> Tutorial</a>
+            <a rel="me" class="u-url url" href="javascript: void(0)" title="Tutorial" onclick="showTutorial();"><img width=15 height=15 src='img/open-iconic/question-mark.svg'/> Tutorial</a>
           </li>
         </ul>
       </nav>
@@ -245,7 +245,7 @@
         <input id="walletpassword" type="password" style="color:black; font-family: 'Cabin', Helvetica, Arial, sans-serif;"></input>
         <br/>
         <br/>
-          <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signup" onclick="setPrivateKey();showLink('index');$('#getting-started').modal('show');$('#new_wallet').text(getWalletAddress().toString())">Create Account</a>
+          <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signup" onclick="setPrivateKey();showLink('index');showTutorial();$('#new_wallet').text(getWalletAddress().toString())">Create Account</a>
           <a style="display: none;" role="button" href="javascript: void(0)" class="btn btn-primary btn-lg signin" onclick="setPrivateKey();showLink('index');">Log In</a>
         </center>
       </div>
@@ -265,7 +265,7 @@
         <h4 class="modal-title getting-started-5" style="display: none;">Frequently Asked Questions</h4>
       </div>
       <div class="modal-body banner">
-        <div class="banner">
+        <div class="banner" id="getting-started-banner">
           <table>
             <tr>
               <td>
