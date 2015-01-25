@@ -51,7 +51,7 @@ function hash160ToText(hex, dictionaryToken, connectingPosts) {
     if(mentions.length>0){
       for(var key in mentions){
         var mention = mentions[key];
-        var onclick = "onclick='showLink(\"search\");$(\"#dogeyipsearchresults\").html(\"\");$(\"#dogeyipsearch\").val(\""+mention+"\");listResults(\""+mention+"\", \"dogeyipsearchresults\");'"
+        var onclick = "onclick='$(\"#search-modal\").modal(\"show\");$(\"#dogeyipsearchresults\").html(\"\");$(\"#dogeyipsearch\").val(\""+mention+"\");listResults(\""+mention+"\", \"dogeyipsearchresults\");'"
         //var onclick = "onclick='showLink(\"search\");'"
         message = message.replace('@'+mention, "<a href='javascript: void(0)' "+onclick+">@"+mention+"</a>");
       }
@@ -61,7 +61,7 @@ function hash160ToText(hex, dictionaryToken, connectingPosts) {
     if(keywords.length>0){
       for(var key in keywords){
         var keyword = keywords[key];
-        var onclick = "onclick='showLink(\"search\");$(\"#dogeyipsearchresults\").html(\"\");$(\"#dogeyipsearch\").val(\"#"+keyword+"\");listKeywordPosts(\""+keyword+"\", \"dogeyipsearchresults\");'"
+        var onclick = "onclick='$(\"#search-modal\").modal(\"show\");$(\"#dogeyipsearchresults\").html(\"\");$(\"#dogeyipsearch\").val(\"#"+keyword+"\");listKeywordPosts(\""+keyword+"\", \"dogeyipsearchresults\");'"
         message = message.replace('#'+keyword, "<a href='javascript: void(0)' "+onclick+">#"+keyword+"</a>");
       }
     }

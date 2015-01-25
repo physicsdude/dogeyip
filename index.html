@@ -74,7 +74,7 @@
             <a rel="me" class="u-url url settingslink" href="javascript: void(0)" title="Settings"><img width=15 height=15 src='img/open-iconic/globe.svg'/> Settings</a>
           </li>
           <li>
-            <a rel="me" class="u-url url searchlink" href="javascript: void(0)" title="Search"><img width=15 height=15 src='img/open-iconic/magnifying-glass.svg'/> Search</a>
+            <a rel="me" class="u-url url" href="javascript: void(0)" title="Search" onclick="$('#search-modal').modal('show');"><img width=15 height=15 src='img/open-iconic/magnifying-glass.svg'/> Search</a>
           </li>
           <li>
             <a rel="me" class="u-url url" href="javascript: void(0)" title="Set Name" onclick="$('#setname-modal').modal('show');"><img width=15 height=15 src='img/open-iconic/pencil.svg'/> Set Name</a>
@@ -118,39 +118,15 @@
          </p>
        </div>
 
-       <!-- Settings Header -->
-       <div class="settings" style="display: none;">
-         <h2>Settings</h2>
-         <p>
-           Configure the Doge Yip app here.
-         </p>
-       </div>
-
        <!-- Profile Header -->
        <div class="profile profilebanner" style="display: none;">
        </div>
 
-       <!-- Search Header -->
-       <div class="search" style="display: none;">
-         <h2>Search</h2>
-         <p>
-           You can search for any username or hashtag here.<br/>
-         </p>
-       </div>
-
-       <!-- Set Name Header -->
+       <!-- QR Code Header -->
        <div class="bigqrcode" style="display: none;">
          <h2>QR Code</h2>
          <p>
            You can scan this code to easily make a Dogecoin transaction.<br/>
-         </p>
-       </div>
-
-       <!-- Set Name Header -->
-       <div class="faq" style="display: none;">
-         <h2>FAQ</h2>
-         <p>
-           Common questions regarding Dogeyip.<br/>
          </p>
        </div>
       </td>
@@ -574,23 +550,28 @@
   </div>
 
   <!-- Search Articles -->
-  <div class="search" style="display:none;">
-    <article id="post" class="container">
-      <br/>
-      <div>
+<div id="search-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content dogeyip-modal">
+      <div class="modal-header" style="text-align: center;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search</h4>
+      </div>
+      <div class="modal-body banner">
+        You can search for any username or hashtag here.
+      </div>
+      <div id="profile-summary-posts" class="modal-body">
         <form>
           <input id="dogeyipsearch" type="text" style="width:100%;" value="Doge_Yip"/>
         </form>
       </div>
-      <br/>
-      <div id="dogeyipsearchresults">
-        <a href="javascript: void(0)" onclick="showProfilePreview('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q');">
-          <img width="35px" height="35px" src="img/open-iconic/person.svg" style="vertical-align:middle;">
-          <span><font style="font-size: 175%; vertical-align:middle;" class="DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q"> Doge_Yip</font></span>
-        </a>
+      <div id="dogeyipsearchresults" class="modal-body">
       </div>
-    </article>
+      <div class="modal-footer" style="text-align: center;">
+      </div>
+    </div>
   </div>
+</div>
 
   <!-- Set Name -->
 <div id="setname-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -648,17 +629,18 @@ jQuery(document).ready(function($) {
   /*index javascript*/
   var doge_yip_address = "DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q";
   getUser(doge_yip_address).done(function(user){
-    listAccount(doge_yip_address, "recentusers");
+    scrapeProfileSearchData(doge_yip_address, "recentusers");
     scrapeRecentActivity(doge_yip_address);
 
     for (var key in user.input.tips) {
       var tip = user.input.tips[key];
-      listAccount(tip.address, "recentusers");
+      scrapeProfileSearchData(tip.address, "recentusers");
       scrapeRecentActivity(tip.address, "recentactivity");
     }
   });
 
   /*search*/
+  scrapeProfileSearchData("DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q", "dogeyipsearchresults");
   $("#dogeyipsearch").keyup(function( event ) {
     $("#dogeyipsearchresults").html("");
     var searchTerm = $("#dogeyipsearch").val();

@@ -217,10 +217,10 @@ function createFavoriteNotification(to, fromAddress, fromAmount){
 }
 
 /* POPULATE YIP */
-function createPost(divId, username, useraddress, time, hexMessage, hexToken, connectingPosts){
+function createPost(divId, username, useraddress, time, hexMessage, hexToken, connectingPosts, html){
   var favaccount = useraddress;
   var favamount = time/100000000;
-  var when = $.when(hash160ToText(hexMessage, hexToken, connectingPosts), getHtml("html/posts/yip.html"))
+  var when = $.when(hash160ToText(hexMessage, hexToken, connectingPosts), getHtml(html))
   when.done(function(message, html){
     var post = html.replace("&TIME;", time)
                    .replace("&USERADDRESS;", useraddress)
@@ -277,7 +277,7 @@ function scrapeRecentActivity(address, divId){
     for(var i=0; i<user.posts.length; i++){
       if(i>user.posts.length-5){
         var post = user.posts[i];
-        createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
+        createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts, "html/posts/yip.html");
       }
     }
   });
@@ -295,7 +295,7 @@ function scrapeDirectMessages(user){
             when.done(function(message, html){
               /*check to see if the post mentions the user*/
               if((message+" ").indexOf("@"+user.username+" ")>-1){
-                createPost("notifications", sender.username, sender.address, post.time, post.hexMessage, post.hexLibrary, sender.connectingPosts);
+                createPost("notifications", sender.username, sender.address, post.time, post.hexMessage, post.hexLibrary, sender.connectingPosts, "html/posts/yip.html");
               }
             });
           }
@@ -309,7 +309,20 @@ function scrapeProfilePreviewData(address){
     for(var i=0; i<user.posts.length; i++){
       var post = user.posts[i];
       if(i>user.posts.length-5){
-        createPost("profile-summary-posts", user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
+        createPost("profile-summary-posts", user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts, "html/posts/yip.html");
+      }
+    }
+  });
+}
+
+function scrapeProfileSearchData(address, divId){
+  getUser(address).done(function(user){
+    if(user.username!=user.address){
+      for(var i=0; i<user.posts.length; i++){
+        var post = user.posts[i];
+        if(i>user.posts.length-2){
+          createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts, "html/posts/profile_search_result.html");
+        }
       }
     }
   });
@@ -319,7 +332,7 @@ function scrapeTransactionData(address){
   getUser(address).done(function(user){
     for(var i=0; i<user.posts.length; i++){
       var post = user.posts[i];
-      createPost("posts", user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts);
+      createPost("posts", user.username, user.address, post.time, post.hexMessage, post.hexLibrary, user.connectingPosts, "html/posts/yip.html");
     }
     for (var key in user.output.favorites) {
       favoriteaddress = user.output.favorites[key].address
