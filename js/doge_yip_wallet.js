@@ -42,6 +42,7 @@ function sendTransaction(outputs, usernames, keywords){
       for(var i=0; i<json.unspent_outputs.length; i++){
         var inputValue = window.dogeyip.bnFromString(unspentOutputs[i].value);
         if(inputValue>value){
+          value = inputValue;
           txHash = unspentOutputs[i].tx_hash;
           txOutputN = unspentOutputs[i].tx_output_n;
         }
