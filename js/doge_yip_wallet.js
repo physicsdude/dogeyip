@@ -34,24 +34,14 @@ function sendTransaction(outputs, usernames, keywords){
       alert("Transaction failed. You are probably out of dogecoins.");
     } else {
       var txb = new bitcoin.TransactionBuilder();
-
-      /*
-      * Bit of a hack but I am having trouble spending from multiple inputs
-      * So lets try to spend the smallest input that is large enough to make the transaction
-      */
       var totalOutputs = outputs.length+usernames.length+keywords.length;
       var price = 100000000+(totalOutputs*105000000)
-      var value = 0;
-      var txHash = null;
-      var txOutputN = null;
-      for(var i=0; i<json.unspent_outputs.length; i++){
-        var inputValue = window.dogeyip.bnFromString(unspentOutputs[i].value);
-        if(inputValue>price && (value==0 || inputValue<value)){
-          value = inputValue;
-          txHash = unspentOutputs[i].tx_hash;
-          txOutputN = unspentOutputs[i].tx_output_n;
-        }
-      }
+      var input = determineInput(unspentOutputs, txb, price);
+
+      var txHash = input.tx_hash;
+      var txOutputN = input.tx_output_n;
+      var value = window.dogeyip.bnFromString(input.value);
+
       txb.addInput(txHash, txOutputN);
 
       for(var i=0; i<outputs.length; i++){
@@ -92,20 +82,22 @@ function sendTransaction(outputs, usernames, keywords){
 function sendTipTransaction(tipAddress){
   var ajax = $.getJSON(unspentUrl+getWalletAddress());
   $.when(ajax).done(function(json){
-    var unspentOutputs = json.unspent_outputs[0];
-    if(unspentOutputs==null){
+    var unspentOutputs = json.unspent_outputs;
+    if(unspentOutputs.length==0){
       alert("Transaction failed. You are probably out of dogecoins.");
     } else {
-      var txHash = unspentOutputs.tx_hash;
-      var txOutputN = unspentOutputs.tx_output_n;
-      var value = window.dogeyip.bnFromString(unspentOutputs.value);
-
       var txb = new bitcoin.TransactionBuilder();
+      var price = 1600000000;
+      var input = determineInput(unspentOutputs, txb, price);
+
+      var txHash = input.tx_hash;
+      var txOutputN = input.tx_output_n;
+      var value = window.dogeyip.bnFromString(input.value);
+
       txb.addInput(txHash, txOutputN);
       txb.addOutput(tipAddress, 1500000000);
-      value-=1500000000;
 
-      var change = value-100000000;
+      var change = value-price;
       if(change>100000000){
         txb.addOutput(getWalletAddress(), change);
       }
@@ -123,20 +115,22 @@ function sendTipTransaction(tipAddress){
 function sendFavoriteTransaction(favoriteAddress, favoriteAmount){
   var ajax = $.getJSON(unspentUrl+getWalletAddress());
   $.when(ajax).done(function(json){
-    var unspentOutputs = json.unspent_outputs[0];
-    if(unspentOutputs==null){
+    var unspentOutputs = json.unspent_outputs;
+    if(unspentOutputs.length==0){
       alert("Transaction failed. You are probably out of dogecoins.");
     } else {
-      var txHash = unspentOutputs.tx_hash;
-      var txOutputN = unspentOutputs.tx_output_n;
-      var value = window.dogeyip.bnFromString(unspentOutputs.value);
-
       var txb = new bitcoin.TransactionBuilder();
+      var price = 100000000+favoriteAmount*100000000;
+      var input = determineInput(unspentOutputs, txb, price);
+
+      var txHash = input.tx_hash;
+      var txOutputN = input.tx_output_n;
+      var value = window.dogeyip.bnFromString(input.value);
+
       txb.addInput(txHash, txOutputN);
       txb.addOutput(favoriteAddress, favoriteAmount*100000000);
-      value-=favoriteAmount*100000000;
 
-      var change = value-100000000;
+      var change = value-price;
       if(change>100000000){
         txb.addOutput(getWalletAddress(), change);
       }
@@ -149,4 +143,21 @@ function sendFavoriteTransaction(favoriteAddress, favoriteAmount){
       });
     }
   });
+}
+
+function determineInput(unspentOutputs, txb, price){
+  /*
+  * Bit of a hack but I am having trouble spending from multiple inputs
+  * So lets try to spend the smallest input that is large enough to make the transaction
+  */
+  var value = 0;
+  var unspentOutput=null;
+  for(var i=0; i<unspentOutputs.length; i++){
+    var inputValue = window.dogeyip.bnFromString(unspentOutputs[i].value);
+    if(inputValue>price && (value==0 || inputValue<value)){
+      value = inputValue;
+      unspentOutput = unspentOutputs[i];
+    }
+  }
+  return unspentOutput;
 }
