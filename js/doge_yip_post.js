@@ -46,8 +46,19 @@ function messageToBase58Check(message, dictionary, dictionaryHex){
 
   addresses = [];
   while(message.length>38){
-    randHexA=("0"+getRandomInt(0,31).toString(16)).slice(-2);
-    randHexB=("0"+getRandomInt(0,255).toString(16)).slice(-2);
+    var randHexA=("0"+getRandomInt(0,31).toString(16)).slice(-2);
+
+    /*
+    * Do not use hex values from 90 to 9F as those values denote special events.
+    * For instance, don't want the last value to be 9F because then part of our post is going to appear in our name.
+    */
+    
+    var randValueB = getRandomInt(0,223);
+    if(randValueB>143){
+      randValueB+=16;
+    }
+    var randHexB=("0"+randValueB.toString(16)).slice(-2);
+
     var address = hash160ToBase58Check(message.substring(0,36)+randHexA+randHexB);
     addresses.push(address);
     message=randHexA+randHexB+message.substring(36);
