@@ -139,7 +139,9 @@ function showFavorite(address, amount){
   if(privateKey!=null){
     sendFavoriteTransaction(address, amount);
   } else{
-    showLink("favorite");
+    $('#profile-summary').modal('hide');
+    $('#search-modal').modal('hide');
+    $('#favorite-modal').modal('show');
     if(favoriteqrcode==null){
         favoriteqrcode = new QRCode("favoriteQRPostCode", {
         text: address,
@@ -154,10 +156,9 @@ function showFavorite(address, amount){
       favoriteqrcode.makeCode(address);
     }
     getUser(address).done(function(user){
-      var favoritebanner = '<h2>Favorite</h2>'
-                       + '<p>'
-                       +   'To favorite this bark send <b>'+amount+' DOGE</b> to <a onclick="showProfilePreview(\''+address+'\')" href="javascript: void(0)">'+user.username+'</a>\'s address.'
-                       + '</p>';
+      var favoritebanner = '<h2><a onclick="$(\'#favorite-modal\').modal(\'hide\');showProfilePreview(\''+address+'\');" href="javascript: void(0)">'+user.username+'</a></h2>'
+          + '<div><a title="Click to show your dogecoin address." onclick="$(\'.show-dogecoin-address\').text(\''+address+'\')" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/globe.svg"></a> <font class="show-dogecoin-address">Show Address</font></div>'
+          + '<div><img width="20" height="20" src="img/open-iconic/star.svg"> Send <b>Ð'+amount+'</b> to favorite.</div>';
       $("#favoriteBase58Check").val(address);
       $(".favoritebanner").html(favoritebanner);
     });

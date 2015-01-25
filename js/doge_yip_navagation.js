@@ -1,4 +1,4 @@
-links=["favorite","index","profile",
+links=["index","profile",
        "bigqrcode","splashpage", "signup", "signin"];
 
 function showLink(link){
@@ -22,14 +22,6 @@ function showTutorial(){
 }
 
   $(".splashpage").show();
-
-/* LOAD FAVORITE HTML */
-$.ajax({
-  url: "html/favorite.html",
-  dataType: 'html'
-}).done(function(html) {
-  $("#favoritearticle").html(html);
-});
 
 $(".settingslink").click(function( event ) {
   $('#dogeyip_api').click(function( event ){

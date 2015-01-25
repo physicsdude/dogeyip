@@ -106,10 +106,6 @@
        </div>
       </td>
       <td>
-       <!-- Favorite Header -->
-       <div class="favorite favoritebanner" style="display: none;">
-       </div>
-
        <!-- Index Header -->
        <div class="index" style="display: none;">
          <h2>Doge Yip</h2>
@@ -429,9 +425,6 @@
     </article>
   </div>
 
-  <!-- Favorite Articles -->
-  <div id="favoritearticle" class="favorite" style="display: none;"></div>
-
   <!-- Settings Articles -->
 <div id="settings-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -634,6 +627,33 @@
         <input id="bigqrcodeaddress" type="text" style="width:100%;" value="DBCNfoKA9hsttrniPuLoRLndXwSr8pGdo4"/>
       </div>
       <div class="modal-footer" style="text-align: center;">
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Favorite Articles -->
+<div id="favorite-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content dogeyip-modal">
+      <div class="modal-header" style="text-align: center;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Favorite</h4>
+      </div>
+      <div class="modal-body banner">
+        <table>
+          <tr>
+            <td>
+              <div id="favoriteQRPostCode"></div>
+            </td>
+            <td>
+              <div class="favoritebanner"></div>
+            </td>
+          <tr>
+        </table>
+      </div>
+      <div class="modal-footer" style="text-align: center;">
+        <input id="favoriteBase58Check" type="text" style="width:100%;" value=""/>
       </div>
     </div>
   </div>
