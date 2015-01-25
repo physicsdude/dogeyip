@@ -38,43 +38,48 @@ function sendTransaction(outputs, usernames, keywords){
       var price = 100000000+(totalOutputs*105000000)
       var input = determineInput(unspentOutputs, txb, price);
 
-      var txHash = input.tx_hash;
-      var txOutputN = input.tx_output_n;
-      var value = window.dogeyip.bnFromString(input.value);
+      if(input!=null){
+        var txHash = input.tx_hash;
+        var txOutputN = input.tx_output_n;
+        var value = window.dogeyip.bnFromString(input.value);
 
-      txb.addInput(txHash, txOutputN);
+        txb.addInput(txHash, txOutputN);
 
-      for(var i=0; i<outputs.length; i++){
-        var output = outputs[i];
-        txb.addOutput(output, 100000000);
-      }
-
-      if(usernames!=null){
-        for(var i=0; i<usernames.length; i++){
-          var outboxAddress = messageToBase58Check(usernames[i], null, "9E")[0];
-          txb.addOutput(outboxAddress, 100000000);
+        for(var i=0; i<outputs.length; i++){
+          var output = outputs[i];
+          txb.addOutput(output, 100000000);
         }
-      }
 
-      if(keywords!=null){
-        for(var i=0; i<keywords.length; i++){
-          var keywordAddress = messageToBase58Check(keywords[i], null, "9D")[0];
-          txb.addOutput(keywordAddress, 100000000);
+        if(usernames!=null){
+          for(var i=0; i<usernames.length; i++){
+            var outboxAddress = messageToBase58Check(usernames[i], null, "9E")[0];
+            txb.addOutput(outboxAddress, 100000000);
+          }
         }
+
+        if(keywords!=null){
+          for(var i=0; i<keywords.length; i++){
+            var keywordAddress = messageToBase58Check(keywords[i], null, "9D")[0];
+            txb.addOutput(keywordAddress, 100000000);
+          }
+        }
+
+        var change = value-price;
+        if(change>100000000){
+          txb.addOutput(getWalletAddress(), change);
+        }
+
+        txb.sign(0, privateKey);
+
+        jQuery.support.cors = true;
+        var postTransaction = $.post(pushTxUrl, {tx_hex:txb.build().toHex()});
+        $.when(postTransaction).done(function(json){
+          //console.log(json);
+        });
+        $.when(postTransaftion).fail(function(){
+          alert("Transaction failed. You are probably out of dogecoins.");
+        });
       }
-
-      var change = value-price;
-      if(change>100000000){
-        txb.addOutput(getWalletAddress(), change);
-      }
-
-      txb.sign(0, privateKey);
-
-      jQuery.support.cors = true;
-      var postTransaction = $.post(pushTxUrl, {tx_hex:txb.build().toHex()});
-      $.when(postTransaction).done(function(json){
-        //console.log(json);
-      });
     }
   });
 }
@@ -90,24 +95,29 @@ function sendTipTransaction(tipAddress){
       var price = 1600000000;
       var input = determineInput(unspentOutputs, txb, price);
 
-      var txHash = input.tx_hash;
-      var txOutputN = input.tx_output_n;
-      var value = window.dogeyip.bnFromString(input.value);
+      if(input!=null){
+        var txHash = input.tx_hash;
+        var txOutputN = input.tx_output_n;
+        var value = window.dogeyip.bnFromString(input.value);
 
-      txb.addInput(txHash, txOutputN);
-      txb.addOutput(tipAddress, 1500000000);
+        txb.addInput(txHash, txOutputN);
+        txb.addOutput(tipAddress, 1500000000);
 
-      var change = value-price;
-      if(change>100000000){
-        txb.addOutput(getWalletAddress(), change);
+        var change = value-price;
+        if(change>100000000){
+          txb.addOutput(getWalletAddress(), change);
+        }
+        txb.sign(0, privateKey);
+
+        jQuery.support.cors = true;
+        var postTransaction = $.post(pushTxUrl, {tx_hex:txb.build().toHex()});
+        $.when(postTransaction).done(function(json){
+          //console.log(json);
+        });
+        $.when(postTransaftion).fail(function(){
+          alert("Transaction failed. You are probably out of dogecoins.");
+        });
       }
-      txb.sign(0, privateKey);
-
-      jQuery.support.cors = true;
-      var postTransaction = $.post(pushTxUrl, {tx_hex:txb.build().toHex()});
-      $.when(postTransaction).done(function(json){
-        //console.log(json);
-      });
     }
   });
 }
@@ -123,24 +133,29 @@ function sendFavoriteTransaction(favoriteAddress, favoriteAmount){
       var price = 100000000+favoriteAmount*100000000;
       var input = determineInput(unspentOutputs, txb, price);
 
-      var txHash = input.tx_hash;
-      var txOutputN = input.tx_output_n;
-      var value = window.dogeyip.bnFromString(input.value);
+      if(input!=null){
+        var txHash = input.tx_hash;
+        var txOutputN = input.tx_output_n;
+        var value = window.dogeyip.bnFromString(input.value);
 
-      txb.addInput(txHash, txOutputN);
-      txb.addOutput(favoriteAddress, favoriteAmount*100000000);
+        txb.addInput(txHash, txOutputN);
+        txb.addOutput(favoriteAddress, favoriteAmount*100000000);
 
-      var change = value-price;
-      if(change>100000000){
-        txb.addOutput(getWalletAddress(), change);
+        var change = value-price;
+        if(change>100000000){
+          txb.addOutput(getWalletAddress(), change);
+        }
+        txb.sign(0, privateKey);
+
+        jQuery.support.cors = true;
+        var postTransaction = $.post(pushTxUrl, {tx_hex:txb.build().toHex()});
+        $.when(postTransaction).done(function(json){
+          //console.log(json);
+        });
+        $.when(postTransaftion).fail(function(){
+          alert("Transaction failed. You are probably out of dogecoins.");
+        });
       }
-      txb.sign(0, privateKey);
-
-      jQuery.support.cors = true;
-      var postTransaction = $.post(pushTxUrl, {tx_hex:txb.build().toHex()});
-      $.when(postTransaction).done(function(json){
-        //console.log(json);
-      });
     }
   });
 }
@@ -158,6 +173,9 @@ function determineInput(unspentOutputs, txb, price){
       value = inputValue;
       unspentOutput = unspentOutputs[i];
     }
+  }
+  if(unspentOutput==null){
+    alert("Transaction failed. You do not have enough dogecoins to do this.");
   }
   return unspentOutput;
 }

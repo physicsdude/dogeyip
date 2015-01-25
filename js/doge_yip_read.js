@@ -90,11 +90,13 @@ function showQrCode(address){
 
 function constructProfileBanner(username, address){
   if(privateKey!=null){
-    return "<h2>"+username+"</h2>"
-                    + '<p><a title="Click to send Ð15 to tip." onclick="sendTipTransaction(\''+address+'\')" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</p>';
+    return "<h2 title='"+address+"'>"+username+"</h2>"
+           + '<div><a title="Click to show your dogecoin address." onclick="$(\'.show-dogecoin-address\').text(\''+address+'\')" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/globe.svg"></a> <font class="show-dogecoin-address">Show Address</font></div>'
+           + '<div><a title="Click to send Ð15 to tip." onclick="sendTipTransaction(\''+address+'\')" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</div>';
   } else{
-    return "<h2>"+username+"</h2>"
-                    + '<p><a title="Click to send Ð15 to tip." onclick="showQrCode(\''+address+'\');$(\'#profile-summary\').modal(\'hide\');" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</p>';
+    return "<h2 title='"+address+"'>"+username+"</h2>"
+           + '<div><a title="Click to show your dogecoin address." onclick="$(\'.show-dogecoin-address\').text(\''+address+'\')" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/globe.svg"></a> <font class="show-dogecoin-address">Show Address</font></div>'
+           + '<div><a title="Click to send Ð15 to tip." onclick="showQrCode(\''+address+'\');$(\'#profile-summary\').modal(\'hide\');" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</div>';
   }
 }
 
