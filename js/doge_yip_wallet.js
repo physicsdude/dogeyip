@@ -35,13 +35,18 @@ function sendTransaction(outputs, usernames, keywords){
     } else {
       var txb = new bitcoin.TransactionBuilder();
 
-      /*Bit of a hack but I am having trouble spending from multiple inputs*/
+      /*
+      * Bit of a hack but I am having trouble spending from multiple inputs
+      * So lets try to spend the smallest input that is large enough to make the transaction
+      */
+      var totalOutputs = outputs.length+usernames.length+keywords.length;
+      var price = 100000000+(totalOutputs*105000000)
       var value = 0;
       var txHash = null;
       var txOutputN = null;
       for(var i=0; i<json.unspent_outputs.length; i++){
         var inputValue = window.dogeyip.bnFromString(unspentOutputs[i].value);
-        if(inputValue>value){
+        if(inputValue>price && (value==0 || inputValue<value)){
           value = inputValue;
           txHash = unspentOutputs[i].tx_hash;
           txOutputN = unspentOutputs[i].tx_output_n;
@@ -49,18 +54,15 @@ function sendTransaction(outputs, usernames, keywords){
       }
       txb.addInput(txHash, txOutputN);
 
-
       for(var i=0; i<outputs.length; i++){
         var output = outputs[i];
         txb.addOutput(output, 100000000);
-        value-=100000000;
       }
 
       if(usernames!=null){
         for(var i=0; i<usernames.length; i++){
           var outboxAddress = messageToBase58Check(usernames[i], null, "9E")[0];
           txb.addOutput(outboxAddress, 100000000);
-          value-=100000000;
         }
       }
 
@@ -68,11 +70,10 @@ function sendTransaction(outputs, usernames, keywords){
         for(var i=0; i<keywords.length; i++){
           var keywordAddress = messageToBase58Check(keywords[i], null, "9D")[0];
           txb.addOutput(keywordAddress, 100000000);
-          value-=100000000;
         }
       }
 
-      var change = value-100000000-(outputs.length/20)*100000000;
+      var change = value-price;
       if(change>100000000){
         txb.addOutput(getWalletAddress(), change);
       }
