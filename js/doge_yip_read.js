@@ -74,24 +74,24 @@ function showQrCode(address){
 function constructProfileBanner(username, address){
   if(privateKey!=null){
     return "<h2>"+username+"</h2>"
-                    + '<p><a onclick="sendTipTransaction(\''+address+'\')" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</p>';
+                    + '<p><a title="Click to send Ð15 to tip." onclick="sendTipTransaction(\''+address+'\')" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</p>';
   } else{
     return "<h2>"+username+"</h2>"
-                    + '<p><a onclick="showQrCode(\''+address+'\')" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</p>';
+                    + '<p><a title="Click to send Ð15 to tip." onclick="showQrCode(\''+address+'\');$(\'#profile-summary\').modal(\'hide\');" href="javascript: void(0)"><img width="20" height="20" src="img/open-iconic/badge.svg"/></a> Send Ð15 to tip.</p>';
   }
 }
 
 function showProfilePreview(address){
-  $('#largeModal').modal('show');
+  $('#profile-summary').modal('show');
   setPreviewQRCode(address);
   $(".profile-summary-banner").html(constructProfileBanner(address,address));
   $("#profile-summary-posts").html("<button class='btn btn-lg btn-warning'><span class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span> Loading...</button>");
   getUser(address).done(function(user){
     $("#profile-summary-posts").html("");
-    $("#full-profile-link").html("<a href='javascript: void(0)' onclick='showProfile(\""+address+"\");$(\"#largeModal\").modal(\"hide\");'>Go to full profile</a>")
+    $("#full-profile-link").html("<a href='javascript: void(0)' onclick='showProfile(\""+address+"\");$(\"#profile-summary\").modal(\"hide\");'>Go to full profile</a>")
     $(".profile-summary-banner").html(constructProfileBanner(user.username,user.address));
     scrapeProfilePreviewData(user.address);
-  });  
+  });
 }
 
 function showProfile(address){
