@@ -70,7 +70,7 @@ function hash160ToText(hex, dictionaryToken, connectingPosts) {
     if(images.length>0){
       for(var key in images){
         var image = images[key];
-        message = message.replace(image, "<a style='display: block;' href='"+image+"'><img style='box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);' width=25% src='"+image+"'/></a>")
+        message = message.replace(image, "<a target='_blank' style='display: block;' href='"+image+"'><img style='box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);' width=25% src='"+image+"'/></a>")
       }
     }
 
@@ -79,7 +79,7 @@ function hash160ToText(hex, dictionaryToken, connectingPosts) {
       for(var key in links){
         var link = links[key];
         var linktext = link.replace('http://','').replace('www.','');
-        message = message.replace(link, "<a href='"+link+"'>"+linktext+"</a>")
+        message = message.replace(link, "<a target='_blank' href='"+link+"'>"+linktext+"</a>")
       }
     }
 
