@@ -218,7 +218,7 @@
       <div class="modal-header" style="text-align: center;">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title getting-started-1">Getting Started</h4>
-        <h4 class="modal-title getting-started-2" style="display: none;">Funding Your Wallet</h4>
+        <h4 class="modal-title getting-started-2" style="display: none;">Funding Your Account</h4>
         <h4 class="modal-title getting-started-3" style="display: none;">Setting Your Username</h4>
         <h4 class="modal-title getting-started-4" style="display: none;">Broadcasting Your Account</h4>
         <h4 class="modal-title getting-started-5" style="display: none;">Frequently Asked Questions</h4>
@@ -231,7 +231,7 @@
                 <div id="gettingStartedQR" style="vertical-align:top;"></div>
               </td>
               <td>
-                Your dogecoin wallet is:<br/>
+                Your Doge Yip Account is:<br/>
                 <img width="20" height="20" src="img/open-iconic/globe.svg"> <font id='new_wallet'></font><br/>
               </td>
             </tr>
@@ -240,61 +240,29 @@
       </div>
       <div class="modal-body getting-started-1">
         <ul>
-          <li>You need to fund your wallet to interact on Doge Yip.</li>
+          <li>You need to fund your account with dogecoin to interact on Doge Yip.</li>
           <li>All sensitive information is handled client-side. We never see it.</li>
-          <li>You can learn more about Dogecoin at <a herf="http://dogecoin.com/" target="_blank">Dogecoin.com</a></li>
+          <li>You can learn more about dogecoin at <a href="http://dogecoin.com/" target="_blank">Dogecoin.com</a></li>
         </ul>
       </div>
       <div class="modal-body getting-started-2" style="display:none;">
         <p>
           The first thing you need to do in Doge Yip is to fund your 
-          wallet. This is because all interaction in Doge Yip is 
-          done by making transactions in the Dogecoin blockchain. 
-          If you do not have any dogecoin in your wallet then you 
-          are not able to make any transaction. The reason for this 
-          is because Doge Yip uses the dogecoin blockchain as a 
-          datastore instead of using a traditional database.
+          account. This is because all interaction in Doge Yip is 
+          done by making small transactions in the dogecoin public ledger.
         </p>
         <p>
-          There are several different ways of funding your wallet. 
-          The easiest is by simply transfering Dogecoin from an 
-          existing wallet to your new 
-          <a id='new_wallet' href="javascript: void(0)" onclick="showQrCode(getWalletAddress().toString())">Doge Yip Wallet</a>.
+          There are several different ways of funding your Doge Yip 
+          account. The easiest is by simply transfering dogecoin that 
+          you already have to your Doge Yip account.
         </p>
         <p>
-          A second easy way to fund your new wallet is by going to 
-          faucet sites. Faucet sites are typically a page full of 
-          ads that send you Dogecoins in exchange for page views. I 
-          personally find 
-          <a href="http://freedoge.co.in/?r=173321" target="_blank">Free Doge Coin</a> 
-          to be the easiest to use but a more comprehensive list of 
-          options can be found at the 
-          <a href="http://makingmoneyhoney.com/dogefaucets.htm" target="_blank"> Doge Coin Faucet List</a>.
+          A second easy way to fund your Doge Yip account is by going to 
+          a "faucet" site such as <a href="http://freedoge.co.in/?r=173321" target="_blank">Free Doge Coin</a>.
         </p>
         <p>
-          A third way to fund your new wallet is by buying Dogecoin from an exchange. Here are some trusted exchanges:
-          <ul>
-            <li><a href="https://www.weselldoges.com/" target="_blank">WeSellDoge</a>(Paypal)</li>
-            <li><a href="https://anxpro.com" target="_blank">ANXPRO</a> (USD, EUR, GBP, AUD, CAD, HKD, SGD, NZD)</li>
-            <li><a href="https://www.kraken.com/" target="_blank">Kraken</a> (USD, EUR)</li>
-            <li><a href="https://www.gocelery.com/" target="_blank">Celery</a> (USD)</li>
-            <li><a href="http://www.localdogecoin.com/" target="_blank">LocalDogecoin</a>(A website to purchase Dogecoin locally)</li>
-          </ul>
-        </p>
-        <p>
-          Lastly, the hardest but most anonymous way to fund your 
-          new wallet is by mining. Mining is when you use your 
-          computer to process Dogecoin transactions by other people, 
-          and in return you get Dogecoin. Mining is intended for 
-          advanced users only, as it requires a lot of technical 
-          knowledge to do. If you are interested, 
-          <a href="http://dogecointutorial.com/mining.html" target="_blank">read more here</a>.
-        </p>
-        <p>
-          Note: These online faucets and exchanges are not owned or 
-          maintained by Doge Yip or Dog Yip. While 
-          we are satisfied they are trustworthy, reliable services - 
-          please use at your own risk.
+          Other ways of funding your Doge Yip account are explained 
+          on <a href="http://dogecoin.com/" target="_blank">Dogecoin.com</a>.
         </p>
       </div>
       <div class="modal-body getting-started-3" style="display:none;">
@@ -303,47 +271,24 @@
           do is to set your username. This allows your account to be 
           searchable so that other people can find you on Doge Yip. 
           It also helps make it easier for people to recognize your 
-          user account when you post because all Doge Yip private 
-          keys tend to look the same.
+          user account when you post because all Doge Yip addresses 
+          tend to look the same.
         </p>
         <p>
           You can set your username by going to the set name link in 
           the navagation bar or by clicking 
           <a href="javascript: void(0)" onclick="$('#setname-modal').modal('show');">here</a>.
         </p>
-        <p>
-          Technical:<br/>
-          Behind the scenes setting your username 
-          consists of converting a 19 character string to its 
-          hexidecimal representation, prepending 0x1E, appending 
-          0x9F, and then base58check encoding the entire string. 
-          After that we simply send a transaction to that address. 
-          Finally, when Doge Yip loads your recent transactions it 
-          simply decodes all the addresses that you have sent 
-          dogecoins to and your most recent transaction whose hex 
-          value ends in 0x9F becomes your username. Likewise, it 
-          becomes trivial to search on this name by simply base58check 
-          encoding a searchvalue and looking through all users that 
-          have sent dogecoin to that address. 
-        </p>
       </div>
       <div class="modal-body getting-started-4" style="display: none;">
         <p>
           After Setting your name the next thing that you might 
-          choose to do is to broadcast your account.
+          choose to do is to broadcast your account. This is not 
+          necessary but it does make it easier for other users to find you.
         </p>
         <p>
           You can broadcast your account by clicking 
           <a href="javascript: void(0)" onclick="if(privateKey==null){showQrCode('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')}else{sendTipTransaction('DPRrGMJ3Vtf6atodtZ9HsUVqmZjWkjGj8Q')};">here</a>.
-        </p>
-        <p>
-          Technical:<br/>
-          Broadcasting your account will make you appear in the 
-          Discover page under the Recent Users tab and the Recent 
-          News tab. This is essencially a way to bootstrap yourself 
-          into the Doge Yip network. This is probably most 
-          benificial to do if you are trying to connect with other 
-          Doge Yip users while the userbase is still small.
         </p>
       </div>
       <div class="modal-body getting-started-5" style="display: none;">
