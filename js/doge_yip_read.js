@@ -122,7 +122,8 @@ function showAccountPreview(address, header){
   $("#profile-summary-posts").html("<button class='btn btn-lg btn-warning'><span class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span> Loading...</button>");
   getUser(address).done(function(user){
     $("#profile-summary-posts").html("");
-    $("#full-profile-link").html("<a href='javascript: void(0)' onclick='showProfile(\""+address+"\");$(\"#profile-summary\").modal(\"hide\");'>Go to full profile</a>")
+    var fullProfileLink = "<a role='button' href='javascript: void(0)' class='btn btn-primary btn-lg signin' onclick='showProfile(\""+address+"\");$(\"#profile-summary\").modal(\"hide\");'>Go to full profile</a>";
+    $("#full-profile-link").html(fullProfileLink)
     $(".profile-summary-banner").html(constructProfileBanner(user.username,user.address));
     scrapeProfilePreviewData(user.address);
   });
