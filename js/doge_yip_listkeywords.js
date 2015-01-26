@@ -16,10 +16,10 @@ function listKeywordPostsPerUser(address, searchTerm, divId){
     for(var i=0; i<user.posts.length; i++){
       var post = user.posts[i];
       if(user.username!=user.address){
-        var when = $.when(hash160ToText(post.hexMessage, post.hexToken, user.connectingPosts), getHtml("html/posts/yip.html"))
-        when.done(function(message, html){
+        var when = $.when(hash160ToText(post.hexMessage, post.hexToken, user.connectingPosts))
+        when.done(function(message){
           if(message.indexOf("#"+searchTerm) > -1){
-            createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexToken, user.connectingPosts)
+            createPost(divId, user.username, user.address, post.time, post.hexMessage, post.hexToken, user.connectingPosts, "html/posts/yip.html")
           }
         });
       }
